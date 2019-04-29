@@ -1,15 +1,15 @@
 #include <iostream>
 
 #include "states.h"
+#include "gameObject.h"
 
-
-int main(){
+int main() {
     auto game_object = GameObject();
 
-    while(true){
+    while (true) {
         int state_num;
-        std::cin>>state_num;
-        switch (state_num){
+        std::cin >> state_num;
+        switch (state_num) {
             case 0:
                 game_object.change_state(std::make_unique<MenuState>(&game_object));
                 break;
@@ -23,7 +23,7 @@ int main(){
                 game_object.change_state(std::make_unique<PokedexState>(&game_object));
                 break;
         }
-        if (state_num == 4){
+        if (state_num == 4) {
             break;
         }
 

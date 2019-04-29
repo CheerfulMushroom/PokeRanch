@@ -8,4 +8,6 @@ set(PROJECT_SOURCE_DIR project/src)
 set(PROJECT_HEADER_DIR project/include)
 
 include_directories("${PROJECT_HEADER_DIR}")
-add_executable(main.out ${PROJECT_SOURCE_DIR}/main.cpp project/src/states.cpp)
+add_executable(main.out ${PROJECT_SOURCE_DIR}/main.cpp
+                        ${PROJECT_SOURCE_DIR}/states.cpp
+                        ${PROJECT_SOURCE_DIR}/gameObject.cpp)
