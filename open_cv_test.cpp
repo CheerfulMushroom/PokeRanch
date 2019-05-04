@@ -1,23 +1,47 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-int main(int argc, char *argv[]) {
-    cv::Mat in_image, out_image;
-    in_image = imread(argv[1], cv::IMREAD_UNCHANGED);
-    if (in_image.empty()) {
-        std::cout << "Ошибка" << std::endl;
-        return 1;
+using namespace std;
+using namespace cv;
+int main(int, char **) {    
+    Mat in_frame, out_frame;
+    const char win1[]="Захват...", win2[]="Запись...";
+    double fps=30; // Число кадров в секунду
+    char file_out[]="recorded.avi";
+    
+    VideoCapture inVid(2); // Открыть камеру по умолчанию
+    if (!inVid.isOpened()) { // Проверка ошибок
+        cout << "Ошибка! Камера не готова...\n";
+        return -1;
     }
 
-    cv::namedWindow(argv[1], cv::WINDOW_AUTOSIZE);
-    cv::namedWindow(argv[2], cv::WINDOW_AUTOSIZE);
-
-    cv::imshow(argv[1], in_image);
-    cv::cvtColor(in_image, out_image, cv::COLOR_BGR2GRAY);
-    cv::imshow(argv[2], out_image);
-    std::cout << "Кнопку для выхода" << std::endl;
-    cv::waitKey();
-
-    imwrite(argv[2], out_image);
+    // Получаем ширину и высоту входного видео
+    int width = (int)inVid.get(CAP_PROP_FRAME_WIDTH);
+    int height = (int)inVid.get(CAP_PROP_FRAME_HEIGHT);
+    VideoWriter recVid(file_out,
+	            VideoWriter::fourcc('M','J','P','G'),
+		        fps,
+                Size(width, height));
+    if (!recVid.isOpened()) {
+	    cout << "Ошибка! Видеофайл не открыт...\n";
+	    return -1;
+    }
+    // Создаем два окна: для исходного и конечного видео
+	namedWindow(win1);
+	namedWindow(win2);
+	while (true) {
+    // Читаем кадр с камеры (захват и декодирование)
+	inVid >> in_frame;
+    // Преобразуем кадр в полутоновый формат
+    //cvtColor(in_frame, out_frame, COLOR_BGR3GRAY);
+    //resize(out_frame, out_frame, Size(width, height*3));
+    // Записываем кадр в видеофайл (кодирование и сохранение)
+	recVid << in_frame;
+    imshow(win1, in_frame);  // Показываем кадр в окне
+    imshow(win2, in_frame); // Показываем кадр в окне
+	if (waitKey(1000/fps) >= 0)
+	    break;
+    }
+	inVid.release(); // Закрываем камеру
     return 0;
 }

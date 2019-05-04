@@ -10,7 +10,8 @@ MODULE = \
     -lopencv_core \
     -lopencv_imgproc \
     -lopencv_highgui \
-    -lopencv_imgcodecs
+    -lopencv_imgcodecs \
+    -lopencv_videoio
 
 SRCS = \
     ./open_cv_test.cpp
