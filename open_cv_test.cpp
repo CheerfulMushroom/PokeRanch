@@ -1,15 +1,17 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <string.h>
 
 using namespace std;
 using namespace cv;
-int main(int, char **) {    
+int main(int argc, char* argv[]) {    
     Mat in_frame, out_frame;
-    const char win1[]="Захват...", win2[]="Запись...";
+    const char win1[]="Захват...";
+    //const char win2[]="Запись...";
     double fps=30; // Число кадров в секунду
-    char file_out[]="recorded.avi";
+    //char file_out[]="recorded.avi";
     
-    VideoCapture inVid(2); // Открыть камеру по умолчанию
+    VideoCapture inVid(stoi(argv[1])); // Открыть камеру по умолчанию (первый аргумент командной сроки)
     if (!inVid.isOpened()) { // Проверка ошибок
         cout << "Ошибка! Камера не готова...\n";
         return -1;
@@ -18,29 +20,57 @@ int main(int, char **) {
     // Получаем ширину и высоту входного видео
     int width = (int)inVid.get(CAP_PROP_FRAME_WIDTH);
     int height = (int)inVid.get(CAP_PROP_FRAME_HEIGHT);
-    VideoWriter recVid(file_out,
+    
+    /*VideoWriter recVid(file_out,
 	            VideoWriter::fourcc('M','J','P','G'),
 		        fps,
                 Size(width, height));
     if (!recVid.isOpened()) {
 	    cout << "Ошибка! Видеофайл не открыт...\n";
 	    return -1;
-    }
+    }*/
+
     // Создаем два окна: для исходного и конечного видео
 	namedWindow(win1);
-	namedWindow(win2);
-	while (true) {
+	//namedWindow(win2);
+    
+    // Интерфейс (типа)
+    printf("****************\n");
+    printf("Make photo - f\nStop - s\n");
+    printf("****************\n");
+    
+    int wait_key_button;
+	int number = 1;
+    string number_s;
+    char* photo_name = new char[10];
+    char* ending = ".jpg";
+    
+    while (true) {
     // Читаем кадр с камеры (захват и декодирование)
 	inVid >> in_frame;
-    // Преобразуем кадр в полутоновый формат
+    
+    // Преобразуем кадр в полутоновый формат (чета меняет соотношение сторон)
     //cvtColor(in_frame, out_frame, COLOR_BGR3GRAY);
-    //resize(out_frame, out_frame, Size(width, height*3));
+    //resize(out_frame, out_frame, Size(width, height*3)); // что-то вроде костыля
+    
     // Записываем кадр в видеофайл (кодирование и сохранение)
-	recVid << in_frame;
+	//recVid << in_frame;
     imshow(win1, in_frame);  // Показываем кадр в окне
-    imshow(win2, in_frame); // Показываем кадр в окне
-	if (waitKey(1000/fps) >= 0)
-	    break;
+    //imshow(win2, in_frame); // Показываем кадр в окне
+	wait_key_button = waitKey(1000/fps);
+
+     if ((wait_key_button == 70) || (wait_key_button == 102))
+        {
+        number_s = to_string(number);  // Перевод числа в строку
+        strcpy(photo_name,number_s.c_str());  //Перевод string в char*
+        imwrite(strcat(photo_name, ending), in_frame);
+        number++;
+        }
+
+    if ((wait_key_button == 83) || (wait_key_button == 115))
+	    {
+        break;
+        }
     }
 	inVid.release(); // Закрываем камеру
     return 0;
