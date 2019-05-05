@@ -43,7 +43,8 @@ int main(int argc, char* argv[]) {
 	int number = 1;
     string number_s;
     char* photo_name = new char[10];
-    char* ending = ".jpg";
+    //char* photo_name;
+    char* ending = ".png";
     
     while (true) {
     // Читаем кадр с камеры (захват и декодирование)
@@ -62,7 +63,7 @@ int main(int argc, char* argv[]) {
      if ((wait_key_button == 70) || (wait_key_button == 102))
         {
         number_s = to_string(number);  // Перевод числа в строку
-        strcpy(photo_name,number_s.c_str());  //Перевод string в char*
+        strcpy(photo_name, number_s.c_str());  //Перевод string в char*
         imwrite(strcat(photo_name, ending), in_frame);
         number++;
         }
