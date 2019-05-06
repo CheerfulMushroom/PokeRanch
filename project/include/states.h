@@ -2,6 +2,8 @@
 #define PREP_POKEMON_RANCH_STATES_H
 
 #include <bits/unique_ptr.h>
+#include <vector>
+#include "button.h"
 
 class GameState {
 public:
@@ -15,6 +17,7 @@ public:
 
 protected:
     class GameObject *game;
+    std::vector<Button*> buttons;
 };
 
 class MenuState : public GameState {

@@ -2,6 +2,7 @@
 #define PREP_POKEMON_RANCH_GAMEOBJECT_H
 
 #include "states.h"
+#include "button.h"
 
 class GameObject {
 public:
