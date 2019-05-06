@@ -1,10 +1,14 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <opencv2/highgui.hpp>
+
 #include <string.h>
+#include </usr/local/include/aruco/aruco.h>
 
 using namespace std;
 using namespace cv;
 int main(int argc, char* argv[]) {    
+    const float marker_size = 0.04;  // Размер маркера (в метрах)
     Mat in_frame, out_frame;
     const char win1[]="Захват...";
     //const char win2[]="Запись...";
@@ -54,6 +58,15 @@ int main(int argc, char* argv[]) {
     //cvtColor(in_frame, out_frame, COLOR_BGR3GRAY);
     //resize(out_frame, out_frame, Size(width, height*3)); // что-то вроде костыля
     
+    aruco::CameraParameters camera;
+    camera.readFromXMLFile(argv[2]);  // Выбрать файл с характеристиками камеры (.yml) (второй аргумент командной строки)
+    aruco::MarkerDetector Detector;
+    Detector.setDictionary("ARUCO_MIP_36h12");
+    auto markers=Detector.detect(in_frame, camera, marker_size);
+    for (auto m:markers) {
+        aruco::CvDrawingUtils::draw3dAxis(in_frame,m,camera);
+        cout << m.Rvec << " " << m.Tvec << endl;
+    }
     // Записываем кадр в видеофайл (кодирование и сохранение)
 	//recVid << in_frame;
     imshow(win1, in_frame);  // Показываем кадр в окне
