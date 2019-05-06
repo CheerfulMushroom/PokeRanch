@@ -2,10 +2,13 @@
 #define PREP_POKEMON_RANCH_GAMEOBJECT_H
 
 #include "states.h"
-#include "button.h"
+
+#define GLEW_STATIC
+#include <GL/glew.h>
 
 class GameObject {
 public:
+    GameObject(GLuint WIDTH, GLuint HEIGHT);
     void render_game() {
         state->render_game();
     }
@@ -20,6 +23,7 @@ public:
 
 private:
     std::unique_ptr<GameState> state = std::make_unique<MenuState>(this);
+    static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 };
 
 #endif //PREP_POKEMON_RANCH_GAMEOBJECT_H

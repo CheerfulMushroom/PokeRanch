@@ -3,6 +3,7 @@
 #include "states.h"
 #include "gameObject.h"
 
+
 int main() {
     auto game_object = GameObject();
 

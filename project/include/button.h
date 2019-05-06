@@ -1,10 +1,9 @@
 #ifndef PREP_POKEMON_RANCH_BUTTON_H
 #define PREP_POKEMON_RANCH_BUTTON_H
 
-
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "gameObject.h"
 
 class Button {
 public:

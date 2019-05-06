@@ -3,6 +3,7 @@
 
 #include <bits/unique_ptr.h>
 #include <vector>
+
 #include "button.h"
 
 class GameState {
@@ -17,12 +18,12 @@ public:
 
 protected:
     class GameObject *game;
-    std::vector<Button*> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
 };
 
 class MenuState : public GameState {
 public:
-    explicit MenuState(GameObject *game_object) : GameState(game_object) {};
+    explicit MenuState(GameObject *game_object);
 
     void render_game() override;
 
@@ -31,7 +32,7 @@ public:
 
 class PauseState : public GameState {
 public:
-    explicit PauseState(GameObject *game_object) : GameState(game_object) {};
+    explicit PauseState(GameObject *game_object);
 
     void render_game() override;
 
@@ -40,7 +41,7 @@ public:
 
 class FarmState : public GameState {
 public:
-    explicit FarmState(GameObject *game_object) : GameState(game_object) {};
+    explicit FarmState(GameObject *game_object);
 
     void render_game() override;
 
@@ -49,14 +50,12 @@ public:
 
 class PokedexState : public GameState {
 public:
-    explicit PokedexState(GameObject *game_object) : GameState(game_object) {};
+    explicit PokedexState(GameObject *game_object);
 
     void render_game() override;
 
     void update_game() override;
 };
-
-
 
 
 #endif //PREP_POKEMON_RANCH_STATES_H

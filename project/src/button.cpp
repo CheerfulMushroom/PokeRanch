@@ -1,8 +1,9 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include "button.h"
 #include "gameObject.h"
+
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 
 Button::Button(GLFWwindow *window, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size) {
