@@ -16,9 +16,10 @@ public:
 
     virtual void update_game() = 0;
 
+    std::vector<std::unique_ptr<Button>> buttons;
+
 protected:
     class GameObject *game;
-    std::vector<std::unique_ptr<Button>> buttons;
 };
 
 class MenuState : public GameState {

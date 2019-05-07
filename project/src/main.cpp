@@ -5,8 +5,9 @@
 
 
 int main() {
-    auto game_object = GameObject();
+    auto game_object = std::make_unique<GameObject>(800,600);
 
+    game_object->start();
 //    while (true) {
 //        int state_num;
 //        std::cin >> state_num;

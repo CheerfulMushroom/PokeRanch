@@ -9,6 +9,8 @@
 class GameObject {
 public:
     GameObject(GLuint WIDTH, GLuint HEIGHT);
+    ~GameObject();
+    void start();
     void render_game() {
         state->render_game();
     }
@@ -21,8 +23,11 @@ public:
         this->state = std::move(state);
     }
 
+    GLFWwindow* window;
+    GLuint buttonShader;
+
 private:
-    std::unique_ptr<GameState> state = std::make_unique<MenuState>(this);
+    std::unique_ptr<GameState> state;
     static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 };
 
