@@ -5,9 +5,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+class GameState;
+
 class Button {
 public:
-    Button(GLFWwindow *window, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size);
+    Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size);
 
     ~Button();
 
@@ -16,7 +18,7 @@ public:
     bool is_pointed();
 
 private:
-    GLFWwindow *window;
+    GameState *state;
     GLfloat x;
     GLfloat y;
     GLfloat x_size;

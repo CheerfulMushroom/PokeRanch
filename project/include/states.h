@@ -6,9 +6,11 @@
 
 #include "button.h"
 
+class GameObject;
+
 class GameState {
 public:
-    explicit GameState(class GameObject *game_object) : game(game_object) {};
+    explicit GameState(GameObject *game_object) : game(game_object) {};
 
     virtual ~GameState() = default;
 
@@ -18,8 +20,7 @@ public:
 
     std::vector<std::unique_ptr<Button>> buttons;
 
-protected:
-    class GameObject *game;
+    GameObject *game;
 };
 
 class MenuState : public GameState {

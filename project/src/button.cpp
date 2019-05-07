@@ -7,8 +7,8 @@
 #include <GLFW/glfw3.h>
 
 
-Button::Button(GLFWwindow *window, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size) {
-    this->window = window;
+Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size) {
+    this->state = state;
     this->x = x;
     this->y = y;
     this->x_size = x_size;
@@ -52,10 +52,10 @@ void Button::render() {
 
 bool Button::is_pointed() {
     double x_pos, y_pos;
-    glfwGetCursorPos(window, &x_pos, &y_pos);
+    glfwGetCursorPos(state->game->window, &x_pos, &y_pos);
 
     int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
+    glfwGetFramebufferSize(state->game->window, &width, &height);
 
     x_pos = 2 * ((x_pos) / width - .5);
     y_pos = -2 * ((y_pos) / height - .5);

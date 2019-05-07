@@ -2,8 +2,8 @@
 #include "gameObject.h"
 
 MenuState::MenuState(GameObject *game_object) : GameState(game_object) {
-    buttons.emplace_back(std::make_unique<Button>(game->window, 0.5f, 0.5f, 0.3f, 0.3f));
-    buttons.emplace_back(std::make_unique<Button>(game->window, -0.5f, -0.5f, 0.3f, 0.3f));
+    buttons.emplace_back(std::make_unique<Button>(this, 0.5f, 0.5f, 0.3f, 0.3f));
+    buttons.emplace_back(std::make_unique<Button>(this, -0.5f, -0.5f, 0.3f, 0.3f));
 
 }
 

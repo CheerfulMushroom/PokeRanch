@@ -26,7 +26,6 @@ public:
     GLFWwindow* window;
     GLuint buttonShader;
 
-private:
     std::unique_ptr<GameState> state;
     static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 };
