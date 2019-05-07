@@ -10,8 +10,8 @@ set(PROJECT_HEADER_DIR project/include)
 include_directories("${PROJECT_HEADER_DIR}")
 add_executable(main.out ${PROJECT_SOURCE_DIR}/main.cpp
                         ${PROJECT_SOURCE_DIR}/gameObject.cpp
-                        ${PROJECT_SOURCE_DIR}/states.cpp
-                        ${PROJECT_SOURCE_DIR}/button.cpp)
+                        ${PROJECT_SOURCE_DIR}/button.cpp
+                        ${PROJECT_SOURCE_DIR}/states.cpp)
 
 target_link_libraries(main.out GLEW glfw  GL X11 pthread Xrandr Xi)
 

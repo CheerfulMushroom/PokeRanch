@@ -18,7 +18,7 @@ public:
 
     virtual void update_game() = 0;
 
-    std::vector<std::unique_ptr<Button>> buttons;
+    std::vector<std::unique_ptr<BaseButton>> buttons;
 
     GameObject *game;
 };

@@ -111,7 +111,9 @@ void GameObject::mouse_button_callback(GLFWwindow *window, int button, int actio
         auto game = (GameObject*) glfwGetWindowUserPointer(window);
         for (auto& button_ptr: game->state->buttons) {
             if (button_ptr->is_pointed()){
-                glfwSetWindowShouldClose(window,GL_TRUE);
+                button_ptr->exec();
+                std::cout << "Button was pressed"<<std::endl;
+                break;
             }
         }
     }

@@ -1,9 +1,10 @@
 #include "states.h"
 #include "gameObject.h"
+#include "button.h"
 
 MenuState::MenuState(GameObject *game_object) : GameState(game_object) {
-    buttons.emplace_back(std::make_unique<Button>(this, 0.5f, 0.5f, 0.3f, 0.3f));
-    buttons.emplace_back(std::make_unique<Button>(this, -0.5f, -0.5f, 0.3f, 0.3f));
+    buttons.emplace_back(std::make_unique<Button<PauseState>>(this, 0.5f, 0.5f, 0.3f, 0.3f));
+    buttons.emplace_back(std::make_unique<Button<PauseState>>(this, -0.5f, -0.5f, 0.3f, 0.3f));
 
 }
 
@@ -23,9 +24,23 @@ void MenuState::render_game() {
 void MenuState::update_game() {}
 
 
-PauseState::PauseState(GameObject *game_object) : GameState(game_object) {}
+PauseState::PauseState(GameObject *game_object) : GameState(game_object) {
+    buttons.emplace_back(std::make_unique<Button<MenuState>>(this, 0.5f, -0.5f, 0.3f, 0.3f));
+    buttons.emplace_back(std::make_unique<Button<MenuState>>(this, 0.5f, -0.5f, 0.3f, 0.3f));
+}
 
-void PauseState::render_game() {}
+void PauseState::render_game() {
+    // Render
+    // Clear the colorbuffer
+    glClearColor(0.5f, 0.3f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(game->buttonShader);
+    for (auto& button: buttons) {
+        button->render();
+    }
+    glfwSwapBuffers(game->window);
+}
 
 void PauseState::update_game() {}
 

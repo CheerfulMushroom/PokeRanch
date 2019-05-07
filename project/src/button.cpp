@@ -1,13 +1,15 @@
 #include "button.h"
 #include "gameObject.h"
+#include "states.h"
+
 #include <iostream>
 
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-
-Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size) {
+template<class T>
+Button<T>::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size) {
     this->state = state;
     this->x = x;
     this->y = y;
@@ -38,19 +40,22 @@ Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y
 
 }
 
-Button::~Button() {
+template<class T>
+Button<T>::~Button() {
     // Properly de-allocate all resources once they've outlived their purpose
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
 
-void Button::render() {
+template<class T>
+void Button<T>::render() {
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
 
-bool Button::is_pointed() {
+template<class T>
+bool Button<T>::is_pointed() {
     double x_pos, y_pos;
     glfwGetCursorPos(state->game->window, &x_pos, &y_pos);
 
@@ -64,4 +69,16 @@ bool Button::is_pointed() {
     }
     return false;
 }
+
+template<class T>
+void Button<T>::exec() {
+    state->game->change_state(std::make_unique<T>(state->game));
+}
+
+template class Button<MenuState>;
+template class Button<PauseState>;
+template class Button<PokedexState>;
+template class Button<FarmState>;
+
+
 

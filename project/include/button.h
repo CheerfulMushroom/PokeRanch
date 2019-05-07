@@ -7,15 +7,28 @@
 
 class GameState;
 
-class Button {
+class BaseButton{
+public:
+    virtual void render() = 0;
+
+    virtual bool is_pointed() = 0;
+
+    virtual void exec() = 0;
+
+};
+
+template<class T>
+class Button : public BaseButton {
 public:
     Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size);
 
     ~Button();
 
-    void render();
+    void render() override;
 
-    bool is_pointed();
+    bool is_pointed() override;
+
+    void exec() override;
 
 private:
     GameState *state;
