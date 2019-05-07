@@ -20,9 +20,11 @@ MODULES = \
     -lopencv_imgproc \
     -lopencv_highgui \
     -lopencv_imgcodecs \
-    -lopencv_videoio
+    -lopencv_videoio \
+    -laruco
 
 SRCS = \
+    ./project/src/GameWindow.cpp \
     ./project/src/ShaderProgram.cpp \
     ./project/src/main.cpp \
     ./project/src/VideoStream_test.cpp

@@ -6,8 +6,8 @@
 #include <opencv2/opencv.hpp>
 
 
-VideoStream::VideoStream(int width, int height) : window_width(width), window_height(height) {
-    context_init();
+VideoStream::VideoStream() {
+    //context_init();
 
     glGenTextures(1, &texture);
     glGenBuffers(1, &VBO);
@@ -18,7 +18,7 @@ VideoStream::VideoStream(int width, int height) : window_width(width), window_he
 
 
 
-bool VideoStream::context_init() {
+/*bool VideoStream::context_init() {
     glfwInit();
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -47,7 +47,7 @@ bool VideoStream::context_init() {
     //glfwSetKeyCallback(window, key_callback);
 
     return true;
-}
+} */
 
 bool VideoStream::configure_VAO() {
 
@@ -103,7 +103,7 @@ bool VideoStream::configure_VAO() {
 } */
 
 
-void VideoStream::lock_frame_rate(double frame_rate) {
+/* void VideoStream::lock_frame_rate(double frame_rate) {
     double allowed_frame_time = 1.0 / frame_rate;  // Продолжительность одного кадра
 
     frame_end_time = glfwGetTime();
@@ -115,7 +115,7 @@ void VideoStream::lock_frame_rate(double frame_rate) {
         sleep_time = allowed_frame_time - frame_draw_time;
         usleep(1000000 * sleep_time);
     }
-}
+} */
 
 void VideoStream::draw_video_frame() {
 
