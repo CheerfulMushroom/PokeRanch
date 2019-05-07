@@ -14,7 +14,6 @@ void MenuState::render_game() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(game->buttonShader);
     for (auto& button: buttons) {
         button->render();
     }
@@ -35,7 +34,6 @@ void PauseState::render_game() {
     glClearColor(0.5f, 0.3f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(game->buttonShader);
     for (auto& button: buttons) {
         button->render();
     }

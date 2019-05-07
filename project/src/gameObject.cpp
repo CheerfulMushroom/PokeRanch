@@ -1,22 +1,11 @@
 #include "gameObject.h"
 
 #define GLEW_STATIC
+#include <GL/glew.h>
 
 #include <iostream>
+#include "ShaderProgram.h"
 
-
-const GLchar *vertexShaderSource = "#version 330 core\n"
-                                   "layout (location = 0) in vec2 position;\n"
-                                   "void main()\n"
-                                   "{\n"
-                                   "gl_Position = vec4(position, 0.0, 1.0);\n"
-                                   "}\0";
-const GLchar *fragmentShaderSource = "#version 330 core\n"
-                                     "out vec4 color;\n"
-                                     "void main()\n"
-                                     "{\n"
-                                     "color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                                     "}\n\0";
 
 GameObject::GameObject(GLuint WIDTH, GLuint HEIGHT) {
     // Init GLFW
@@ -45,45 +34,7 @@ GameObject::GameObject(GLuint WIDTH, GLuint HEIGHT) {
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
 
-    // Build and compile our shader program
-    // Vertex shader
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    // Check for compile time errors
-    GLint success;
-    GLchar infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-    // Fragment shader
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    // Check for compile time errors
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    // Link shaders
-    buttonShader = glCreateProgram();
-    glAttachShader(buttonShader, vertexShader);
-    glAttachShader(buttonShader, fragmentShader);
-    glLinkProgram(buttonShader);
-    // Check for linking errors
-    glGetProgramiv(buttonShader, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(buttonShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
+    buttonShader = ShaderProgram("project/shaders/button_v_shader.txt", "project/shaders/button_f_shader.txt");
     state = std::make_unique<MenuState>(this);
 }
 
@@ -94,9 +45,7 @@ GameObject::~GameObject() {
 void GameObject::start() {
 // Game loop
     while (!glfwWindowShouldClose(window)) {
-        // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
         glfwPollEvents();
-
         render_game();
     }
 }

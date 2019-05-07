@@ -5,6 +5,7 @@
 
 #define GLEW_STATIC
 #include <GL/glew.h>
+#include "ShaderProgram.h"
 
 class GameObject {
 public:
@@ -24,7 +25,7 @@ public:
     }
 
     GLFWwindow* window;
-    GLuint buttonShader;
+    ShaderProgram buttonShader;
 
     std::unique_ptr<GameState> state;
     static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);

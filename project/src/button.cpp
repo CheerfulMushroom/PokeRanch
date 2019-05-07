@@ -49,6 +49,7 @@ Button<T>::~Button() {
 
 template<class T>
 void Button<T>::render() {
+    state->game->buttonShader.use();
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
