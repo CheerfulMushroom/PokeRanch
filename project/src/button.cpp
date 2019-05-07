@@ -1,5 +1,6 @@
 #include "button.h"
 #include "gameObject.h"
+#include <iostream>
 
 #define GLEW_STATIC
 #include <GL/glew.h>

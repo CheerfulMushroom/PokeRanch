@@ -29,6 +29,7 @@ GameObject::GameObject(GLuint WIDTH, GLuint HEIGHT) {
 
     // Create a GLFWwindow object that we can use for GLFW's functions
     window = glfwCreateWindow(WIDTH, HEIGHT, "PokeRanch", nullptr, nullptr);
+    glfwSetWindowUserPointer(window, this);
     glfwMakeContextCurrent(window);
 
     // Set the required callback functions
@@ -101,14 +102,17 @@ void GameObject::start() {
 }
 
 void GameObject::mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
-//    static int cursor_state = GLFW_RELEASE;
-//    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-//        cursor_state = GLFW_PRESS;
-//    }
-//    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-//        cursor_state = GLFW_PRESS;
-//        if (button->is_pointed()) {
-//            glfwSetWindowShouldClose(window, GL_TRUE);
-//        }
-//    }
+    static int cursor_state = GLFW_RELEASE;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        cursor_state = GLFW_PRESS;
+    }
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+        cursor_state = GLFW_PRESS;
+        auto game = (GameObject*) glfwGetWindowUserPointer(window);
+        for (auto& button_ptr: game->state->buttons) {
+            if (button_ptr->is_pointed()){
+                glfwSetWindowShouldClose(window,GL_TRUE);
+            }
+        }
+    }
 }
