@@ -1,6 +1,6 @@
-#include "button.h"
-#include "gameObject.h"
-#include "states.h"
+#include "Buttons.h"
+#include "GameObject.h"
+#include "States.h"
 
 #include <iostream>
 
@@ -9,7 +9,7 @@
 #include <GLFW/glfw3.h>
 
 template<class T>
-Button<T>::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size) {
+Buttons<T>::Buttons(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size) {
     this->state = state;
     this->x = x;
     this->y = y;
@@ -41,14 +41,14 @@ Button<T>::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloa
 }
 
 template<class T>
-Button<T>::~Button() {
+Buttons<T>::~Buttons() {
     // Properly de-allocate all resources once they've outlived their purpose
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
 
 template<class T>
-void Button<T>::render() {
+void Buttons<T>::render() {
     state->game->buttonShader.use();
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -56,7 +56,7 @@ void Button<T>::render() {
 }
 
 template<class T>
-bool Button<T>::is_pointed() {
+bool Buttons<T>::is_pointed() {
     GLFWwindow* window = state->game->screen.window;
 
     double x_pos, y_pos;
@@ -74,14 +74,14 @@ bool Button<T>::is_pointed() {
 }
 
 template<class T>
-void Button<T>::exec() {
+void Buttons<T>::exec() {
     state->game->change_state(std::make_unique<T>(state->game));
 }
 
-template class Button<MenuState>;
-template class Button<PauseState>;
-template class Button<PokedexState>;
-template class Button<FarmState>;
+template class Buttons<MenuState>;
+template class Buttons<PauseState>;
+template class Buttons<PokedexState>;
+template class Buttons<FarmState>;
 
 
 

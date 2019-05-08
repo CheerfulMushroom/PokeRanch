@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "states.h"
-#include "gameObject.h"
+#include "States.h"
+#include "GameObject.h"
 
 
 int main() {

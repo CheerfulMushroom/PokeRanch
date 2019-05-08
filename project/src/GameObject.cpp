@@ -1,4 +1,4 @@
-#include "gameObject.h"
+#include "GameObject.h"
 
 #define GLEW_STATIC
 #include <GL/glew.h>

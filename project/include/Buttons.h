@@ -1,7 +1,6 @@
 #ifndef PREP_POKEMON_RANCH_BUTTON_H
 #define PREP_POKEMON_RANCH_BUTTON_H
 
-#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -14,15 +13,14 @@ public:
     virtual bool is_pointed() = 0;
 
     virtual void exec() = 0;
-
 };
 
 template<class T>
-class Button : public BaseButton {
+class Buttons : public BaseButton {
 public:
-    Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size);
+    Buttons(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size);
 
-    ~Button();
+    ~Buttons();
 
     void render() override;
 
@@ -37,7 +35,6 @@ private:
     GLfloat x_size;
     GLfloat y_size;
     GLuint VAO, VBO;
-
 };
 
 

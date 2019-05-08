@@ -26,31 +26,33 @@ ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_pat
 
     //  Компиляция и сборка шейдеров
 
-    GLint success;
-    GLchar infoLog[512];
+
     GLuint vertices_shader = 0;
     GLuint fragment_shader = 0;
 
     vertices_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertices_shader, 1, &v_shader_source, nullptr);
     glCompileShader(vertices_shader);
+
+    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader, 1, &f_shader_source, nullptr);
+    glCompileShader(fragment_shader);
+
+    // Проверка шейдеров и вывод лога в случае ошибки
+    GLint success;
+    GLchar infoLog[512];
+
     glGetShaderiv(vertices_shader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertices_shader, 512, nullptr, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
 
-
-
-    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &f_shader_source, nullptr);
-    glCompileShader(fragment_shader);
     glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragment_shader, 512, nullptr, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-
 
     program = glCreateProgram();
     glAttachShader(program, vertices_shader);
