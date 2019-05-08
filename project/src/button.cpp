@@ -57,11 +57,13 @@ void Button<T>::render() {
 
 template<class T>
 bool Button<T>::is_pointed() {
+    GLFWwindow* window = state->game->screen.window;
+
     double x_pos, y_pos;
-    glfwGetCursorPos(state->game->window, &x_pos, &y_pos);
+    glfwGetCursorPos(window, &x_pos, &y_pos);
 
     int width, height;
-    glfwGetFramebufferSize(state->game->window, &width, &height);
+    glfwGetFramebufferSize(window, &width, &height);
 
     x_pos = 2 * ((x_pos) / width - .5);
     y_pos = -2 * ((y_pos) / height - .5);

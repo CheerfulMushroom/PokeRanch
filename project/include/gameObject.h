@@ -6,10 +6,11 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include "ShaderProgram.h"
+#include "GameWindow.h"
 
 class GameObject {
 public:
-    GameObject(GLuint WIDTH, GLuint HEIGHT);
+    GameObject(int width, int height, double rate);
     ~GameObject();
     void start();
     void render_game() {
@@ -24,7 +25,7 @@ public:
         this->state = std::move(state);
     }
 
-    GLFWwindow* window;
+    GameWindow screen;
     ShaderProgram buttonShader;
 
     std::unique_ptr<GameState> state;

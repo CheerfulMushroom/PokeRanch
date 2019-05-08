@@ -17,7 +17,7 @@ void MenuState::render_game() {
     for (auto& button: buttons) {
         button->render();
     }
-    glfwSwapBuffers(game->window);
+    glfwSwapBuffers(game->screen.window);
 }
 
 void MenuState::update_game() {}
@@ -37,7 +37,7 @@ void PauseState::render_game() {
     for (auto& button: buttons) {
         button->render();
     }
-    glfwSwapBuffers(game->window);
+    glfwSwapBuffers(game->screen.window);
 }
 
 void PauseState::update_game() {}

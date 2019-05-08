@@ -1,16 +1,14 @@
 #ifndef PROJECT_INCLUDE_GAMEWINDOW_H_
 #define PROJECT_INCLUDE_GAMEWINDOW_H_
 
-
-
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <ShaderProgram.h>
-#include <opencv2/opencv.hpp>
 
 class GameWindow {
  public:
+    GameWindow() = default;
+
     GameWindow(int width, int height, double rate);
 
     bool screen_init();
