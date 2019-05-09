@@ -16,11 +16,11 @@ public:
 };
 
 template<class T>
-class Buttons : public BaseButton {
+class Button : public BaseButton {
 public:
-    Buttons(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size);
+    Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size);
 
-    ~Buttons();
+    ~Button();
 
     void render() override;
 

@@ -75,7 +75,7 @@ bool VideoStream::configure_VAO() {
     //GLuint VBO;
     glGenBuffers(1, &VBO);
 
-    ShaderProgram shader("project/src/v_shader.txt", "project/src/f_shader.txt");
+    ShaderProgram shader("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
 
 
     

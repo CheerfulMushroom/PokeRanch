@@ -3,8 +3,8 @@
 #include "Buttons.h"
 
 MenuState::MenuState(GameObject *game_object) : GameState(game_object) {
-    buttons.emplace_back(std::make_unique<Buttons<PauseState>>(this, 0.5f, 0.5f, 0.3f, 0.3f));
-    buttons.emplace_back(std::make_unique<Buttons<PauseState>>(this, -0.5f, -0.5f, 0.3f, 0.3f));
+    buttons.emplace_back(std::make_unique<Button<PauseState>>(this, 0.5f, 0.5f, 0.3f, 0.3f));
+    buttons.emplace_back(std::make_unique<Button<PauseState>>(this, -0.5f, -0.5f, 0.3f, 0.3f));
 
 }
 
@@ -24,8 +24,8 @@ void MenuState::update_game() {}
 
 
 PauseState::PauseState(GameObject *game_object) : GameState(game_object) {
-    buttons.emplace_back(std::make_unique<Buttons<MenuState>>(this, 0.5f, -0.5f, 0.3f, 0.3f));
-    buttons.emplace_back(std::make_unique<Buttons<MenuState>>(this, 0.5f, -0.5f, 0.3f, 0.3f));
+    buttons.emplace_back(std::make_unique<Button<MenuState>>(this, 0.5f, -0.5f, 0.3f, 0.3f));
+    buttons.emplace_back(std::make_unique<Button<MenuState>>(this, -0.5f, 0.5f, 0.3f, 0.3f));
 }
 
 void PauseState::render_game() {
