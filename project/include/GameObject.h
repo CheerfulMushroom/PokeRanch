@@ -7,6 +7,8 @@
 #include "ShaderProgram.h"
 #include "GameWindow.h"
 
+extern std::unique_ptr<GameObject> game_object;
+
 class GameObject {
 public:
     GameObject(int width, int height, double rate);
@@ -25,7 +27,6 @@ public:
     std::unique_ptr<GameState> state;
 
 private:
-    static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 
 };
 

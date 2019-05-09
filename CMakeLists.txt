@@ -13,8 +13,8 @@ add_executable(main.out ${PROJECT_SOURCE_DIR}/main.cpp
                         ${PROJECT_SOURCE_DIR}/GameWindow.cpp
                         ${PROJECT_SOURCE_DIR}/ShaderProgram.cpp
                         ${PROJECT_SOURCE_DIR}/States.cpp
-                        ${PROJECT_SOURCE_DIR}/Buttons.cpp
-                        )
+                        ${PROJECT_SOURCE_DIR}/Button.cpp
+                        ${PROJECT_SOURCE_DIR}/ButtonFunctions.cpp)
 
 target_link_libraries(main.out GLEW glfw  GL X11 pthread Xrandr Xi)
 

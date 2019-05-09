@@ -1,17 +1,17 @@
 #include "GameObject.h"
 
-#define GLEW_STATIC
 #include <GL/glew.h>
 
 #include <iostream>
 #include "ShaderProgram.h"
 #include "GameWindow.h"
 
+static void mouse_button_callback(GLFWwindow *window, int mouse_button, int action, int mods);
+
 
 GameObject::GameObject(int width, int height, double rate) {
 
     screen = GameWindow(width, height, rate);
-    glfwSetWindowUserPointer(screen.window, this);
     glfwSetMouseButtonCallback(screen.window, mouse_button_callback);
 
 
@@ -19,9 +19,11 @@ GameObject::GameObject(int width, int height, double rate) {
     state = std::make_unique<MenuState>(this);
 }
 
+
 GameObject::~GameObject() {
     glfwTerminate();
 }
+
 
 void GameObject::start() {
 // Game loop
@@ -31,17 +33,18 @@ void GameObject::start() {
     }
 }
 
-void GameObject::mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+
+static void mouse_button_callback(GLFWwindow *window, int mouse_button, int action, int mods) {
     static int cursor_state = GLFW_RELEASE;
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+    if (mouse_button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         cursor_state = GLFW_PRESS;
     }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+    if (mouse_button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         cursor_state = GLFW_PRESS;
-        auto game = (GameObject*) glfwGetWindowUserPointer(window);
-        for (auto& button_ptr: game->state->buttons) {
-            if (button_ptr->is_pointed()){
-                button_ptr->exec();
+        auto buttons = &game_object->state->buttons;
+        for (auto& button: *buttons) {
+            if (button->is_pointed()){
+                button->exec();
                 std::cout << "Button was pressed"<<std::endl;
                 break;
             }
