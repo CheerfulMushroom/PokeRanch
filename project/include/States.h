@@ -6,56 +6,51 @@
 
 #include "Button.h"
 
-class GameObject;
+class Game;
 
 class GameState {
 public:
-    explicit GameState(GameObject *game_object) : game(game_object) {};
-
+    explicit GameState(Game *game_object) : game(game_object) {};
     virtual ~GameState() = default;
-
     virtual void render_game() = 0;
-
     virtual void update_game() = 0;
 
-    std::vector<std::unique_ptr<BaseButton>> buttons;
+    Game* get_game();
 
-    GameObject *game;
+    std::vector<std::unique_ptr<BaseButton>> buttons;
+protected:
+    Game *game;
 };
+
 
 class MenuState : public GameState {
 public:
-    explicit MenuState(GameObject *game_object);
-
+    explicit MenuState(Game *game_object);
     void render_game() override;
-
     void update_game() override;
 };
+
 
 class PauseState : public GameState {
 public:
-    explicit PauseState(GameObject *game_object);
-
+    explicit PauseState(Game *game_object);
     void render_game() override;
-
     void update_game() override;
 };
+
 
 class FarmState : public GameState {
 public:
-    explicit FarmState(GameObject *game_object);
-
+    explicit FarmState(Game *game_object);
     void render_game() override;
-
     void update_game() override;
 };
 
+
 class PokedexState : public GameState {
 public:
-    explicit PokedexState(GameObject *game_object);
-
+    explicit PokedexState(Game *game_object);
     void render_game() override;
-
     void update_game() override;
 };
 

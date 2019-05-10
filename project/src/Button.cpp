@@ -1,14 +1,9 @@
-#include <functional> 
+#include <functional>
 
 #include "Button.h"
-#include "GameObject.h"
-#include "States.h"
-
-#include <iostream>
+#include "Game.h"
 
 #define GLEW_STATIC
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec) {
     this->state = state;
@@ -16,7 +11,7 @@ Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y
     this->y = y;
     this->x_size = x_size;
     this->y_size = y_size;
-    this->to_exec = to_exec;
+    this->to_exec = std::move(to_exec);
     GLfloat vertices[] = {x, y,
                           x, y + y_size,
                           x + x_size, y + y_size,
@@ -34,7 +29,7 @@ Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid *) 0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid *) (0 * sizeof(GLfloat)));
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -49,24 +44,24 @@ Button::~Button() {
 }
 
 void Button::render() {
-    state->game->buttonShader.use();
+    state->get_game()->get_shader_button().use();
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
 
-bool Button::is_pointed() {
-    GLFWwindow* window = state->game->screen.window;
+bool Button::is_pointed_at() {
+    GLFWwindow *window = state->get_game()->get_window();
 
-    double x_pos, y_pos;
-    glfwGetCursorPos(window, &x_pos, &y_pos);
+    double x_cursor, y_cursor;
+    glfwGetCursorPos(window, &x_cursor, &y_cursor);
 
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
 
-    x_pos = 2 * ((x_pos) / width - .5);
-    y_pos = -2 * ((y_pos) / height - .5);
-    if (x < x_pos && x_pos < x + x_size && y < y_pos && y_pos < y + y_size) {
+    x_cursor = 2 * ((x_cursor) / width - .5);
+    y_cursor = -2 * ((y_cursor) / height - .5);
+    if (x <= x_cursor && x_cursor <= x + x_size && y <= y_cursor && y_cursor <= y + y_size) {
         return true;
     }
     return false;

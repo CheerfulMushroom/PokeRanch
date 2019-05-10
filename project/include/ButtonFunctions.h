@@ -2,7 +2,7 @@
 #define PREP_POKEMON_RANCH_BUTTONFUNCTIONS_H
 
 #include "States.h"
-#include "GameObject.h"
+#include "Game.h"
 
 template<class State>
 void bf_change_game_state() {

@@ -65,4 +65,8 @@ ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_pat
 
 void ShaderProgram::use() {
     glUseProgram(program);
-}   
+}
+
+GLuint ShaderProgram::get_program() {
+    return program;
+}

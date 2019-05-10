@@ -1,9 +1,15 @@
 #include <iostream>
-#include <VideoStream.h>
-#include <GLFW/glfw3.h>
+#include <opencv4/opencv2/opencv.hpp>
+
+
+#define GLEW_STATIC
 #include <GL/glew.h>
-#include <ShaderProgram.h>
-#include <opencv2/opencv.hpp>
+#include <GLFW/glfw3.h>
+
+
+#include "ShaderProgram.h"
+#include "VideoStream.h"
+
 
 
 VideoStream::VideoStream(int width, int height) : window_width(width), window_height(height) {
@@ -25,7 +31,7 @@ bool VideoStream::context_init() {
     if (window == nullptr) {
         std::cout << "Failed to create window" << std::endl;
         glfwTerminate();
-        return 1;
+        return true;
     }
 
     glfwMakeContextCurrent(window);
@@ -33,7 +39,7 @@ bool VideoStream::context_init() {
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
         std::cout << "Failed to init GLEW" << std::endl;
-        return 1;
+        return true;
     }
 
 
@@ -93,7 +99,7 @@ bool VideoStream::configure_VAO() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (0* sizeof(GLfloat)));
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(GLfloat)));
@@ -105,7 +111,7 @@ bool VideoStream::configure_VAO() {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glUniform1i(glGetUniformLocation(shader.program, "ourTexture1"), 0);
+    glUniform1i(glGetUniformLocation(shader.get_program(), "ourTexture1"), 0);
 
 
     glBindVertexArray(0);
@@ -121,19 +127,19 @@ bool VideoStream::configure_VAO() {
 } */
 
 
-void VideoStream::lock_frame_rate(double frame_rate) {
-    double allowed_frame_time = 1.0 / frame_rate;  // Продолжительность одного кадра
-
-    frame_end_time = glfwGetTime();
-    double frame_draw_time = frame_end_time - frame_start_time;
-
-    double sleep_time = 0.0;
-
-    if (frame_draw_time < allowed_frame_time) {
-        sleep_time = allowed_frame_time - frame_draw_time;
-        usleep(1000000 * sleep_time);
-    }
-}
+//void VideoStream::lock_frame_rate(double frame_rate) {
+//    double allowed_frame_time = 1.0 / frame_rate;  // Продолжительность одного кадра
+//
+//    frame_end_time = glfwGetTime();
+//    double frame_draw_time = frame_end_time - frame_start_time;
+//
+//    double sleep_time = 0.0;
+//
+//    if (frame_draw_time < allowed_frame_time) {
+//        sleep_time = allowed_frame_time - frame_draw_time;
+//        usleep(1000000 * sleep_time);
+//    }
+//}
 
 void VideoStream::draw_video_frame() {
 
@@ -142,12 +148,12 @@ void VideoStream::draw_video_frame() {
 
     glBindTexture(GL_TEXTURE_2D, texture);
     
-    //cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
+    cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
     cv::flip(frame, frame, 0);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, frame.cols, frame.rows, 0, GL_BGR, GL_UNSIGNED_BYTE, frame.ptr());
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     
     glBindVertexArray(0);
 }

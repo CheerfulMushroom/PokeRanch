@@ -7,12 +7,13 @@
 #include "ShaderProgram.h"
 #include "GameWindow.h"
 
-extern std::unique_ptr<GameObject> game_object;
+extern std::unique_ptr<Game> game_object;
 
-class GameObject {
+class Game {
 public:
-    GameObject(int width, int height, double rate);
-    ~GameObject();
+    Game(int width, int height, double rate);
+
+    ~Game();
 
     void start();
 
@@ -22,11 +23,17 @@ public:
 
     void change_state(std::unique_ptr<GameState> new_state) { state = std::move(new_state); }
 
+    GLFWwindow *get_window();
+
+    ShaderProgram get_shader_button();
+
+    GameState *get_state();
+
+private:
     GameWindow screen;
     ShaderProgram buttonShader;
     std::unique_ptr<GameState> state;
 
-private:
 
 };
 

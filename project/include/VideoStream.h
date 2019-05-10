@@ -3,30 +3,36 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <opencv4/opencv2/opencv.hpp>
+
+
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <ShaderProgram.h>
-#include <opencv2/opencv.hpp>
+
+
+#include "ShaderProgram.h"
+#include "VideoStream.h"
 
 
 
 
 class VideoStream {
  public:
-    VideoStream();
+    VideoStream(int width, int height);
 
     void draw_video_frame();
 
-    //bool context_init();
+    bool context_init();
 
     bool configure_VAO();
 
-    //void lock_frame_rate(double frame_rate);
+//    void lock_frame_rate(double frame_rate);
 
-    //GLFWwindow *window;
+    GLFWwindow *window;
 
-    //double frame_start_time;
-    //double frame_end_time;
+//    double frame_start_time;
+//    double frame_end_time;
 
     cv::Mat frame;
 
@@ -37,10 +43,10 @@ class VideoStream {
 
 
  private:
-    void mat_to_texture();
+//    void mat_to_texture();
 
-    //int window_width;
-    //int window_height;
+    int window_width;
+    int window_height;
     
 };
 

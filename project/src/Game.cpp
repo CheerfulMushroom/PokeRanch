@@ -1,18 +1,12 @@
-#include "GameObject.h"
-
-#include <GL/glew.h>
-
-#include <iostream>
-#include "ShaderProgram.h"
-#include "GameWindow.h"
+#include "Game.h"
 
 static void mouse_button_callback(GLFWwindow *window, int mouse_button, int action, int mods);
 
 
-GameObject::GameObject(int width, int height, double rate) {
+Game::Game(int width, int height, double rate) {
 
     screen = GameWindow(width, height);
-    glfwSetMouseButtonCallback(screen.window, mouse_button_callback);
+    glfwSetMouseButtonCallback(get_window(), mouse_button_callback);
 
 
     buttonShader = ShaderProgram("project/shaders/button_v_shader.txt", "project/shaders/button_f_shader.txt");
@@ -20,14 +14,30 @@ GameObject::GameObject(int width, int height, double rate) {
 }
 
 
-GameObject::~GameObject() {
+Game::~Game() {
     glfwTerminate();
 }
 
 
-void GameObject::start() {
+GLFWwindow* Game::get_window(){
+    return screen.get_window();
+}
+
+
+ShaderProgram Game::get_shader_button() {
+    return buttonShader;
+}
+
+
+GameState* Game::get_state() {
+    return state.get();
+}
+
+
+void Game::start() {
 // Game loop
-    while (!glfwWindowShouldClose(screen.window)) {
+    GLFWwindow *window = get_window();
+    while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         render_game();
     }
@@ -41,9 +51,9 @@ static void mouse_button_callback(GLFWwindow *window, int mouse_button, int acti
     }
     if (mouse_button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         cursor_state = GLFW_PRESS;
-        auto buttons = &game_object->state->buttons;
-        for (auto& button: *buttons) {
-            if (button->is_pointed()){
+        auto buttons = &game_object->get_state()->buttons;
+        for (auto &button: *buttons) {
+            if (button->is_pointed_at()) {
                 button->exec();
                 break;
             }

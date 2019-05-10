@@ -37,3 +37,7 @@ bool GameWindow::screen_init() {
     glViewport(0, 0, window_width, window_height);
     return true;
 }
+
+GLFWwindow* GameWindow::get_window() {
+    return window;
+}
