@@ -19,6 +19,7 @@
 class VideoStream: public Renderable {
  public:
     VideoStream(int cam_index);
+    ~VideoStream();
 
     void render();
 
@@ -39,6 +40,7 @@ class VideoStream: public Renderable {
  private:
     void mat_to_texture();
 
+    ShaderProgram shader;
     cv::VideoCapture cam;
     cv::Mat frame;
     GLuint texture;

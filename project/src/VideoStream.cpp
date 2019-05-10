@@ -33,7 +33,7 @@ bool VideoStream::configure_VAO() {
             1, 2, 3
     };
 
-    ShaderProgram shader("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
+    shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
 
     glBindVertexArray(VAO);
 
@@ -51,8 +51,6 @@ bool VideoStream::configure_VAO() {
     glEnableVertexAttribArray(1);
 
 
-    shader.use();
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(glGetUniformLocation(shader.get_program(), "ourTexture1"), 0);
@@ -63,10 +61,14 @@ bool VideoStream::configure_VAO() {
 
 }
 
+//TODO(me): add destructor
+VideoStream::~VideoStream() {}
+
 
 void VideoStream::render() {
     cam.read(frame);
     mat_to_texture();
+    shader.use();
 
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -74,6 +76,8 @@ void VideoStream::render() {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 
