@@ -9,20 +9,14 @@ class GameWindow {
  public:
     GameWindow() = default;
 
-    GameWindow(int width, int height, double rate);
+    GameWindow(int width, int height);
 
     bool screen_init();
 
-    void lock_frame_rate();
-    
 
     GLFWwindow *window;
 
-    double frame_start_time;
-    double frame_end_time;
-
  private:
-    double fps;
     int window_width;
     int window_height;
 };

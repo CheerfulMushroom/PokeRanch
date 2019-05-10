@@ -2,7 +2,7 @@
 #include <GameWindow.h>
 #include <unistd.h>
 
-GameWindow::GameWindow(int width, int height, double rate) : window_width(width), window_height(height), fps(rate) {
+GameWindow::GameWindow(int width, int height) : window_width(width), window_height(height){
     screen_init();
 }
 
@@ -31,23 +31,9 @@ bool GameWindow::screen_init() {
         return false;
     }
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glViewport(0, 0, window_width, window_height);
     return true;
 }
-
-
-void GameWindow::lock_frame_rate() {
-    double allowed_frame_time = 1.0 / fps;
-
-    frame_end_time = glfwGetTime();
-    double frame_draw_time = frame_end_time - frame_start_time;
-    
-    double sleep_time = 0.0;
-
-    if (frame_draw_time < allowed_frame_time) {
-        sleep_time = allowed_frame_time - frame_draw_time;
-        usleep(1000000 * sleep_time);
-    }
-}
-

@@ -11,7 +11,7 @@ static void mouse_button_callback(GLFWwindow *window, int mouse_button, int acti
 
 GameObject::GameObject(int width, int height, double rate) {
 
-    screen = GameWindow(width, height, rate);
+    screen = GameWindow(width, height);
     glfwSetMouseButtonCallback(screen.window, mouse_button_callback);
 
 
@@ -45,7 +45,6 @@ static void mouse_button_callback(GLFWwindow *window, int mouse_button, int acti
         for (auto& button: *buttons) {
             if (button->is_pointed()){
                 button->exec();
-                std::cout << "Button was pressed"<<std::endl;
                 break;
             }
         }
