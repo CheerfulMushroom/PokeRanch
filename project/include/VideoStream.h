@@ -18,7 +18,7 @@
 
 class VideoStream: public Renderable {
  public:
-    VideoStream();
+    VideoStream(int cam_index);
 
     void render();
 
@@ -33,17 +33,18 @@ class VideoStream: public Renderable {
     //double frame_start_time;
     //double frame_end_time;
 
-    cv::Mat frame;
 
-    GLuint texture;
-    GLuint VBO;
-    GLuint VAO;
-    GLuint EBO;
 
 
  private:
     void mat_to_texture();
 
+    cv::VideoCapture cam;
+    cv::Mat frame;
+    GLuint texture;
+    GLuint VBO;
+    GLuint VAO;
+    GLuint EBO;
     //int window_width;
     //int window_height;
 

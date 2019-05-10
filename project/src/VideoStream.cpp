@@ -9,9 +9,7 @@
 
 
 
-VideoStream::VideoStream() {
-    //context_init();
-
+VideoStream::VideoStream(int cam_index): cam(cv::VideoCapture(cam_index)) {
     glGenTextures(1, &texture);
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
@@ -67,7 +65,7 @@ bool VideoStream::configure_VAO() {
 
 
 void VideoStream::render() {
-
+    cam.read(frame);
     mat_to_texture();
 
     glBindTexture(GL_TEXTURE_2D, texture);

@@ -45,8 +45,8 @@ void PauseState::update_game() {}
 
 
 
-
-FarmState::FarmState(Game *game_object) : GameState(game_object), video_stream(VideoStream()) {
+//TODO(me): add cam_index
+FarmState::FarmState(Game *game_object) : GameState(game_object), video_stream(VideoStream(0)) {
     buttons.emplace_back(std::make_unique<Button>(this, 0.5f, 0.5f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
 }
 
