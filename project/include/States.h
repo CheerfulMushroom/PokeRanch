@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Button.h"
+#include "VideoStream.h"
 
 class Game;
 
@@ -17,7 +18,9 @@ public:
 
     Game* get_game();
 
-    std::vector<std::unique_ptr<BaseButton>> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
+
+
 protected:
     Game *game;
 };
@@ -44,6 +47,8 @@ public:
     explicit FarmState(Game *game_object);
     void render_game() override;
     void update_game() override;
+
+    VideoStream video_stream;
 };
 
 

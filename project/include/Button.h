@@ -5,23 +5,18 @@
 #include <GLFW/glfw3.h>
 #include <functional>
 
+#include "Interfaces.h"
+
 class GameState;
 
-class BaseButton {
-public:
-    virtual void render() = 0;
-    virtual bool is_pointed_at() = 0;
-    virtual void exec() = 0;
-};
 
-
-class Button : public BaseButton {
+class Button : public Renderable {
 public:
     Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec);
     ~Button();
     void render() override;
-    bool is_pointed_at() override;
-    void exec() override;
+    bool is_pointed_at();
+    void exec();
 
 private:
     GameState *state;
