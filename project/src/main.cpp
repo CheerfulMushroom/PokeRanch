@@ -24,11 +24,11 @@ int main(int argc, char *argv[]) {
 
     stream.configure_VAO();    
 
-    //aruco::CameraParameters camera;
-    //camera.readFromXMLFile(argv[1]);
+    aruco::CameraParameters camera;
+    camera.readFromXMLFile(argv[1]);
 
-    //aruco::MarkerDetector Detector;
-    //Detector.setDictionary("ARUCO_MIP_36h12");
+    aruco::MarkerDetector Detector;
+    Detector.setDictionary("ARUCO_MIP_36h12");
 
 
     cv::Mat aruco_frame;
@@ -42,11 +42,11 @@ int main(int argc, char *argv[]) {
         }
 
 
-        //auto markers = Detector.detect(aruco_frame, camera, marker_size);
+        auto markers = Detector.detect(aruco_frame, camera, marker_size);
 
-        //for (auto m:markers) {
-            //aruco::CvDrawingUtils::draw3dAxis(aruco_frame, m, camera);
-        //}
+        for (auto m:markers) {
+            aruco::CvDrawingUtils::draw3dAxis(aruco_frame, m, camera);
+        }
 
         stream.frame = aruco_frame;
 
