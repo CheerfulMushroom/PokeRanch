@@ -10,7 +10,7 @@ Game* GameState::get_game() {
 MenuState::MenuState(Game *game_object) : GameState(game_object) {}
 
 void MenuState::load_scene() {
-    game_elements.emplace_back(std::make_unique<Button>(this, 0.5f, 0.5f, 0.3f, 0.3f, bf_change_game_state<FarmState>));
+    game_elements.emplace_back(std::make_unique<Button>(this, 0.5f, 0.5f, 0.3f, 0.3f, bf_change_game_state<RanchState>));
 //    game_elements.emplace_back(std::make_unique<Button>(this, -0.5f, -0.5f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
 }
 
@@ -32,7 +32,7 @@ void MenuState::update_game() {}
 PauseState::PauseState(Game *game_object) : GameState(game_object) {}
 
 void PauseState::load_scene() {
-    game_elements.emplace_back(std::make_unique<Button>(this, 0.5f, -0.5f, 0.3f, 0.3f, bf_change_game_state<FarmState>));
+    game_elements.emplace_back(std::make_unique<Button>(this, 0.5f, -0.5f, 0.3f, 0.3f, bf_change_game_state<RanchState>));
 //    buttons.emplace_back(std::make_unique<Button>(this, -0.5f, 0.5f, 0.3f, 0.3f, bf_change_game_state<MenuState>));
 }
 
@@ -51,14 +51,14 @@ void PauseState::update_game() {}
 
 
 //TODO(me): add cam_index
-FarmState::FarmState(Game *game_object) : GameState(game_object), video_stream(VideoStream(0)) {
+RanchState::RanchState(Game *game_object) : GameState(game_object), video_stream(VideoStream(0)) {
 }
 
-void FarmState::load_scene() {
+void RanchState::load_scene() {
     game_elements.emplace_back(std::make_unique<Button>(this, 0.6f, 0.6f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
 }
 
-void FarmState::render_game() {
+void RanchState::render_game() {
     glClearColor(0.5f, 0.3f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -70,7 +70,7 @@ void FarmState::render_game() {
     glfwSwapBuffers(game->get_window());
 }
 
-void FarmState::update_game() {}
+void RanchState::update_game() {}
 
 
 

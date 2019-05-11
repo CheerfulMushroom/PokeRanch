@@ -12,7 +12,11 @@ class ShaderProgram {
  public:
     ShaderProgram(const GLchar* vertices_shader_path, const GLchar* fragment_shader_path);
     ShaderProgram()= default;
+
+    // Использовать шейдер. Нужно вызывать перед рендером
     void use();
+
+    // Геттеры
     GLuint get_program();
 
 private:

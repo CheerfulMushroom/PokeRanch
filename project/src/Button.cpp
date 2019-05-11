@@ -2,10 +2,10 @@
 
 #include "Button.h"
 #include "States.h"
-#include "Game.h"
 
 
-Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec): Renderable(), Interactable() {
+Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec)
+        : Renderable(), Interactable() {
     this->state = state;
     this->x = x;
     this->y = y;
@@ -59,12 +59,11 @@ bool Button::is_triggered() {
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
 
+    // Перевод из координат GLFW ([0;-1]) в координаты openGL ([-1;1])
     x_cursor = 2 * ((x_cursor) / width - .5);
     y_cursor = -2 * ((y_cursor) / height - .5);
-    if (x <= x_cursor && x_cursor <= x + x_size && y <= y_cursor && y_cursor <= y + y_size) {
-        return true;
-    }
-    return false;
+    return x <= x_cursor && x_cursor <= x + x_size && y <= y_cursor && y_cursor <= y + y_size;
+
 }
 
 void Button::exec() {

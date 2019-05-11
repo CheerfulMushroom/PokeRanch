@@ -6,8 +6,6 @@
 #include "ShaderProgram.h"
 
 ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_path) {
-
-
     //  Получение исходного кода шейдеров из файла
 
     std::ifstream v_shader_file(v_shader_path);
@@ -28,7 +26,6 @@ ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_pat
 
     //  Компиляция и сборка шейдеров
 
-
     GLuint vertices_shader = 0;
     GLuint fragment_shader = 0;
 
@@ -40,7 +37,9 @@ ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_pat
     glShaderSource(fragment_shader, 1, &f_shader_source, nullptr);
     glCompileShader(fragment_shader);
 
+
     // Проверка шейдеров и вывод лога в случае ошибки
+
     GLint success;
     GLchar infoLog[512];
 

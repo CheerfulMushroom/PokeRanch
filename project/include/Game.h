@@ -10,31 +10,28 @@
 
 
 class Game;
+
 class GameState;
 
 
-extern Game* game_object;
+extern Game *game_object;
 
 class Game {
 public:
     Game(int width, int height, double rate);
-    Game() = default;
     ~Game();
-    Game&operator=(const Game&){ return *this;};
+    Game &operator=(const Game &) { return *this; };
 
-
+    // Запускает игровой цикл
     void start();
-
     void render_game();
-
     void update_game();
-
+    // Меняет состояние игры
     void change_state(std::unique_ptr<GameState> new_state);
 
+    // Геттеры
     GLFWwindow *get_window();
-
     ShaderProgram get_shader_button();
-
     GameState *get_state();
 
 private:

@@ -15,7 +15,7 @@ public:
     ~Button();
     void render() override;
     bool is_triggered() override;
-    void exec();
+    void exec() override;
 
 private:
     GameState *state;

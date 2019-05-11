@@ -10,7 +10,8 @@ class GameWindow {
  public:
     GameWindow() = default;
     GameWindow(int width, int height);
-    bool screen_init();
+
+    // Геттеры
     GLFWwindow* get_window();
 
  private:
