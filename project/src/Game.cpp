@@ -1,9 +1,13 @@
 #include "Game.h"
+#include "States.h"
+
+
 
 static void mouse_button_callback(GLFWwindow *window, int mouse_button, int action, int mods);
 
 
 Game::Game(int width, int height, double rate) {
+    game_object = this;
 
     screen = GameWindow(width, height);
     glfwSetMouseButtonCallback(get_window(), mouse_button_callback);
@@ -18,21 +22,11 @@ Game::~Game() {
     glfwTerminate();
 }
 
+void Game::render_game() { state->render_game(); }
 
-GLFWwindow* Game::get_window(){
-    return screen.get_window();
-}
+void Game::update_game() { state->update_game(); }
 
-
-ShaderProgram Game::get_shader_button() {
-    return buttonShader;
-}
-
-
-GameState* Game::get_state() {
-    return state.get();
-}
-
+void Game::change_state(std::unique_ptr<GameState> new_state) { state = std::move(new_state); }
 
 void Game::start() {
 // Game loop
@@ -43,6 +37,20 @@ void Game::start() {
     }
 }
 
+GLFWwindow *Game::get_window() {
+    return screen.get_window();
+}
+
+
+ShaderProgram Game::get_shader_button() {
+    return buttonShader;
+}
+
+
+GameState *Game::get_state() {
+    return state.get();
+}
+
 
 static void mouse_button_callback(GLFWwindow *window, int mouse_button, int action, int mods) {
     static int cursor_state = GLFW_RELEASE;
@@ -51,10 +59,10 @@ static void mouse_button_callback(GLFWwindow *window, int mouse_button, int acti
     }
     if (mouse_button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         cursor_state = GLFW_PRESS;
-        auto buttons = &game_object->get_state()->buttons;
-        for (auto &button: *buttons) {
-            if (button->is_pointed_at()) {
-                button->exec();
+        auto execs = &game_object->get_state()->to_exec;
+        for (auto &exec_obj: *execs) {
+            if (exec_obj->triggered()) {
+                exec_obj->exec();
                 break;
             }
         }

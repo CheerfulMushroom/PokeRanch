@@ -1,9 +1,9 @@
 #include <functional>
 
 #include "Button.h"
+#include "States.h"
 #include "Game.h"
 
-#define GLEW_STATIC
 
 Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec) {
     this->state = state;

@@ -18,7 +18,8 @@ add_executable(main.out
         ${PROJECT_SOURCE_DIR}/States.cpp
         ${PROJECT_SOURCE_DIR}/Button.cpp
         ${PROJECT_SOURCE_DIR}/ButtonFunctions.cpp
-        ${PROJECT_SOURCE_DIR}/VideoStream.cpp project/include/Interfaces.h)
+        ${PROJECT_SOURCE_DIR}/VideoStream.cpp
+        ${PROJECT_SOURCE_DIR}/Interfaces.cpp)
 
 target_link_libraries(main.out
         GLEW

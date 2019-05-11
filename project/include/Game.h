@@ -1,27 +1,35 @@
 #ifndef PREP_POKEMON_RANCH_GAMEOBJECT_H
 #define PREP_POKEMON_RANCH_GAMEOBJECT_H
 
-#include "States.h"
-
+#include <memory>
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 #include "ShaderProgram.h"
 #include "GameWindow.h"
 
-extern std::unique_ptr<Game> game_object;
+
+class Game;
+class GameState;
+
+
+extern Game* game_object;
 
 class Game {
 public:
     Game(int width, int height, double rate);
-
+    Game() = default;
     ~Game();
+    Game&operator=(const Game&){ return *this;};
+
 
     void start();
 
-    void render_game() { state->render_game(); }
+    void render_game();
 
-    void update_game() { state->update_game(); }
+    void update_game();
 
-    void change_state(std::unique_ptr<GameState> new_state) { state = std::move(new_state); }
+    void change_state(std::unique_ptr<GameState> new_state);
 
     GLFWwindow *get_window();
 

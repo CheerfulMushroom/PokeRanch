@@ -6,22 +6,18 @@
 #include <opencv2/opencv.hpp>
 
 
-#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-
 #include "ShaderProgram.h"
-#include "VideoStream.h"
 #include "Interfaces.h"
-
 
 class VideoStream: public Renderable {
  public:
-    VideoStream(int cam_index);
+    explicit VideoStream(int cam_index);
     ~VideoStream();
 
-    void render();
+    void render() override;
 
     //bool context_init();
 

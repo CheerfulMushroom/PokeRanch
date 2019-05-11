@@ -4,10 +4,13 @@
 #include <bits/unique_ptr.h>
 #include <vector>
 
-#include "Button.h"
 #include "VideoStream.h"
 
 class Game;
+class GameElement;
+class Renderable;
+class Interactable;
+class Updatable;
 
 class GameState {
 public:
@@ -18,7 +21,10 @@ public:
 
     Game* get_game();
 
-    std::vector<std::unique_ptr<Button>> buttons;
+    std::vector<std::unique_ptr<GameElement>> game_elements;
+    std::vector<Renderable*> to_render;
+    std::vector<Interactable*> to_exec;
+    std::vector<Updatable*> to_update;
 
 
 protected:

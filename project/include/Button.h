@@ -9,7 +9,6 @@
 
 class GameState;
 
-
 class Button : public Renderable {
 public:
     Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec);

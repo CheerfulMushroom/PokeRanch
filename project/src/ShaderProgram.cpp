@@ -3,6 +3,8 @@
 
 #include <GL/glew.h>
 
+#include "ShaderProgram.h"
+
 ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_path) {
 
 

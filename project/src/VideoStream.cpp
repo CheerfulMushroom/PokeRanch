@@ -4,12 +4,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "ShaderProgram.h"
 #include "VideoStream.h"
 
-
-
-VideoStream::VideoStream(int cam_index): cam(cv::VideoCapture(cam_index)) {
+VideoStream::VideoStream(int cam_index): Renderable(){
+    cam = cv::VideoCapture(cam_index);
     glGenTextures(1, &texture);
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);

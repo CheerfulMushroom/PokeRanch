@@ -1,6 +1,8 @@
 #include <iostream>
-#include <GameWindow.h>
 #include <unistd.h>
+
+#include "GameWindow.h"
+
 
 GameWindow::GameWindow(int width, int height) : window_width(width), window_height(height){
     screen_init();
