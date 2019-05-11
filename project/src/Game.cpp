@@ -14,7 +14,7 @@ Game::Game(int width, int height, double rate) {
 
 
     buttonShader = ShaderProgram("project/shaders/button_v_shader.txt", "project/shaders/button_f_shader.txt");
-    state = std::make_unique<MenuState>(this);
+    change_state(std::make_unique<MenuState>(this));
 }
 
 
@@ -26,7 +26,9 @@ void Game::render_game() { state->render_game(); }
 
 void Game::update_game() { state->update_game(); }
 
-void Game::change_state(std::unique_ptr<GameState> new_state) { state = std::move(new_state); }
+void Game::change_state(std::unique_ptr<GameState> new_state) {
+    state = std::move(new_state);
+    state->load_scene();}
 
 void Game::start() {
 // Game loop
@@ -60,8 +62,9 @@ static void mouse_button_callback(GLFWwindow *window, int mouse_button, int acti
     if (mouse_button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         cursor_state = GLFW_PRESS;
         auto execs = &game_object->get_state()->to_exec;
+        std::cout<<execs->size()<<std::endl;
         for (auto &exec_obj: *execs) {
-            if (exec_obj->triggered()) {
+            if (exec_obj->is_triggered()) {
                 exec_obj->exec();
                 break;
             }

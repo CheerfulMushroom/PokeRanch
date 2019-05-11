@@ -15,7 +15,7 @@ public:
 class Interactable : virtual public GameElement {
 public:
     Interactable();
-    virtual bool triggered() = 0;
+    virtual bool is_triggered() = 0;
     virtual void exec() = 0;
 };
 

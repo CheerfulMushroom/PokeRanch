@@ -16,6 +16,7 @@ class GameState {
 public:
     explicit GameState(Game *game_object) : game(game_object) {};
     virtual ~GameState() = default;
+    virtual void load_scene() = 0;
     virtual void render_game() = 0;
     virtual void update_game() = 0;
 
@@ -35,6 +36,7 @@ protected:
 class MenuState : public GameState {
 public:
     explicit MenuState(Game *game_object);
+    void load_scene() override;
     void render_game() override;
     void update_game() override;
 };
@@ -43,6 +45,7 @@ public:
 class PauseState : public GameState {
 public:
     explicit PauseState(Game *game_object);
+    void load_scene() override;
     void render_game() override;
     void update_game() override;
 };
@@ -51,6 +54,7 @@ public:
 class FarmState : public GameState {
 public:
     explicit FarmState(Game *game_object);
+    void load_scene() override;
     void render_game() override;
     void update_game() override;
 
@@ -61,6 +65,7 @@ public:
 class PokedexState : public GameState {
 public:
     explicit PokedexState(Game *game_object);
+    void load_scene() override;
     void render_game() override;
     void update_game() override;
 };

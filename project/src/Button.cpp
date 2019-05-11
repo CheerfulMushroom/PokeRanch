@@ -5,7 +5,7 @@
 #include "Game.h"
 
 
-Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec) {
+Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec): Renderable(), Interactable() {
     this->state = state;
     this->x = x;
     this->y = y;
@@ -50,7 +50,7 @@ void Button::render() {
     glBindVertexArray(0);
 }
 
-bool Button::is_pointed_at() {
+bool Button::is_triggered() {
     GLFWwindow *window = state->get_game()->get_window();
 
     double x_cursor, y_cursor;

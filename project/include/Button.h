@@ -9,12 +9,12 @@
 
 class GameState;
 
-class Button : public Renderable {
+class Button : public Renderable, public Interactable {
 public:
     Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec);
     ~Button();
     void render() override;
-    bool is_pointed_at();
+    bool is_triggered() override;
     void exec();
 
 private:
