@@ -13,7 +13,6 @@ Game::Game(int width, int height, double rate) {
     // Назначаем функцию, которая будет заниматься обработкой пользовательского ввода мышкой
     glfwSetMouseButtonCallback(get_window(), mouse_button_callback);
 
-
     change_state(std::make_unique<MenuState>(this));
 }
 

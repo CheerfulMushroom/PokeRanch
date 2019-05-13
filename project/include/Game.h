@@ -20,7 +20,6 @@ class Game {
 public:
     Game(int width, int height, double rate);
     ~Game();
-    Game &operator=(const Game &) { return *this; };
 
     // Запускает игровой цикл
     void start();
