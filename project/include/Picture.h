@@ -4,10 +4,21 @@
 #include "Interfaces.h"
 
 class Picture: public Renderable {
+public:
     Picture(GLfloat x, GLfloat y,
             GLfloat x_size, GLfloat y_size,
             std::string path_to_file);
+    ~Picture();
+
     void render() override;
+
+private:
+    ShaderProgram shader;
+    GLuint VAO;
+    GLuint VBO;
+    GLuint EBO;
+    GLuint texture;
+
 };
 
 

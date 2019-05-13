@@ -1,3 +1,4 @@
+#include <opencv2/opencv.hpp>
 #include <functional>
 
 #include "Button.h"
@@ -11,12 +12,9 @@ Button::Button(GameState *state,
                std::string path_to_icon)
         : Renderable(), Interactable() {
     this->state = state;
-    this->x = x;
-    this->y = y;
-    this->x_size = x_size;
-    this->y_size = y_size;
     this->to_exec = std::move(to_exec);
-    shader = ShaderProgram("project/shaders/button_v_shader.txt", "project/shaders/button_f_shader.txt");
+    shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
+
 
     GLfloat vertices[] = {
             x + x_size, y + y_size, 0.0f, 1.0f, 1.0f,
@@ -67,6 +65,7 @@ Button::Button(GameState *state,
 Button::~Button() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 }
 
 void Button::render() {

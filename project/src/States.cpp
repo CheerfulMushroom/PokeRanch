@@ -1,4 +1,5 @@
 #include "States.h"
+#include "Picture.h"
 #include "Button.h"
 #include "ButtonFunctions.h"
 #include "Interfaces.h"
@@ -10,6 +11,7 @@ Game* GameState::get_game() {
 MenuState::MenuState(Game *game_object) : GameState(game_object) {}
 
 void MenuState::load_scene() {
+    game_elements.emplace_back(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/main_screen.jpg"));
     game_elements.emplace_back(std::make_unique<Button>(this, 0.5f, 0.5f, 0.3f, 0.3f, bf_change_game_state<RanchState>));
 //    game_elements.emplace_back(std::make_unique<Button>(this, -0.5f, -0.5f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
 }

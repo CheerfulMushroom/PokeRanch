@@ -1,7 +1,6 @@
 #ifndef PREP_POKEMON_RANCH_BUTTON_H
 #define PREP_POKEMON_RANCH_BUTTON_H
 
-#include <opencv2/opencv.hpp>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -12,7 +11,6 @@
 
 class GameState;
 
-//TODO(me): add destructor
 class Button : public Renderable, public Interactable {
 public:
     Button(GameState *state,
@@ -21,6 +19,7 @@ public:
                    std::function<void()> to_exec,
                    std::string path_to_icon = "project/icons/default.png");
     ~Button();
+
     void render() override;
     bool is_triggered() override;
     void exec() override;
@@ -34,7 +33,10 @@ private:
     std::function<void()> to_exec;
 
     ShaderProgram shader;
-    GLuint VAO, VBO, EBO, texture;
+    GLuint VAO;
+    GLuint VBO;
+    GLuint EBO;
+    GLuint texture;
 
 };
 

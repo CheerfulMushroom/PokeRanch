@@ -37,10 +37,10 @@ class VideoStream: public Renderable {
     ShaderProgram shader;
     cv::VideoCapture cam;
     cv::Mat frame;
-    GLuint texture;
-    GLuint VBO;
     GLuint VAO;
+    GLuint VBO;
     GLuint EBO;
+    GLuint texture;
     //int window_width;
     //int window_height;
 
