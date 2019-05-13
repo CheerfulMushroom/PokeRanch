@@ -1,28 +1,39 @@
 #include <iostream>
+#include <opencv2/opencv.hpp>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <ShaderProgram.h>
-#include <opencv2/opencv.hpp>
-#include <container.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
-bool configure_VAO(GLuint texture_pepe, GLuint texture_box, GLuint VBO, GLuint VAO, GLuint EBO) {
+#include "ShaderProgram.h"
+#include "VideoStream.h"
+
+
+
+VideoStream::VideoStream(int cam_index): cam(cv::VideoCapture(cam_index)) {
+    glGenTextures(1, &texture);
+    glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &EBO);
+    configure_VAO();
+
+}
+
+
+bool VideoStream::configure_VAO() {
 
     GLfloat vertices[] = {
-         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+            1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f
     };
 
     GLuint indices[] = {
-        0, 1, 3,
-        1, 2, 3
+            0, 1, 3,
+            1, 2, 3
     };
 
-    ShaderProgram shader("v_container_shader.txt", "f_container_shader.txt");
+    shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
 
     glBindVertexArray(VAO);
 
@@ -40,24 +51,9 @@ bool configure_VAO(GLuint texture_pepe, GLuint texture_box, GLuint VBO, GLuint V
     glEnableVertexAttribArray(1);
 
 
-    shader.use();
-
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture_box);
-    glUniform1i(glGetUniformLocation(shader.program, "texture_box"), 0);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture_pepe);
-    glUniform1i(glGetUniformLocation(shader.program, "texture_pepe"), 1);
-
-    glm::mat4 transformation = glm::mat4(1.0f);
-    transformation = glm::rotate(transformation, glm::radians(-90.0f), glm::vec3(0.0, 0.0, 1.0));
-    transformation = glm::scale(transformation, glm::vec3(0.5, 0.5, 0.5));
-
-    GLuint transformLoc = glGetUniformLocation(shader.program, "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transformation));
-
-    
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(glGetUniformLocation(shader.get_program(), "ourTexture1"), 0);
 
 
     glBindVertexArray(0);
@@ -65,22 +61,32 @@ bool configure_VAO(GLuint texture_pepe, GLuint texture_box, GLuint VBO, GLuint V
 
 }
 
+//TODO(me): add destructor
+VideoStream::~VideoStream() {}
 
-void draw_video_frame(GLuint VAO) {
-    
+
+void VideoStream::render() {
+    cam.read(frame);
+    mat_to_texture();
+    shader.use();
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    
+
     glBindVertexArray(0);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 
-void mat_to_texture(cv::Mat &frame, GLuint texture) {
+void VideoStream::mat_to_texture() {
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
