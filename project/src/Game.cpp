@@ -13,7 +13,6 @@ Game::Game(int width, int height, double rate) {
     // Назначаем функцию, которая будет заниматься обработкой пользовательского ввода мышкой
     glfwSetMouseButtonCallback(get_window(), mouse_button_callback);
 
-    buttonShader = ShaderProgram("project/shaders/button_v_shader.txt", "project/shaders/button_f_shader.txt");
 
     change_state(std::make_unique<MenuState>(this));
 }
@@ -54,10 +53,6 @@ GLFWwindow *Game::get_window() {
     return screen.get_window();
 }
 
-
-ShaderProgram Game::get_shader_button() {
-    return buttonShader;
-}
 
 
 GameState *Game::get_state() {

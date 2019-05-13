@@ -31,15 +31,11 @@ public:
 
     // Геттеры
     GLFWwindow *get_window();
-    ShaderProgram get_shader_button();
     GameState *get_state();
 
 private:
     GameWindow screen;
-    ShaderProgram buttonShader;
     std::unique_ptr<GameState> state;
-
-
 };
 
 #endif //PREP_POKEMON_RANCH_GAMEOBJECT_H

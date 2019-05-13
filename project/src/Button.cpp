@@ -12,6 +12,8 @@ Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y
     this->x_size = x_size;
     this->y_size = y_size;
     this->to_exec = std::move(to_exec);
+
+    shader = ShaderProgram("project/shaders/button_v_shader.txt", "project/shaders/button_f_shader.txt");
     GLfloat vertices[] = {x, y,
                           x, y + y_size,
                           x + x_size, y + y_size,
@@ -44,7 +46,7 @@ Button::~Button() {
 }
 
 void Button::render() {
-    state->get_game()->get_shader_button().use();
+    shader.use();
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);

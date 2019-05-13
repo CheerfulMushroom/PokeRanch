@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "Interfaces.h"
+#include "ShaderProgram.h"
 
 class GameState;
 
@@ -18,6 +19,8 @@ public:
     void exec() override;
 
 private:
+    ShaderProgram shader;
+
     GameState *state;
     GLfloat x;
     GLfloat y;
