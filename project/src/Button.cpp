@@ -4,7 +4,11 @@
 #include "States.h"
 
 
-Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y_size, std::function<void()> to_exec)
+Button::Button(GameState *state,
+               GLfloat x, GLfloat y,
+               GLfloat x_size, GLfloat y_size,
+               std::function<void()> to_exec,
+               std::string path_to_icon)
         : Renderable(), Interactable() {
     this->state = state;
     this->x = x;
@@ -12,44 +16,70 @@ Button::Button(GameState *state, GLfloat x, GLfloat y, GLfloat x_size, GLfloat y
     this->x_size = x_size;
     this->y_size = y_size;
     this->to_exec = std::move(to_exec);
+    icon = cv::imread(path_to_icon, -1);
 
     shader = ShaderProgram("project/shaders/button_v_shader.txt", "project/shaders/button_f_shader.txt");
-    GLfloat vertices[] = {x, y,
-                          x, y + y_size,
-                          x + x_size, y + y_size,
-                          x + x_size, y + y_size,
-                          x + x_size, y,
-                          x, y};
+
+    GLfloat vertices[] = {
+            x + x_size, y + y_size, 0.0f, 1.0f, 1.0f,
+            x + x_size, y,          0.0f, 1.0f, 0.0f,
+            x,          y,          0.0f, 0.0f, 0.0f,
+            x,          y + y_size, 0.0f, 0.0f, 1.0f
+    };
+
+    GLuint indices[] = {
+            0, 1, 3,
+            1, 2, 3
+    };
 
 
-    // Set up vertex data (and buffer(s)) and attribute pointers
-    glGenVertexArrays(1, &VAO);
+    glGenTextures(1, &texture);
     glGenBuffers(1, &VBO);
-    // Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &EBO);
+
     glBindVertexArray(VAO);
+
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid *) (0 * sizeof(GLfloat)));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) (0 * sizeof(GLfloat)));
     glEnableVertexAttribArray(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(glGetUniformLocation(shader.get_program(), "ourTexture1"), 0);
+
+
+    glBindVertexArray(0);
+
+    mat_to_texture();
 
 }
 
 Button::~Button() {
-    // Properly de-allocate all resources once they've outlived their purpose
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
 
 void Button::render() {
     shader.use();
+    glBindTexture(GL_TEXTURE_2D, texture);
+
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
     glBindVertexArray(0);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 bool Button::is_triggered() {
@@ -70,4 +100,22 @@ bool Button::is_triggered() {
 
 void Button::exec() {
     to_exec();
+}
+
+void Button::mat_to_texture() {
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+    cv::flip(icon, icon, 0);
+
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, icon.cols, icon.rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, icon.ptr());
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
