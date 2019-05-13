@@ -1,11 +1,16 @@
 #include <Model.h>
 #include <string>
+#include <glm/glm.hpp>
+
+
+#include "Camera.h"
 
 unsigned int texture_from_file(const char *path, const std::string &directory);
 
-Model::Model(std::string const &path) {
+Model::Model(std::string const &path, Camera* camera) {
     load_model(path);
     shader = ShaderProgram("project/shaders/v_model_shader.txt", "project/shaders/f_model_shader.txt");
+    this->camera = camera;
 }
 
 void Model::load_model(std::string const &path) {
@@ -135,6 +140,22 @@ std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureTyp
 
 
 void Model::render() {
+
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f);
+
+    glm::mat4 view = camera->GetViewMatrix();
+
+    shader.set_mat4_uniform("projection", projection);
+    shader.set_mat4_uniform("view", view);
+
+    glm::mat4 pikachu_mod = glm::mat4(1.0f);
+    pikachu_mod = glm::translate(pikachu_mod, glm::vec3(0.5f, -0.4f, 0.0f));
+    pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.05, 0.05, 0.05));
+    pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+    shader.set_mat4_uniform("model", pikachu_mod);
+
+
     for (auto mesh: meshes) {
         mesh.draw_mesh(shader);
     }

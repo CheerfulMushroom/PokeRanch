@@ -6,9 +6,11 @@
 
 #include "Interfaces.h"
 
+class Camera;
+
 class Model :public Renderable{
  public:
-    explicit Model(std::string const &path);
+    Model(std::string const &path, Camera* camera);
 
     void render() override;
 
@@ -17,6 +19,7 @@ class Model :public Renderable{
     std::vector<Texture> textures_loaded;
     std::string directory;
     ShaderProgram shader;
+    Camera* camera;
 
     void load_model(std::string const &path);
 

@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "VideoStream.h"
+#include "Camera.h"
 
 class Game;
 class GameElement;
@@ -74,6 +75,7 @@ public:
     void update_game() override;
 
     VideoStream video_stream;
+    Camera camera;
 };
 
 

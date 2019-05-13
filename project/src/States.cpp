@@ -1,11 +1,12 @@
+#include <glm/glm.hpp>
+
 #include "States.h"
 #include "Picture.h"
 #include "Button.h"
 #include "ButtonFunctions.h"
-#include "Interfaces.h"
 #include "Model.h"
 
-Game* GameState::get_game() {
+Game *GameState::get_game() {
     return game;
 }
 
@@ -30,12 +31,11 @@ void MenuState::render_game() {
 void MenuState::update_game() {}
 
 
-
-
 PauseState::PauseState(Game *game_object) : GameState(game_object) {}
 
 void PauseState::load_scene() {
-    game_elements.emplace_back(std::make_unique<Button>(this, 0.5f, -0.5f, 0.3f, 0.3f, bf_change_game_state<RanchState>));
+    game_elements.emplace_back(
+            std::make_unique<Button>(this, 0.5f, -0.5f, 0.3f, 0.3f, bf_change_game_state<RanchState>));
 //    buttons.emplace_back(std::make_unique<Button>(this, -0.5f, 0.5f, 0.3f, 0.3f, bf_change_game_state<MenuState>));
 }
 
@@ -52,14 +52,14 @@ void PauseState::render_game() {
 void PauseState::update_game() {}
 
 
-
 //TODO(me): add cam_index
-RanchState::RanchState(Game *game_object) : GameState(game_object), video_stream(VideoStream(0)) {
-}
+RanchState::RanchState(Game *game_object) : GameState(game_object),
+                                            video_stream(VideoStream(0)),
+                                            camera(glm::vec3(0.0f, 0.0f, 5.0f)) {}
 
 void RanchState::load_scene() {
     game_elements.emplace_back(std::make_unique<Button>(this, 0.6f, 0.6f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
-    game_elements.emplace_back(std::make_unique<Model>("project/models/pikachu.dae"));
+    game_elements.emplace_back(std::make_unique<Model>("project/models/pikachu.dae", &camera));
 
 }
 
@@ -78,10 +78,9 @@ void RanchState::render_game() {
 void RanchState::update_game() {}
 
 
-
-
 PokedexState::PokedexState(Game *game_object) : GameState(game_object) {
 }
+
 void PokedexState::load_scene() {
     game_elements.emplace_back(std::make_unique<Button>(this, 0.5f, 0.5f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
     game_elements.emplace_back(std::make_unique<Button>(this, -0.5f, -0.5f, 0.3f, 0.3f, bf_change_game_state<MenuState>));
