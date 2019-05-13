@@ -12,6 +12,10 @@ Button::Button(GameState *state,
                std::string path_to_icon)
         : Renderable(), Interactable() {
     this->state = state;
+    this->x = x;
+    this->y = y;
+    this->x_size = x_size;
+    this->y_size = y_size;
     this->to_exec = std::move(to_exec);
     shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
 

@@ -21,7 +21,9 @@ add_executable(main.out
         ${PROJECT_SOURCE_DIR}/VideoStream.cpp
         ${PROJECT_SOURCE_DIR}/Interfaces.cpp
         ${PROJECT_SOURCE_DIR}/Picture.cpp
-        ${PROJECT_SOURCE_DIR}/Utils.cpp)
+        ${PROJECT_SOURCE_DIR}/Utils.cpp
+        ${PROJECT_SOURCE_DIR}/Model.cpp
+        ${PROJECT_SOURCE_DIR}/Mesh.cpp)
 
 target_link_libraries(main.out
         GLEW
@@ -36,4 +38,5 @@ target_link_libraries(main.out
         opencv_highgui
         opencv_imgcodecs
         opencv_videoio
-        aruco)
+        aruco
+        assimp)

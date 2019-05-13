@@ -3,6 +3,7 @@
 #include "Button.h"
 #include "ButtonFunctions.h"
 #include "Interfaces.h"
+#include "Model.h"
 
 Game* GameState::get_game() {
     return game;
@@ -11,7 +12,7 @@ Game* GameState::get_game() {
 MenuState::MenuState(Game *game_object) : GameState(game_object) {}
 
 void MenuState::load_scene() {
-    game_elements.emplace_back(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/main_screen.jpg"));
+    game_elements.emplace_back(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/main_screen.png"));
     game_elements.emplace_back(std::make_unique<Button>(this, 0.5f, 0.5f, 0.3f, 0.3f, bf_change_game_state<RanchState>));
 //    game_elements.emplace_back(std::make_unique<Button>(this, -0.5f, -0.5f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
 }
@@ -58,11 +59,13 @@ RanchState::RanchState(Game *game_object) : GameState(game_object), video_stream
 
 void RanchState::load_scene() {
     game_elements.emplace_back(std::make_unique<Button>(this, 0.6f, 0.6f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
+    game_elements.emplace_back(std::make_unique<Model>("project/models/pikachu.dae"));
+
 }
 
 void RanchState::render_game() {
     glClearColor(0.5f, 0.3f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     video_stream.render();
 

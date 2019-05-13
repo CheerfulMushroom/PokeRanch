@@ -1,10 +1,6 @@
 #include <ShaderProgram.h>
 #include <cstring>
 
-#include <GL/glew.h>
-
-#include "ShaderProgram.h"
-
 ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_path) {
     //  Получение исходного кода шейдеров из файла
 
@@ -25,35 +21,19 @@ ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_pat
 
 
     //  Компиляция и сборка шейдеров
-
+    
     GLuint vertices_shader = 0;
     GLuint fragment_shader = 0;
 
     vertices_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertices_shader, 1, &v_shader_source, nullptr);
+    glShaderSource(vertices_shader, 1, &v_shader_source, NULL);
     glCompileShader(vertices_shader);
 
+
     fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &f_shader_source, nullptr);
-    glCompileShader(fragment_shader);
+    glShaderSource(fragment_shader, 1, &f_shader_source, NULL);
+    glCompileShader(vertices_shader);
 
-
-    // Проверка шейдеров и вывод лога в случае ошибки
-
-    GLint success;
-    GLchar infoLog[512];
-
-    glGetShaderiv(vertices_shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(vertices_shader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragment_shader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
 
     program = glCreateProgram();
     glAttachShader(program, vertices_shader);
@@ -62,7 +42,7 @@ ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_pat
 
     glDeleteShader(vertices_shader);
     glDeleteShader(fragment_shader);
-};
+}
 
 void ShaderProgram::use() {
     glUseProgram(program);
@@ -70,4 +50,42 @@ void ShaderProgram::use() {
 
 GLuint ShaderProgram::get_program() {
     return program;
+}
+
+void ShaderProgram::set_bool_uniform(const std::string &name, bool value) const {
+    glUniform1i(glGetUniformLocation(program, name.c_str()), (int) value);
+}
+
+void ShaderProgram::set_int_uniform(const std::string &name, int value) const {
+    glUniform1i(glGetUniformLocation(program, name.c_str()), value);
+
+}
+
+void ShaderProgram::set_float_uniform(const std::string &name, float value) const {
+    glUniform1f(glGetUniformLocation(program, name.c_str()), value);
+
+}
+
+void ShaderProgram::set_vec2_uniform(const std::string &name, const glm::vec2 &value) const {
+    glUniform2fv(glGetUniformLocation(program, name.c_str()), 1,  &value[0]);
+}
+
+void ShaderProgram::set_vec3_uniform(const std::string &name, const glm::vec3 &value) const {
+    glUniform3fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
+}
+
+void ShaderProgram::set_vec4_uniform(const std::string &name, const glm::vec4 &value) const {
+    glUniform4fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
+}
+
+void ShaderProgram::set_mat2_uniform(const std::string &name, const glm::mat2 &value) const {
+    glUniformMatrix2fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &value[0][0]);
+}
+
+void ShaderProgram::set_mat3_uniform(const std::string &name, const glm::mat3 &value) const {
+    glUniformMatrix3fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &value[0][0]);
+}
+
+void ShaderProgram::set_mat4_uniform(const std::string &name, const glm::mat4 &value) const {
+    glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &value[0][0]);
 }
