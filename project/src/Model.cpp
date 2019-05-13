@@ -141,6 +141,7 @@ std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureTyp
 
 void Model::render() {
 
+    shader.use();
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f);
 
     glm::mat4 view = camera->GetViewMatrix();
