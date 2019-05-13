@@ -34,8 +34,6 @@ class VideoStream: public Renderable {
 
 
  private:
-    void mat_to_texture();
-
     ShaderProgram shader;
     cv::VideoCapture cam;
     cv::Mat frame;

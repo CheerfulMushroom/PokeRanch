@@ -2,7 +2,7 @@
 
 #include "Button.h"
 #include "States.h"
-
+#include "Utils.h"
 
 Button::Button(GameState *state,
                GLfloat x, GLfloat y,
@@ -16,8 +16,6 @@ Button::Button(GameState *state,
     this->x_size = x_size;
     this->y_size = y_size;
     this->to_exec = std::move(to_exec);
-    icon = cv::imread(path_to_icon, -1);
-
     shader = ShaderProgram("project/shaders/button_v_shader.txt", "project/shaders/button_f_shader.txt");
 
     GLfloat vertices[] = {
@@ -61,7 +59,8 @@ Button::Button(GameState *state,
 
     glBindVertexArray(0);
 
-    mat_to_texture();
+    auto icon = cv::imread(path_to_icon, -1);
+    mat_to_texture(texture, icon, true);
 
 }
 
@@ -100,22 +99,4 @@ bool Button::is_triggered() {
 
 void Button::exec() {
     to_exec();
-}
-
-void Button::mat_to_texture() {
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-    cv::flip(icon, icon, 0);
-
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, icon.cols, icon.rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, icon.ptr());
-
-    glBindTexture(GL_TEXTURE_2D, 0);
 }

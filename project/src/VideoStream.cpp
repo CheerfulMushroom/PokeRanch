@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "VideoStream.h"
+#include "Utils.h"
 
 VideoStream::VideoStream(int cam_index): Renderable(){
     cam = cv::VideoCapture(cam_index);
@@ -68,7 +69,7 @@ VideoStream::~VideoStream() {
 
 void VideoStream::render() {
     cam.read(frame);
-    mat_to_texture();
+    mat_to_texture(texture, frame, false);
     shader.use();
 
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -77,23 +78,6 @@ void VideoStream::render() {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
     glBindVertexArray(0);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-
-void VideoStream::mat_to_texture() {
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    cv::flip(frame, frame, 0);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, frame.cols, frame.rows, 0, GL_BGR, GL_UNSIGNED_BYTE, frame.ptr());
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }

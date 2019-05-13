@@ -25,8 +25,6 @@ public:
     bool is_triggered() override;
     void exec() override;
 
-    void mat_to_texture();
-
 private:
     GameState *state;
     GLfloat x;
@@ -34,7 +32,6 @@ private:
     GLfloat x_size;
     GLfloat y_size;
     std::function<void()> to_exec;
-    cv::Mat icon;
 
     ShaderProgram shader;
     GLuint VAO, VBO, EBO, texture;
