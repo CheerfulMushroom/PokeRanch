@@ -15,6 +15,7 @@
 class VideoStream: public Renderable {
  public:
     explicit VideoStream(int cam_index);
+    VideoStream() = default;
     ~VideoStream();
 
     void render() override;

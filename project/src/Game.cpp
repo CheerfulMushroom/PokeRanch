@@ -10,6 +10,7 @@ Game::Game(int width, int height, double rate) {
     game_object = this;
 
     screen = GameWindow(width, height);
+
     // Назначаем функцию, которая будет заниматься обработкой пользовательского ввода мышкой
     glfwSetMouseButtonCallback(get_window(), mouse_button_callback);
 
@@ -42,7 +43,7 @@ void Game::start() {
     GLFWwindow *window = get_window();
 
     while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
+        glfwWaitEventsTimeout(0.04);
         render_game();
     }
 }

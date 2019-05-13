@@ -1,16 +1,21 @@
 #include <Model.h>
-#include <string>
-#include <glm/glm.hpp>
 
 
 #include "Camera.h"
 
 unsigned int texture_from_file(const char *path, const std::string &directory);
 
-Model::Model(std::string const &path, Camera* camera) {
+Model::Model(std::string const &path,
+             Camera *camera,
+             glm::vec3 translate,
+             glm::vec3 scale,
+             glm::vec3 rotate) {
     load_model(path);
-    shader = ShaderProgram("project/shaders/v_model_shader.txt", "project/shaders/f_model_shader.txt");
+    this->translate = translate;
+    this->scale = scale;
+    this->rotate = rotate;
     this->camera = camera;
+    shader = ShaderProgram("project/shaders/v_model_shader.txt", "project/shaders/f_model_shader.txt");
 }
 
 void Model::load_model(std::string const &path) {
@@ -78,7 +83,6 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
     }
 
 
-
     for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
         aiFace face = mesh->mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; j++) {
@@ -86,7 +90,7 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
         }
     }
 
-    
+
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
     std::vector<Texture> diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
@@ -94,13 +98,12 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
 
     std::vector<Texture> specularMaps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        // 3. normal maps
+    // 3. normal maps
     std::vector<Texture> normalMaps = load_material_textures(material, aiTextureType_HEIGHT, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-        // 4. height maps
+    // 4. height maps
     std::vector<Texture> heightMaps = load_material_textures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-
 
 
     return Mesh(vertices, indices, textures);
@@ -111,7 +114,7 @@ std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureTyp
     std::vector<Texture> textures;
 
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
-    
+
         aiString str;
         mat->GetTexture(type, i, &str);
 
@@ -141,6 +144,7 @@ std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureTyp
 
 void Model::render() {
 
+    glEnable(GL_DEPTH_TEST);
     shader.use();
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f);
 
@@ -150,9 +154,9 @@ void Model::render() {
     shader.set_mat4_uniform("view", view);
 
     glm::mat4 pikachu_mod = glm::mat4(1.0f);
-    pikachu_mod = glm::translate(pikachu_mod, glm::vec3(0.5f, -0.4f, 0.0f));
-    pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.05, 0.05, 0.05));
-    pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    pikachu_mod = glm::translate(pikachu_mod, translate);
+    pikachu_mod = glm::scale(pikachu_mod, scale);
+    pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), rotate);
 
     shader.set_mat4_uniform("model", pikachu_mod);
 
@@ -160,6 +164,8 @@ void Model::render() {
     for (auto mesh: meshes) {
         mesh.draw_mesh(shader);
     }
+    glDisable(GL_DEPTH_TEST);
+
 }
 
 
@@ -179,10 +185,10 @@ unsigned int texture_from_file(const char *path, const std::string &directory) {
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
- 
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    
+
     cv::flip(image, image, 0);
 
     glBindTexture(GL_TEXTURE_2D, 0);

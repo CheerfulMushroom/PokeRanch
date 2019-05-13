@@ -35,6 +35,8 @@ public:
     virtual void render_game() = 0;
     virtual void update_game() = 0;
 
+    void add_element(std::unique_ptr<GameElement> el);
+
     // Геттеры
     Game* get_game();
 
@@ -74,7 +76,6 @@ public:
     void render_game() override;
     void update_game() override;
 
-    VideoStream video_stream;
     Camera camera;
 };
 

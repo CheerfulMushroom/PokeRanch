@@ -21,3 +21,4 @@ void mat_to_texture(GLuint texture, cv::Mat pic, bool with_alpha) {
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+
