@@ -23,6 +23,8 @@
 #include "Game.h"
 
 class GameElement {
+public:
+    virtual ~GameElement() = default;
 };
 
 class Renderable : virtual public GameElement {

@@ -16,6 +16,7 @@ public:
           glm::vec3 translate,
           glm::vec3 scale,
           glm::vec3 rotate);
+    ~Model() override = default;
 
     void render() override;
 
