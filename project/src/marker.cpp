@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
         cout << "[camera number] [camera_calibration_file.yml]" << endl;
         return 0;
     }
-    const float marker_size = 0.04;  // Размер маркера (в метрах)
+    const float marker_size = 0.071;  // Размер маркера (в метрах)
     Mat in_frame, out_frame;
     const char win1[]="Захват...";
     //const char win2[]="Запись...";
