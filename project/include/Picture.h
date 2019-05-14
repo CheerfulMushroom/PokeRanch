@@ -8,7 +8,7 @@ public:
     Picture(GLfloat x, GLfloat y,
             GLfloat x_size, GLfloat y_size,
             std::string path_to_file);
-    ~Picture();
+    ~Picture() override;
 
     void render() override;
 

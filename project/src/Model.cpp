@@ -9,11 +9,13 @@ Model::Model(std::string const &path,
              Camera *camera,
              glm::vec3 translate,
              glm::vec3 scale,
-             glm::vec3 rotate) {
+             glm::vec3 rotate,
+             float angle) {
     load_model(path);
     this->translate = translate;
     this->scale = scale;
     this->rotate = rotate;
+    this->angle = angle;
     this->camera = camera;
     shader = ShaderProgram("project/shaders/v_model_shader.txt", "project/shaders/f_model_shader.txt");
 }
@@ -156,7 +158,7 @@ void Model::render() {
     glm::mat4 pikachu_mod = glm::mat4(1.0f);
     pikachu_mod = glm::translate(pikachu_mod, translate);
     pikachu_mod = glm::scale(pikachu_mod, scale);
-    pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), rotate);
+    pikachu_mod = glm::rotate(pikachu_mod, glm::radians(angle), rotate);
 
     shader.set_mat4_uniform("model", pikachu_mod);
 

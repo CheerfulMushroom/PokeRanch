@@ -15,7 +15,8 @@ public:
           Camera *camera,
           glm::vec3 translate,
           glm::vec3 scale,
-          glm::vec3 rotate);
+          glm::vec3 rotate,
+          float angle);
     ~Model() override = default;
 
     void render() override;
@@ -29,6 +30,7 @@ private:
     glm::vec3 translate;
     glm::vec3 scale;
     glm::vec3 rotate;
+    float angle;
 
     void load_model(std::string const &path);
     void process_node(aiNode *node, const aiScene *scene);

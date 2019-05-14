@@ -4,16 +4,16 @@
 #include "Utils.h"
 
 Picture::Picture(GLfloat x, GLfloat y,
-        GLfloat x_size, GLfloat y_size,
-        std::string path_to_pic): Renderable() {
+                 GLfloat x_size, GLfloat y_size,
+                 std::string path_to_pic) : Renderable() {
     shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
 
 
     GLfloat vertices[] = {
             x + x_size, y + y_size, 0.0f, 1.0f, 1.0f,
-            x + x_size, y,          0.0f, 1.0f, 0.0f,
-            x,          y,          0.0f, 0.0f, 0.0f,
-            x,          y + y_size, 0.0f, 0.0f, 1.0f
+            x + x_size, y, 0.0f, 1.0f, 0.0f,
+            x, y, 0.0f, 0.0f, 0.0f,
+            x, y + y_size, 0.0f, 0.0f, 1.0f
     };
 
     GLuint indices[] = {
@@ -36,10 +36,10 @@ Picture::Picture(GLfloat x, GLfloat y,
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) (0 * sizeof(GLfloat)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void *) (0 * sizeof(GLfloat)));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void *) (3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
 
 

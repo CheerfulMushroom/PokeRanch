@@ -17,8 +17,8 @@ public:
                    GLfloat x, GLfloat y,
                    GLfloat x_size, GLfloat y_size,
                    std::function<void()> to_exec,
-                   std::string path_to_icon = "project/icons/default.png");
-    ~Button();
+                   std::string path_to_icon = "default.png");
+    ~Button() override;
 
     void render() override;
     bool is_triggered() override;

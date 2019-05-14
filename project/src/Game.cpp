@@ -38,7 +38,7 @@ void Game::change_state(std::unique_ptr<GameState> new_state) {
     state->load_scene();
 }
 
-
+//TODO(alexandr): сделать нормалный игровой цикл
 void Game::start() {
     GLFWwindow *window = get_window();
 
