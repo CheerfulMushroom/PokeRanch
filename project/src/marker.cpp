@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     aruco::MarkerDetector MDetector;
     MDetector.setDictionary("ARUCO_MIP_36h12");
     aruco::MarkerDetector::Params &params = MDetector.getParameters();
-    aruco::DetectionMode dm = aruco::DM_VIDEO_FAST;
+    aruco::DetectionMode dm = aruco::DM_NORMAL;
     float min_size = 0;
     MDetector.setDetectionMode(dm, min_size); // setDetectionMode(DetectionMode dm, float minMarkerSize=0)
     
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 
     aruco::CameraParameters camera;
     aruco::MarkerDetector Detector;
-    float diagonal;
+    float storona;
     while (true) {
     // Читаем кадр с камеры (захват и декодирование)
 	inVid >> in_frame;
@@ -86,10 +86,10 @@ int main(int argc, char* argv[]) {
         //aruco::CvDrawingUtils::draw3dCube(in_frame,m,camera);
         //if (m.id == 1) cout << "Pikachu" << endl;
         //if (m.id == 2) cout << "Charizard" << endl;
-        cout << pokemon_name(m.id) << endl;
+        //cout << pokemon_name(m.id) << endl;
 
-        diagonal = sqrt(pow((m[0].x - m[2].x), 2) + pow((m[0].y - m[2].y), 2));
-        cv::putText(in_frame, pokemon_name(m.id), m.getCenter(), FONT_HERSHEY_SIMPLEX, diagonal/120, cv::Scalar(0,0,245), 3);
+        //storona = m[0].x - m[1].x;
+        cv::putText(in_frame, pokemon_name(m.id), m.getCenter(), FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0,0,245), 3);
     }
     // Записываем кадр в видеофайл (кодирование и сохранение)
 	//recVid << in_frame;
