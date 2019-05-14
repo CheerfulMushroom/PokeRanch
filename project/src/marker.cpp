@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
     const char win1[]="Захват...";
     //const char win2[]="Запись...";
     double fps=15; // Число кадров в секунду
-    char file_out[]="recorded.avi";
+    //char file_out[]="recorded.avi";
     
     VideoCapture inVid(stoi(argv[1])); // Открыть камеру по умолчанию (первый аргумент командной сроки)
     if (!inVid.isOpened()) { // Проверка ошибок
@@ -70,9 +70,6 @@ int main(int argc, char* argv[]) {
 
     aruco::CameraParameters camera;
     aruco::MarkerDetector Detector;
-    int baseLine = 0;
-    Size textSize;
-    //Point textOrigin;
     float diagonal;
     while (true) {
     // Читаем кадр с камеры (захват и декодирование)
@@ -91,7 +88,6 @@ int main(int argc, char* argv[]) {
         //if (m.id == 2) cout << "Charizard" << endl;
         cout << pokemon_name(m.id) << endl;
 
-        vector<Point2f> imagePoints;
         diagonal = sqrt(pow((m[0].x - m[2].x), 2) + pow((m[0].y - m[2].y), 2));
         cv::putText(in_frame, pokemon_name(m.id), m.getCenter(), FONT_HERSHEY_SIMPLEX, diagonal/120, cv::Scalar(0,0,245), 3);
     }
