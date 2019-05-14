@@ -1,4 +1,4 @@
-#include <ShaderProgram.h>
+#include "ShaderProgram.h"
 #include <cstring>
 
 ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_path) {
@@ -32,8 +32,25 @@ ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_pat
 
     fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_shader, 1, &f_shader_source, NULL);
-    glCompileShader(vertices_shader);
+    glCompileShader(fragment_shader);
 
+
+    // Проверка шейдеров и вывод лога в случае ошибки
+
+    GLint success;
+    GLchar infoLog[512];
+
+    glGetShaderiv(vertices_shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertices_shader, 512, nullptr, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragment_shader, 512, nullptr, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
 
     program = glCreateProgram();
     glAttachShader(program, vertices_shader);
