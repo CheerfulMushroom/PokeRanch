@@ -1,7 +1,10 @@
-TARGET = open_cv_test.out
+TARGET = marker.out
+
+HDRSCV = \
+	/usr/local/include/opencv4/
 
 HDRS = \
-    /usr/local/include/opencv4/
+	./project/include/
 
 LIBS = \
     /usr/local/lib/
@@ -15,12 +18,13 @@ MODULE = \
     -laruco
 
 SRCS = \
-    ./open_cv_test.cpp
+    project/src/marker.cpp \
+	project/src/pokemon_name.cpp
 
 .PHONY: all clean
 
 all: $(SRCS) 
-	$(CXX) -std=c++17 -I $(HDRS) -o $(TARGET) -L $(LIBS) $(SRCS) $(MODULE) -Wl,-rpath,/usr/local/lib/
+	$(CXX) -std=c++17 -I $(HDRSCV) -I $(HDRS) -o $(TARGET) -L $(LIBS) $(SRCS) $(MODULE) -Wl,-rpath,/usr/local/lib/
 
 clean:
 	rm -rf $(TARGET)
