@@ -7,7 +7,8 @@ class Picture: public Renderable {
 public:
     Picture(GLfloat x, GLfloat y,
             GLfloat x_size, GLfloat y_size,
-            std::string path_to_file);
+            std::string path_to_file,
+            bool has_alpha);
     ~Picture() override;
 
     void render() override;

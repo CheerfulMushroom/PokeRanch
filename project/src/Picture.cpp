@@ -5,7 +5,8 @@
 
 Picture::Picture(GLfloat x, GLfloat y,
                  GLfloat x_size, GLfloat y_size,
-                 std::string path_to_pic) : Renderable() {
+                 std::string path_to_pic,
+                 bool has_alpha) : Renderable() {
     shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
 
 
@@ -50,8 +51,13 @@ Picture::Picture(GLfloat x, GLfloat y,
 
     glBindVertexArray(0);
 
-    auto icon = cv::imread(path_to_pic);
-    mat_to_texture(texture, icon, false);
+    if (has_alpha) {
+        auto icon = cv::imread(path_to_pic, -1);
+        mat_to_texture(texture, icon, true);
+    } else{
+        auto icon = cv::imread(path_to_pic);
+        mat_to_texture(texture, icon, false);
+    }
 
 }
 
