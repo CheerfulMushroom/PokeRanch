@@ -22,7 +22,8 @@ MenuState::MenuState(Game *game_object) : GameState(game_object) {}
 void MenuState::load_scene() {
     add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/main_screen.png", false));
     add_element(std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9, "project/pictures/pokemon_logo.png", true));
-    add_element(std::make_unique<Picture>(-0.25f, 0.25f, 0.5f, 0.5f * 16 / 9*56/288, "project/pictures/ranch.png", true));
+    add_element(std::make_unique<Picture>(-0.25f, 0.25f, 0.5f, 0.5f * 16 / 9 * 56 / 288, "project/pictures/ranch.png",
+                                          true));
 
     add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<RanchState>,
                                          "play_pink.png"));
@@ -44,8 +45,11 @@ void MenuState::update_game() {}
 PauseState::PauseState(Game *game_object) : GameState(game_object) {}
 
 void PauseState::load_scene() {
-    add_element(std::make_unique<Button>(this, 0.5f, -0.5f, 0.1f, 0.1f, bf_change_game_state<RanchState>));
-    add_element(std::make_unique<Button>(this, -0.5f, +0.5f, 0.1f, 0.1f, bf_change_game_state<RanchState>));
+    add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/pause_background.png", false));
+    add_element(std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9 * 127/330, "project/pictures/pause_logo.png", true));
+
+    add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<RanchState>,
+                                         "play_pink.png"));
 }
 
 void PauseState::render_game() {
@@ -85,8 +89,10 @@ void RanchState::load_scene() {
                                         glm::vec3(0.0f, 1.0f, 0.0f), 0));
 
 
-    add_element(std::make_unique<Button>(this, 0.6f, 0.6f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
-    add_element(std::make_unique<Button>(this, 0.6f, 0.6f, 0.3f, 0.3f, bf_change_game_state<PokedexState>));
+    add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f* 16/9, bf_change_game_state<PauseState>,
+                                         "menu_pink.png"));
+    add_element(std::make_unique<Button>(this, 0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<PokedexState>,
+                                         "pikachu.png"));
 }
 
 void RanchState::render_game() {
@@ -107,8 +113,8 @@ PokedexState::PokedexState(Game *game_object) : GameState(game_object) {
 }
 
 void PokedexState::load_scene() {
-    add_element(std::make_unique<Button>(this, 0.5f, 0.5f, 0.3f, 0.3f, bf_change_game_state<PauseState>));
-    add_element(std::make_unique<Button>(this, -0.5f, -0.5f, 0.3f, 0.3f, bf_change_game_state<MenuState>));
+    add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<RanchState>,
+                                         "play_pink.png"));
 
 }
 

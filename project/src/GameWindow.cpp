@@ -11,7 +11,7 @@ GameWindow::GameWindow(int width, int height) : window_width(width), window_heig
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    window = glfwCreateWindow(window_width, window_height, "Hello", nullptr, nullptr);
+    window = glfwCreateWindow(window_width, window_height, "PokeRanch", nullptr, nullptr);
 
     if (window == nullptr) {
         std::cout << "Failed to create window" << std::endl;
