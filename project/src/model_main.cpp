@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
     VideoStream stream;
 
-    cv::VideoCapture cam(1);
+    cv::VideoCapture cam(2);
 
     stream.configure_VAO();
 
