@@ -9,7 +9,7 @@
 
 
 
-VideoStream::VideoStream(int cam_index): cam(cv::VideoCapture(cam_index)) {
+VideoStream::VideoStream() {
     glGenTextures(1, &texture);
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
@@ -33,7 +33,7 @@ bool VideoStream::configure_VAO() {
             1, 2, 3
     };
 
-    shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
+    shader = ShaderProgram("project/src/v_shader.txt", "project/src/f_shader.txt");
 
     glBindVertexArray(VAO);
 
@@ -53,7 +53,7 @@ bool VideoStream::configure_VAO() {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glUniform1i(glGetUniformLocation(shader.get_program(), "ourTexture1"), 0);
+    glUniform1i(glGetUniformLocation(shader.program, "ourTexture1"), 0);
 
 
     glBindVertexArray(0);
@@ -66,7 +66,7 @@ VideoStream::~VideoStream() {}
 
 
 void VideoStream::render() {
-    cam.read(frame);
+    //cam.read(frame);
     mat_to_texture();
     shader.use();
 
