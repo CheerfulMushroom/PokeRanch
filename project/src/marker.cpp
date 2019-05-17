@@ -2,7 +2,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
 #include "string.h"
-#include "pokemon_name.h"
+#include "pokemon_model_path.h"
 #include <cmath>
 
 #include <string.h>
@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     Mat in_frame, out_frame;
     const char win1[]="Захват...";
     //const char win2[]="Запись...";
-    double fps=15; // Число кадров в секунду
+    double fps=25; // Число кадров в секунду
     //char file_out[]="recorded.avi";
     
     VideoCapture inVid(stoi(argv[1])); // Открыть камеру по умолчанию (первый аргумент командной сроки)
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     aruco::MarkerDetector MDetector;
     MDetector.setDictionary("ARUCO_MIP_36h12");
     aruco::MarkerDetector::Params &params = MDetector.getParameters();
-    aruco::DetectionMode dm = aruco::DM_NORMAL;
+    aruco::DetectionMode dm = aruco::DM_FAST;
     float min_size = 0;
     MDetector.setDetectionMode(dm, min_size); // setDetectionMode(DetectionMode dm, float minMarkerSize=0)
     
@@ -69,7 +69,6 @@ int main(int argc, char* argv[]) {
     //vector<aruco::Marker> TheMarkers;
 
     aruco::CameraParameters camera;
-    aruco::MarkerDetector Detector;
     float storona;
     while (true) {
     // Читаем кадр с камеры (захват и декодирование)
@@ -80,8 +79,8 @@ int main(int argc, char* argv[]) {
     //resize(out_frame, out_frame, Size(width, height*3)); // что-то вроде костыля
     
     camera.readFromXMLFile(argv[2]);  // Выбрать файл с характеристиками камеры (.yml) (второй аргумент командной строки)
-    Detector.setDictionary("ARUCO_MIP_36h12");
-    auto markers=Detector.detect(in_frame, camera, marker_size);
+    MDetector.setDictionary("ARUCO_MIP_36h12");
+    auto markers=MDetector.detect(in_frame, camera, marker_size);
     for (auto m:markers) {
         //aruco::CvDrawingUtils::draw3dCube(in_frame,m,camera);
         //if (m.id == 1) cout << "Pikachu" << endl;
@@ -89,7 +88,8 @@ int main(int argc, char* argv[]) {
         //cout << pokemon_name(m.id) << endl;
 
         //storona = m[0].x - m[1].x;
-        cv::putText(in_frame, pokemon_name(m.id), m.getCenter(), FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0,0,245), 3);
+        cv::putText(in_frame, pokemon_model_path(m.id), m.getCenter(), FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0,0,245), 3);
+        cout << m.Rvec.at<float>(0) << endl;
     }
     // Записываем кадр в видеофайл (кодирование и сохранение)
 	//recVid << in_frame;

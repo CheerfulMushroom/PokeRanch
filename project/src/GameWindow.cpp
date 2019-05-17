@@ -51,3 +51,7 @@ void GameWindow::lock_frame_rate() {
     }
 }
 
+cv::Size GameWindow::get_size() {
+	cv::Size img_size(window_width, window_height);
+	return img_size;
+}

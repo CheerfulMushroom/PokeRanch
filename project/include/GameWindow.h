@@ -17,6 +17,7 @@ class GameWindow {
 
     void lock_frame_rate();
     
+	cv::Size get_size();
 
     GLFWwindow *window;
 
