@@ -11,6 +11,7 @@
 #include </usr/local/include/aruco/aruco.h>
 #include "string.h"
 #include "opencv2/core/types.hpp"
+#include "math.h"
 
 #define marker_size 0.071
 
@@ -79,12 +80,12 @@ int main(int argc, char *argv[]) {
         stream.frame = aruco_frame;
         
         auto markers = MDetector.detect(aruco_frame, camera, marker_size);
-  
+        
+
         for (auto m:markers) {
             aruco::CvDrawingUtils::draw3dAxis(aruco_frame, m, camera);
        
-        stream.render();
-       
+        stream.render(); 
         glEnable(GL_DEPTH_TEST);
  
 
@@ -128,9 +129,10 @@ int main(int argc, char *argv[]) {
         glm::mat4 pikachu_mod = glm::mat4(1.0f);  // model matrix (translate, scale, rotate) 3v1
         pikachu_mod = glm::translate(pikachu_mod, glm::vec3(10 * m.Tvec.at<float>(0), 10 * m.Tvec.at<float>(1), -m.Tvec.at<float>(2) * 10)); // В ручную забили
         pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.02, 0.02, 0.02));
-        pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(m.Rvec.at<float>(0), m.Rvec.at<float>(1), m.Rvec.at<float>(2)));
-        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(1.0, 1.0, 1.0));
+        pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(abs(m.Rvec.at<float>(0)), abs(m.Rvec.at<float>(1)), abs(m.Rvec.at<float>(2))));
+        
 
+        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));
         rx -= 0.1;
         printf("\n%f %f %f\n", rx,ry,rz);
         if (rx <= -6) rx = 6;
@@ -139,23 +141,22 @@ int main(int argc, char *argv[]) {
         */
 
         /*pikachu_mod[0][0] = 0.02;  // mat4[столбец][строка]
-        pikachu_mod[1][0] = rodrig.at<float>(1,0);
-        pikachu_mod[2][0] = rodrig.at<float>(2,0);
-        pikachu_mod[3][0] = m.Tvec.at<float>(0);
-        pikachu_mod[0][1] = rodrig.at<float>(0,1);
+        pikachu_mod[1][0] = rodrig.at<float>(0,1);
+        pikachu_mod[2][0] = rodrig.at<float>(0,2);
+        pikachu_mod[3][0] = 100 * m.Tvec.at<float>(0);
+        pikachu_mod[0][1] = rodrig.at<float>(1,0);
         pikachu_mod[1][1] = 0.02;
-        pikachu_mod[2][1] = rodrig.at<float>(2,1);
-        pikachu_mod[3][1] = m.Tvec.at<float>(1);
-        pikachu_mod[0][2] = rodrig.at<float>(0,2);
-        pikachu_mod[1][2] = rodrig.at<float>(1,2);
+        pikachu_mod[2][1] = rodrig.at<float>(1,2);
+        pikachu_mod[3][1] = 10 * m.Tvec.at<float>(1);
+        pikachu_mod[0][2] = rodrig.at<float>(2,0);
+        pikachu_mod[1][2] = rodrig.at<float>(2,1);
         pikachu_mod[2][2] = 0.02;
-        pikachu_mod[3][2] = m.Tvec.at<float>(2);
+        pikachu_mod[3][2] = -100 * m.Tvec.at<float>(2);
         pikachu_mod[0][3] = 0;
         pikachu_mod[1][3] = 0;
         pikachu_mod[2][3] = 0;
         pikachu_mod[3][3] = 1;
         */
-
 
         //pikachu_mod = glm::translate(pikachu_mod, glm::vec3(m.Tvec.at<float>(0), m.Tvec.at<float>(1),m.Tvec.at<float>(2))); // В ручную забили
         //pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.02, 0.02, 0.02));
