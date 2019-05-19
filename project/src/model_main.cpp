@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <opencv2/highgui.hpp>
 #include <GameWindow.h>
-#include <Model.h>
+#include <Model_anim.h>
 #include <Camera.h>
 #include <VideoStream.h>
 #include </usr/local/include/aruco/aruco.h>
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
     VideoStream stream;
 
-    cv::VideoCapture cam(1);
+    cv::VideoCapture cam(0);
 
     stream.configure_VAO();
 

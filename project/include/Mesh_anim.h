@@ -47,14 +47,16 @@ class Mesh {
     std::vector<Texture> textures;
     std::vector<VertexBoneData> bones;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+    Mesh(unsigned int mesh_id, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
     //Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, std::vector<VertexBoneData> bones);
-
 
     void draw_mesh(ShaderProgram shader);
 
  private:
     unsigned int VAO, VBO, EBO;
+
+    unsigned int mesh_id;
+    unsigned int first_vertex_id;
 
     void setup_mesh();
 };
