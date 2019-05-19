@@ -1,7 +1,11 @@
 #include <opencv2/opencv.hpp>
 
+#include <GL/glew.h>
+
 #include "Picture.h"
 #include "Utils.h"
+#include "Utils.h"
+
 
 Picture::Picture(GLfloat x, GLfloat y,
                  GLfloat x_size, GLfloat y_size,
@@ -9,46 +13,20 @@ Picture::Picture(GLfloat x, GLfloat y,
     shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
 
 
-    GLfloat vertices[] = {
+    std::vector<GLfloat> vertices = {
             x + x_size, y + y_size, 0.0f, 1.0f, 1.0f,
             x + x_size, y, 0.0f, 1.0f, 0.0f,
             x, y, 0.0f, 0.0f, 0.0f,
             x, y + y_size, 0.0f, 0.0f, 1.0f
     };
 
-    GLuint indices[] = {
+    std::vector<GLuint> indices = {
             0, 1, 3,
             1, 2, 3
     };
 
 
-    glGenTextures(1, &texture);
-    glGenBuffers(1, &VBO);
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(VAO);
-
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void *) (0 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void *) (3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(1);
-
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glUniform1i(glGetUniformLocation(shader.get_program(), "ourTexture1"), 0);
-
-
-    glBindVertexArray(0);
+    configure_VAO(vertices, indices, &VAO, &VBO, &EBO, &texture, &shader);
 
     auto pic = cv::imread(path_to_pic, -1);
     bool has_alpha = pic.channels() == 4;

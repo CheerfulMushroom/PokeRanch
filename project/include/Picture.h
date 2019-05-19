@@ -1,6 +1,8 @@
 #ifndef PREP_POKEMON_RANCH_PICTURE_H
 #define PREP_POKEMON_RANCH_PICTURE_H
 
+#include <GL/glew.h>
+
 #include "Interfaces.h"
 
 class Picture: public Renderable {

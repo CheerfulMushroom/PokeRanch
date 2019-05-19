@@ -1,21 +1,21 @@
 #include <opencv2/opencv.hpp>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "Button.h"
-#include "States.h"
+#include "MovingPicture.h"
 #include "Utils.h"
 
-Button::Button(GameState *state,
-               GLfloat x, GLfloat y,
-               GLfloat x_size, GLfloat y_size,
-               std::function<void()> to_exec,
-               std::string path_to_pic)
-        : Renderable(), Interactable() {
-    this->state = state;
+MovingPicture::MovingPicture(GLfloat x, GLfloat y,
+                             GLfloat x_size, GLfloat y_size,
+                             std::function<GLfloat(GLfloat)> x_movement,
+                             std::function<GLfloat(GLfloat)> y_movement,
+                             std::string path_to_pic) : Renderable(), Updatable() {
     this->x = x;
     this->y = y;
     this->x_size = x_size;
     this->y_size = y_size;
-    this->to_exec = std::move(to_exec);
+    this->x_movement = std::move(x_movement);
+    this->y_movement = std::move(y_movement);
     shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
 
 
@@ -34,20 +34,20 @@ Button::Button(GameState *state,
 
     configure_VAO(vertices, indices, &VAO, &VBO, &EBO, &texture, &shader);
 
-
     auto pic = cv::imread(path_to_pic, -1);
     bool has_alpha = pic.channels() == 4;
     mat_to_texture(texture, pic, has_alpha);
-
 }
 
-Button::~Button() {
+
+MovingPicture::~MovingPicture() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
 }
 
-void Button::render() {
+
+void MovingPicture::render() {
     shader.use();
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -59,22 +59,22 @@ void Button::render() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-bool Button::is_triggered() {
-    GLFWwindow *window = state->get_game()->get_window();
+void MovingPicture::update() {
+    x = (GLfloat) x_movement(glfwGetTime());
+    y = (GLfloat) y_movement(glfwGetTime());
 
-    double x_cursor, y_cursor;
-    glfwGetCursorPos(window, &x_cursor, &y_cursor);
+    std::vector<GLfloat> vertices = {
+            x + x_size, y + y_size, 0.0f, 1.0f, 1.0f,
+            x + x_size, y, 0.0f, 1.0f, 0.0f,
+            x, y, 0.0f, 0.0f, 0.0f,
+            x, y + y_size, 0.0f, 0.0f, 1.0f
+    };
 
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
+    std::vector<GLuint> indices = {
+            0, 1, 3,
+            1, 2, 3
+    };
 
-    // Перевод из координат GLFW ([0;-1]) в координаты openGL ([-1;1])
-    x_cursor = 2 * ((x_cursor) / width - .5);
-    y_cursor = -2 * ((y_cursor) / height - .5);
-    return x <= x_cursor && x_cursor <= x + x_size && y <= y_cursor && y_cursor <= y + y_size;
 
-}
-
-void Button::exec() {
-    to_exec();
+    configure_VAO(vertices, indices, &VAO, &VBO, &EBO, &texture, &shader);
 }

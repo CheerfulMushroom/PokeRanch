@@ -17,10 +17,11 @@ add_executable(main.out
         ${PROJECT_SOURCE_DIR}/ShaderProgram.cpp
         ${PROJECT_SOURCE_DIR}/States.cpp
         ${PROJECT_SOURCE_DIR}/Button.cpp
-        ${PROJECT_SOURCE_DIR}/ButtonFunctions.cpp
+        ${PROJECT_SOURCE_DIR}/AdditionalFunctions.cpp
         ${PROJECT_SOURCE_DIR}/VideoStream.cpp
         ${PROJECT_SOURCE_DIR}/Interfaces.cpp
         ${PROJECT_SOURCE_DIR}/Picture.cpp
+        ${PROJECT_SOURCE_DIR}/MovingPicture.cpp
         ${PROJECT_SOURCE_DIR}/Utils.cpp
         ${PROJECT_SOURCE_DIR}/Model.cpp
         ${PROJECT_SOURCE_DIR}/Mesh.cpp)
