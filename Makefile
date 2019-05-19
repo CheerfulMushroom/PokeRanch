@@ -21,6 +21,7 @@ MODULES = \
     -lopencv_highgui \
     -lopencv_imgcodecs \
     -lopencv_videoio \
+	-lopencv_calib3d \
     -laruco \
     -lassimp
 
