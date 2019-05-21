@@ -7,7 +7,7 @@
 #include "VideoStream.h"
 #include "Utils.h"
 
-VideoStream::VideoStream(int cam_index): Renderable(){
+VideoStream::VideoStream(int cam_index) {
     cam = cv::VideoCapture(cam_index);
     glGenTextures(1, &texture);
     glGenBuffers(1, &VBO);
@@ -21,10 +21,10 @@ VideoStream::VideoStream(int cam_index): Renderable(){
 bool VideoStream::configure_VAO() {
 
     GLfloat vertices[] = {
-            1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
     };
 
     GLuint indices[] = {
@@ -42,10 +42,10 @@ bool VideoStream::configure_VAO() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) (0 * sizeof(GLfloat)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void *) (0 * sizeof(GLfloat)));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) (3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void *) (3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
 
 

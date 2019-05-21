@@ -9,7 +9,7 @@ MovingPicture::MovingPicture(GLfloat x, GLfloat y,
                              GLfloat x_size, GLfloat y_size,
                              std::function<GLfloat(GLfloat)> x_movement,
                              std::function<GLfloat(GLfloat)> y_movement,
-                             std::string path_to_pic) : Renderable(), Updatable() {
+                             std::string path_to_pic) {
     this->x = x;
     this->y = y;
     this->x_size = x_size;

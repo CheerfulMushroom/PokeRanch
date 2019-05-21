@@ -9,7 +9,7 @@
 
 Picture::Picture(GLfloat x, GLfloat y,
                  GLfloat x_size, GLfloat y_size,
-                 std::string path_to_pic) : Renderable() {
+                 std::string path_to_pic) {
     shader = ShaderProgram("project/shaders/v_shader.txt", "project/shaders/f_shader.txt");
 
 

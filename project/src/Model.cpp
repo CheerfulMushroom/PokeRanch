@@ -1,6 +1,4 @@
-#include <Model.h>
-
-
+#include "Model.h"
 #include "Camera.h"
 
 unsigned int texture_from_file(const char *path, const std::string &directory);
