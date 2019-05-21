@@ -1,5 +1,6 @@
 #include <ShaderProgram.h>
 #include <cstring>
+#include <string>
 
 ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_path) {
     //  Получение исходного кода шейдеров из файла
@@ -86,3 +87,19 @@ void ShaderProgram::set_mat3_uniform(const std::string &name, const glm::mat3 &v
 void ShaderProgram::set_mat4_uniform(const std::string &name, const glm::mat4 &value) const {
     glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &value[0][0]);
 }
+
+
+void ShaderProgram::set_bone_transform(const int index, const glm::mat4 &value) const {
+    std::string index_str = std::to_string(index);
+    std::string name = "bones_array[";
+    name += index_str;
+    name += "]";
+
+    std::cout << name << std::endl;
+
+    glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &value[0][0]);
+}
+
+
+
+

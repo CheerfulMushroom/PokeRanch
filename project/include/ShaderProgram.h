@@ -35,6 +35,8 @@ class ShaderProgram {
 
     void set_mat4_uniform(const std::string &name, const glm::mat4 &value) const;
 
+    void set_bone_transform(const int index, const glm::mat4 &value) const;
+
 };
 
 #endif  // PROJECT_INCLUDE_SHADER_HPP_

@@ -1,19 +1,36 @@
-#include <Mesh.h>
+#include <Mesh_anim.h>
 
-Mesh::Mesh(unsigned int mesh_id, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
+void VertexBoneData::add_bone_data(unsigned int bone_id, float weight) {
+    for (unsigned int i = 0; i < NUM_BONES_PER_VERTEX; i++) {
+        if (weights[i] == 0.0) {
+            bone_IDs[i] = bone_id;
+            weights[i] = weight;
+            return;
+        }
+    }
+}
+
+
+Mesh::Mesh(unsigned int mesh_id, unsigned int base_vertex_id, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, std::vector<VertexBoneData> bones) {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
     this->mesh_id = mesh_id;
+    this->first_vertex_id = base_vertex_id;
+    this->bones = bones;
+
     setup_mesh();
 
-    std::cout << "Mesh_id: " << this->mesh_id << std::endl;
+    //std::cout << "Mesh_id: " << this->mesh_id << std::endl;
+    //std::cout << "Base vertex number: " << this->first_vertex_id << std::endl;
 }
 
 void Mesh::setup_mesh() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
+    glGenBuffers(1, &BONE_VB);
+
 
     glBindVertexArray(VAO);
 
@@ -32,6 +49,15 @@ void Mesh::setup_mesh() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, tex_coords));
     glEnableVertexAttribArray(2);
 
+    glBindBuffer(GL_ARRAY_BUFFER, BONE_VB);
+    glBufferData(GL_ARRAY_BUFFER, bones.size() * sizeof(VertexBoneData), &bones[0], GL_STATIC_DRAW);
+    
+    glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexBoneData), (void*) 0);
+    glEnableVertexAttribArray(3);
+
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (void *) 16);
+    glEnableVertexAttribArray(4);
+    
     glBindVertexArray(0);
 
 }

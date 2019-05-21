@@ -1,7 +1,23 @@
 #include <Model_anim.h>
 #include <string>
+#include <sys/time.h>
+
+
+double m_startTime;
 
 unsigned int texture_from_file(const char *path, const std::string &directory);
+
+long long GetCurrentTimeMillis()
+{
+    #ifdef WIN32    
+        return GetTickCount();
+    #else
+        timeval t;
+        gettimeofday(&t, NULL);
+ 
+     long long ret = t.tv_sec * 1000 + t.tv_usec / 1000;
+     return ret; 
+}
 
 
 //------------------------вспомогательные функции---------------------------
@@ -154,24 +170,24 @@ void Model::load_model(std::string const &path) {
     
     directory = path.substr(0, path.find_last_of('/'));
 
-    unsigned int mesh_index = 0;
-    unsigned int base_vertex_index = 0;
-
     process_node(scene->mRootNode, scene);
 }
 
 
 void Model::process_node(aiNode *node, const aiScene *scene) {
+
+
+    //std::cout << "шерстим" << std::endl;
+
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(process_mesh(mesh_index, mesh, scene));
-        
+        meshes.push_back(process_mesh(this->num_meshes, this->num_vertices, mesh, scene));
+        this->num_meshes++;
+        this->num_vertices += scene->mMeshes[node->mMeshes[i]]->mNumVertices;            
     }
 
-    
-
     for (unsigned int i = 0; i < node->mNumChildren; i++) {
-        process_node(mesh_index, node->mChildren[i], scene);
+        process_node(node->mChildren[i], scene);
     }
 }
 
@@ -180,10 +196,9 @@ Mesh Model::process_mesh(unsigned int mesh_index, unsigned int base_vertex_index
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
+    std::vector<VertexBoneData> bones;
 
-    //std::vector<VertexBoneData>
-
-
+    bones.resize(scene->mMeshes[mesh_index]->mNumVertices);
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
@@ -238,16 +253,18 @@ Mesh Model::process_mesh(unsigned int mesh_index, unsigned int base_vertex_index
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 
-    //load_bones
+    load_bones(mesh_index, mesh, bones);
+    std::cout << "Читанули кости" << std::endl;
+
 
     //return Mesh(vertices, indices, textures);
-    return Mesh(mesh_index, base_vertex_index, vertices, indices, textures);
+    return Mesh(mesh_index, base_vertex_index, vertices, indices, textures, bones);
 
 }
 
 
 void Model::load_bones(unsigned int mesh_index, const aiMesh *mesh, std::vector<VertexBoneData> &bones) {
-    for (unsigned int i = 0; i < mesh->nNumBones; i++) {
+    for (unsigned int i = 0; i < mesh->mNumBones; i++) {
         unsigned int bone_index = 0;
         std::string bone_name(mesh->mBones[i]->mName.data);
 
@@ -267,8 +284,11 @@ void Model::load_bones(unsigned int mesh_index, const aiMesh *mesh, std::vector<
     
         for (unsigned int j = 0; j < mesh->mBones[i]->mNumWeights; j++) {
             float weight = mesh->mBones[i]->mWeights[j].mWeight;
-            unsigned int vertex_id = 
-
+            unsigned int vertex_id = mesh->mBones[i]->mWeights[j].mVertexId;
+            bones[vertex_id].add_bone_data(bone_index, weight);
+        }
+    }
+}
 
 
 std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name) {
@@ -309,6 +329,106 @@ void Model::render(ShaderProgram shader) {
     }
 }
 
+
+const aiNodeAnim* Model::find_node_anim(const aiAnimation *animation, const std::string node_name) {
+    for (unsigned int i = 0; i < animation->mNumChannels; i++) {
+        const aiNodeAnim* node_anim = animation->mChannels[i];
+
+        if (std::string(node_anim->mNodeName.data) == node_name) {
+            return node_anim;
+        }
+    }
+    return NULL;
+}
+
+
+
+
+void Model::read_node_heirarchy(float AnimationTime, const aiNode* pNode, const glm::mat4& ParentTransform)
+{
+
+    std::cout << "Были" << std::endl;
+
+	std::string NodeName(pNode->mName.data);
+
+	const aiAnimation* pAnimation = scene->mAnimations[0];
+
+	aiMatrix4x4 tp1 = pNode->mTransformation;
+	glm::mat4 NodeTransformation = aiMatrix4x4_to_glm(tp1);
+	const aiNodeAnim* pNodeAnim = find_node_anim(pAnimation, NodeName);
+
+	if (pNodeAnim) {
+		// Interpolate scaling and generate scaling transformation matrix
+		aiVector3D Scaling;
+		calc_interpolated_scaling(Scaling, AnimationTime, pNodeAnim);
+		glm::mat4 ScalingM;
+		
+		ScalingM = glm::scale(ScalingM, glm::vec3(Scaling.x, Scaling.y, Scaling.z));
+
+		// Interpolate rotation and generate rotation transformation matrix
+		aiQuaternion RotationQ;
+		calc_interpolated_rotation(RotationQ, AnimationTime, pNodeAnim);
+		aiMatrix3x3 tp = RotationQ.GetMatrix();
+		glm::mat4 RotationM = aiMatrix3x3_to_glm(tp);
+
+		// Interpolate translation and generate translation transformation matrix
+		aiVector3D Translation;
+		
+		calc_interpolated_position(Translation, AnimationTime, pNodeAnim);
+		glm::mat4 TranslationM;
+		TranslationM = glm::translate(TranslationM, glm::vec3(Translation.x, Translation.y, Translation.z));
+
+		// Combine the above transformations
+		NodeTransformation = TranslationM * RotationM *ScalingM;
+	}
+
+	glm::mat4 GlobalTransformation = ParentTransform * NodeTransformation;
+
+	if (bone_map.find(NodeName) != bone_map.end()) {
+		unsigned int BoneIndex = bone_map[NodeName];
+		bones_info[BoneIndex].final_transformation = global_inverse_transform * GlobalTransformation * bones_info[BoneIndex].bone_offset;
+	}
+
+	for (unsigned int i = 0; i < pNode->mNumChildren; i++) {
+		read_node_heirarchy(AnimationTime, pNode->mChildren[i], GlobalTransformation);
+	}
+}
+
+
+void Model::bone_transform(float timeInSeconds, std::vector<glm::mat4>& Transforms) {
+     glm::mat4 Identity = glm::mat4();
+ 
+     
+    std::cout << "Вошли" << std::endl;
+
+/* The original code with the buggy animation duration */
+     //animDuration = (float)m_pScene->mAnimations[0]->mDuration;
+ 
+     /* Calc animation duration from last frame */
+     unsigned int numPosKeys = scene->mAnimations[0]->mChannels[0]->mNumPositionKeys;
+    //unsigned int numPosKeys = 0;
+
+    std::cout << "Ахуели" << std::endl;
+
+
+     anim_duration = scene->mAnimations[0]->mChannels[0]->mPositionKeys[numPosKeys - 1].mTime;
+ 
+     float TicksPerSecond = (float)(scene->mAnimations[0]->mTicksPerSecond != 0 ? scene->mAnimations[0]->mTicksPerSecond : 25.0f);
+ 
+     float TimeInTicks = timeInSeconds * TicksPerSecond;
+     float AnimationTime = fmod(TimeInTicks, anim_duration);
+ 
+     read_node_heirarchy(AnimationTime, scene->mRootNode, Identity);
+ 
+     Transforms.resize(num_bones);
+ 
+     for (unsigned int  i = 0; i < num_bones; i++) {
+         Transforms[i] = bones_info[i].final_transformation;
+     }
+
+    std::cout << "Вышли" << std::endl;
+
+}
 
 unsigned int texture_from_file(const char *path, const std::string &directory) {
     std::string filename = std::string(path);
