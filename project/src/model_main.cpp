@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     
     ShaderProgram shader("project/src/v_model_shader.txt", "project/src/f_model_shader.txt");
 
-    Model pikachu_model("models/pikachu.dae");
+    Model pikachu_model("models/pm0844_00_fi.dae");
 
     cv::Mat aruco_frame;	
 	aruco::CameraParameters camera;
@@ -81,11 +81,11 @@ int main(int argc, char *argv[]) {
         
         auto markers = MDetector.detect(aruco_frame, camera, marker_size);
         
+        stream.render();
 
         for (auto m:markers) {
             aruco::CvDrawingUtils::draw3dAxis(aruco_frame, m, camera);
        
-        stream.render(); 
         glEnable(GL_DEPTH_TEST);
  
 
@@ -129,10 +129,16 @@ int main(int argc, char *argv[]) {
         glm::mat4 pikachu_mod = glm::mat4(1.0f);  // model matrix (translate, scale, rotate) 3v1
         pikachu_mod = glm::translate(pikachu_mod, glm::vec3(10 * m.Tvec.at<float>(0), 10 * m.Tvec.at<float>(1), -m.Tvec.at<float>(2) * 10)); // В ручную забили
         pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.02, 0.02, 0.02));
-        pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(abs(m.Rvec.at<float>(0)), abs(m.Rvec.at<float>(1)), abs(m.Rvec.at<float>(2))));
-        
+        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(abs(m.Rvec.at<float>(0)), abs(-m.Rvec.at<float>(2)), abs(m.Rvec.at<float>(1))));
+                
 
         //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));
+        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+        pikachu_mod = glm::rotate(pikachu_mod, m.Rvec.at<float>(0), glm::vec3(1.0,0.,0.));
+        pikachu_mod = glm::rotate(pikachu_mod, m.Rvec.at<float>(1), glm::vec3(0.0,1.,0.));
+        pikachu_mod = glm::rotate(pikachu_mod, -m.Rvec.at<float>(2), glm::vec3(0.0,0.,1.));
+
+
         rx -= 0.1;
         printf("\n%f %f %f\n", rx,ry,rz);
         if (rx <= -6) rx = 6;
