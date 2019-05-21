@@ -79,5 +79,7 @@ double Button::get_distance() {
 }
 
 void Button::exec() {
-    to_exec();
+    if (to_exec != nullptr) {
+        to_exec();
+    }
 }

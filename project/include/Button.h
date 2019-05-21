@@ -16,7 +16,7 @@ public:
     Button(GameState *state,
                    GLfloat x, GLfloat y,
                    GLfloat x_size, GLfloat y_size,
-                   std::function<void()> to_exec,
+                   std::function<void()> to_exec = nullptr,
                    std::string path_to_pic = "project/icons/default.png");
     ~Button() override;
 

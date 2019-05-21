@@ -55,13 +55,13 @@ GLFWwindow *Game::get_window() {
 }
 
 
-
 GameState *Game::get_state() {
     return state.get();
 }
 
 
-static bool compare_values(const std::pair<Interactable*, double>& left, const std::pair<Interactable*, double>& right){
+static bool
+compare_values(const std::pair<Interactable *, double> &left, const std::pair<Interactable *, double> &right) {
     return left.second < right.second;
 }
 
@@ -69,7 +69,7 @@ static bool compare_values(const std::pair<Interactable*, double>& left, const s
 static void mouse_button_callback(GLFWwindow *window, int mouse_button, int action, int mods) {
     if (mouse_button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         auto execs = &game_object->get_state()->to_exec;
-        std::map<Interactable*, double> contenders;
+        std::map<Interactable *, double> contenders;
 
         for (auto &exec_obj: *execs) {
             if (exec_obj->is_pointed_at()) {
@@ -77,8 +77,10 @@ static void mouse_button_callback(GLFWwindow *window, int mouse_button, int acti
             }
         }
 
-        std::pair<Interactable*, double> min = *min_element(contenders.begin(), contenders.end(), compare_values);
-        min.first->exec();
+        if (!contenders.empty()) {
+            std::pair<Interactable *, double> min = *min_element(contenders.begin(), contenders.end(), compare_values);
+            min.first->exec();
+        }
 
     }
 }

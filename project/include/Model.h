@@ -9,17 +9,21 @@
 
 class Camera;
 
-class Model : public Renderable {
+class Model : public Renderable, public Interactable {
 public:
     Model(std::string const &path,
           Camera *camera,
           glm::vec3 translate,
           glm::vec3 scale,
           glm::vec3 rotate,
-          float angle);
+          float angle,
+          std::function<void()> to_exec = nullptr);
     ~Model() override = default;
 
     void render() override;
+    bool is_pointed_at() override;
+    double get_distance() override;
+    void exec() override;
 
 private:
     std::vector<Mesh> meshes;
@@ -31,6 +35,7 @@ private:
     glm::vec3 scale;
     glm::vec3 rotate;
     float angle;
+    std::function<void()> to_exec;
 
     void load_model(std::string const &path);
     void process_node(aiNode *node, const aiScene *scene);

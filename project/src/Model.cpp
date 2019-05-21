@@ -8,13 +8,15 @@ Model::Model(std::string const &path,
              glm::vec3 translate,
              glm::vec3 scale,
              glm::vec3 rotate,
-             float angle) {
+             float angle,
+             std::function<void()> to_exec) {
     load_model(path);
     this->translate = translate;
     this->scale = scale;
     this->rotate = rotate;
     this->angle = angle;
     this->camera = camera;
+    this->to_exec = to_exec;
     shader = ShaderProgram("project/shaders/v_model_shader.txt", "project/shaders/f_model_shader.txt");
 }
 
@@ -167,6 +169,23 @@ void Model::render() {
     glDisable(GL_DEPTH_TEST);
 
 }
+
+bool Model::is_pointed_at() {
+    return true;
+}
+
+
+double Model::get_distance() {
+    return 1;
+}
+
+void Model::exec() {
+    if (to_exec != nullptr) {
+        to_exec();
+    }
+    std::cout << "Model was pressed" << std::endl;
+}
+
 
 
 unsigned int texture_from_file(const char *path, const std::string &directory) {

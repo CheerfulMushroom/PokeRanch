@@ -48,7 +48,8 @@ PauseState::PauseState(Game *game_object) : GameState(game_object) {}
 
 void PauseState::load_scene() {
     add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/pause_background.png"));
-    add_element(std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9 * 127/330, "project/pictures/pause_logo.png"));
+    add_element(
+            std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9 * 127 / 330, "project/pictures/pause_logo.png"));
     add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<RanchState>,
                                          "project/icons/play_pink.png"));
 }
@@ -73,24 +74,36 @@ RanchState::RanchState(Game *game_object) : GameState(game_object),
 void RanchState::load_scene() {
     add_element(std::make_unique<VideoStream>(0));
 
-    add_element(std::make_unique<Model>("project/models/Pikachu/pm0025_00_fi.dae", &camera,
-                                        glm::vec3(2.0f, -0.4f, 0.0f), glm::vec3(0.02, 0.02, 0.02),
-                                        glm::vec3(0.0f, 1.0f, 0.0f), 45.0f));
+    add_element(std::make_unique<Model>("project/models/Pikachu/pm0025_00_fi.dae",
+                                        &camera,
+                                        glm::vec3(2.0f, -0.4f, 0.0f),
+                                        glm::vec3(0.02, 0.02, 0.02),
+                                        glm::vec3(0.0f, 1.0f, 0.0f),
+                                        45.0f));
 
-    add_element(std::make_unique<Model>("project/models/Rockruff/dog.dae", &camera,
-                                        glm::vec3(-0.8f, -0.4f, 0.0f), glm::vec3(0.02, 0.02, 0.02),
-                                        glm::vec3(1.0f, 0.0f, 0.0f), 0));
+    add_element(std::make_unique<Model>("project/models/Rockruff/dog.dae",
+                                        &camera,
+                                        glm::vec3(-0.8f, -0.4f, 0.0f),
+                                        glm::vec3(0.02, 0.02, 0.02),
+                                        glm::vec3(1.0f, 0.0f, 0.0f),
+                                        0));
 
-    add_element(std::make_unique<Model>("project/models/Slowpoke/Slowpoke.dae", &camera,
-                                        glm::vec3(1.2f, -0.4f, 0.0f), glm::vec3(0.01, 0.01, 0.01),
-                                        glm::vec3(1.0f, 0.0f, 0.0f), 0));
+    add_element(std::make_unique<Model>("project/models/Slowpoke/Slowpoke.dae",
+                                        &camera,
+                                        glm::vec3(1.2f, -0.4f, 0.0f),
+                                        glm::vec3(0.01, 0.01, 0.01),
+                                        glm::vec3(1.0f, 0.0f, 0.0f),
+                                        0));
 
-    add_element(std::make_unique<Model>("project/models/Litten/pm0844_00_fi.dae", &camera,
-                                        glm::vec3(0.2f, -0.4f, 0.0f), glm::vec3(0.03, 0.03, 0.03),
-                                        glm::vec3(0.0f, 1.0f, 0.0f), 0));
+    add_element(std::make_unique<Model>("project/models/Litten/pm0844_00_fi.dae",
+                                        &camera,
+                                        glm::vec3(0.2f, -0.4f, 0.0f),
+                                        glm::vec3(0.03, 0.03, 0.03),
+                                        glm::vec3(0.0f, 1.0f, 0.0f),
+                                        0));
 
 
-    add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f* 16/9, bf_change_game_state<PauseState>,
+    add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<PauseState>,
                                          "project/icons/menu_pink.png"));
     add_element(std::make_unique<Button>(this, 0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<PokedexState>,
                                          "project/icons/pikachu.png"));
