@@ -21,7 +21,8 @@ public:
     ~Button() override;
 
     void render() override;
-    bool is_triggered() override;
+    bool is_pointed_at() override;
+    double get_distance() override;
     void exec() override;
 
 private:

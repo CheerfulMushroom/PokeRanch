@@ -39,8 +39,10 @@ class Interactable : virtual public GameElement {
 public:
     Interactable();
 
-    // Говорит, если пользователь взаимодействует с объектом
-    virtual bool is_triggered() = 0;
+    // Говорит, если пользователь , курсором указывает на объект
+    virtual bool is_pointed_at() = 0;
+    // Возвращает расстояние до объекта
+    virtual double get_distance() = 0;
     // Выполнение какого-либо действия
     virtual void exec() = 0;
 };

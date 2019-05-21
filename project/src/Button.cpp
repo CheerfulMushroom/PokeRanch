@@ -59,7 +59,7 @@ void Button::render() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-bool Button::is_triggered() {
+bool Button::is_pointed_at() {
     GLFWwindow *window = state->get_game()->get_window();
 
     double x_cursor, y_cursor;
@@ -73,6 +73,10 @@ bool Button::is_triggered() {
     y_cursor = -2 * ((y_cursor) / height - .5);
     return x <= x_cursor && x_cursor <= x + x_size && y <= y_cursor && y_cursor <= y + y_size;
 
+}
+
+double Button::get_distance() {
+    return 0;
 }
 
 void Button::exec() {

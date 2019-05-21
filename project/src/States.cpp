@@ -3,7 +3,6 @@
 #include "States.h"
 #include "Picture.h"
 #include "Button.h"
-#include "MovingPicture.h"
 #include "AdditionalFunctions.h"
 #include "Model.h"
 
@@ -24,7 +23,6 @@ void MenuState::load_scene() {
     add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/main_screen.png"));
     add_element(std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9, "project/pictures/pokemon_logo.png"));
     add_element(std::make_unique<Picture>(-0.25f, 0.25f, 0.5f, 0.5f * 16 / 9 * 56 / 288, "project/pictures/ranch.png"));
-    add_element(std::make_unique<MovingPicture>(0.8f, 0.8f, 0.2f, 0.2f * 16 / 9, test_movement, test_movement, "project/icons/pikachu.png"));
     add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<RanchState>,
                                          "project/icons/play_pink.png"));
 }

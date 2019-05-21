@@ -44,6 +44,7 @@ void Game::start() {
 
     while (!glfwWindowShouldClose(window)) {
         glfwWaitEventsTimeout(0.04);
+        update_game();
         render_game();
     }
 }
@@ -60,15 +61,25 @@ GameState *Game::get_state() {
 }
 
 
+static bool compare_values(const std::pair<Interactable*, double>& left, const std::pair<Interactable*, double>& right){
+    return left.second < right.second;
+}
+
 // Обработка пользовательского ввода (нажатие кнопки мыши)
 static void mouse_button_callback(GLFWwindow *window, int mouse_button, int action, int mods) {
     if (mouse_button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         auto execs = &game_object->get_state()->to_exec;
+        std::map<Interactable*, double> contenders;
+
         for (auto &exec_obj: *execs) {
-            if (exec_obj->is_triggered()) {
-                exec_obj->exec();
-                break;
+            if (exec_obj->is_pointed_at()) {
+                contenders.insert({exec_obj, exec_obj->get_distance()});
             }
         }
+
+        std::pair<Interactable*, double> min = *min_element(contenders.begin(), contenders.end(), compare_values);
+        min.first->exec();
+
     }
 }
+
