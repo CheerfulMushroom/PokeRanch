@@ -19,6 +19,36 @@
 
 using namespace std;
 
+cv::Mat eulerAnglesToRotationMatrix(cv::Vec3f &theta) {
+    // Calculate rotation about x axis
+    cv::Mat R_x = (cv::Mat_<float>(3,3) <<
+               1,       0,              0,
+               0,       cos(theta[0]),   -sin(theta[0]),
+               0,       sin(theta[0]),   cos(theta[0])
+               );
+
+    // Calculate rotation about y axis
+    cv::Mat R_y = (cv::Mat_<float>(3,3) <<
+               cos(theta[2]),    0,      sin(theta[2]),
+               0,               1,      0,
+               -sin(theta[2]),   0,      cos(theta[2])
+               );
+
+    // Calculate rotation about z axis
+    cv::Mat R_z = (cv::Mat_<float>(3,3) <<
+               cos(theta[1]),    -sin(theta[1]),      0,
+               sin(theta[1]),    cos(theta[1]),       0,
+               0,               0,                  1);
+
+
+    // Combined rotation matrix
+    cv::Mat R = R_x * R_y * R_z;
+
+    return R;
+
+}
+
+
 int main(int argc, char *argv[]) {
 
 	if (argc != 3) {
@@ -30,7 +60,7 @@ int main(int argc, char *argv[]) {
 
     glEnable(GL_DEPTH_TEST);
 
-    Camera GL_camera(glm::vec3(0.0f, 0.0f, 5.0f));  // Создает камеру
+    //Camera GL_camera(glm::vec3(0.0f, 0.0f, 5.0f));  // Создает камеру
 
     VideoStream stream;
 
@@ -51,7 +81,7 @@ int main(int argc, char *argv[]) {
     
     ShaderProgram shader("project/src/v_model_shader.txt", "project/src/f_model_shader.txt");
 
-    Model pikachu_model("models/pikachu.dae");
+    Model pikachu_model("models/pm0844_00_fi.dae");
 
     cv::Mat aruco_frame;	
 	aruco::CameraParameters camera;
@@ -59,13 +89,15 @@ int main(int argc, char *argv[]) {
 	MDetector.setDictionary("ARUCO_MIP_36h12");
 
     double proj_mas[16];
-        camera.glGetProjectionMatrix(camera.CamSize, screen.get_size(), proj_mas, 0.01, 100);
+        camera.glGetProjectionMatrix(camera.CamSize, screen.get_size(), proj_mas, 0.01, 100); // Транспонировать?
         glm::mat4 projection = glm::make_mat4(proj_mas);
 
-    float rx = 6;
-    float ry = 1;
-    float rz = 1;
-    
+    float rx;
+    float ry;
+    float rz;
+    float pi = 3.1415926535;
+    float grad = 1;
+    cv::Mat transf;
     while (!glfwWindowShouldClose(screen.window))
     {
         screen.frame_start_time = glfwGetTime();
@@ -94,8 +126,9 @@ int main(int argc, char *argv[]) {
         //glm::mat4 projection = glm::transpose(projection_T);
         //glm::mat4 projection = glm::transpose(projection_T);
         //glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f); // Создается projection matrix
-        
-        glm::mat4 view = GL_camera.GetViewMatrix();  // Получает view matrix
+        cv::Point3f camera_loc = camera.getCameraLocation(m.Rvec, m.Tvec); 
+        glm::mat4 view = glm::lookAt(glm::vec3(camera_loc.x,camera_loc.z,camera_loc.y),glm::vec3(0.,0.,0.),glm::vec3(0.,0.,1.));
+        //glm::mat4 view = GL_camera.GetViewMatrix();  // Получает view matrix
         
         /*cv::Point3f cam_pose = camera.getCameraLocation(m.Rvec,m.Tvec);
 
@@ -107,7 +140,8 @@ int main(int argc, char *argv[]) {
         */
 
         shader.set_mat4_uniform("projection", projection); // Передали в шейдер матрицу проекции
-        //shader.set_mat4_uniform("view", view);  // -//- матрицу вида
+        
+        shader.set_mat4_uniform("view", view);  // -//- матрицу вида
 
         cv::Mat trans = m.getTransformMatrix();
 
@@ -123,19 +157,36 @@ int main(int argc, char *argv[]) {
         glm::mat4 pikachu_mod_inv;
         glm::invert(pikachu_mod_inv, pikachu_mod);
         */
-        
-        cv::Mat rodrig;
-        Rodrigues(m.Rvec, rodrig);
+        rx = m.Rvec.at<float>(0);
+        ry = -m.Rvec.at<float>(2);
+        rz = m.Rvec.at<float>(1);
+        cv::Vec3f rvec = m.Rvec;
+        cv::Mat rodrig = eulerAnglesToRotationMatrix(rvec);
+        //Rodrigues(m.Rvec, rodrig);
         glm::mat4 pikachu_mod = glm::mat4(1.0f);  // model matrix (translate, scale, rotate) 3v1
-        pikachu_mod = glm::translate(pikachu_mod, glm::vec3(10 * m.Tvec.at<float>(0), 10 * m.Tvec.at<float>(1), -m.Tvec.at<float>(2) * 10)); // В ручную забили
+        //pikachu_mod = glm::translate(pikachu_mod, glm::vec3(m.Tvec.at<float>(0), m.Tvec.at<float>(2), m.Tvec.at<float>(1))); // В ручную забили
         pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.02, 0.02, 0.02));
-        pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(abs(m.Rvec.at<float>(0)), abs(m.Rvec.at<float>(1)), abs(m.Rvec.at<float>(2))));
         
+        //aruco::MarkerPoseTracker mpt;
+        //mpt.estimatePose(m, camera, marker_size);
+        //transf = mpt.getRTMatrix();
+        
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 3; ++j) pikachu_mod[j][i] = rodrig.at<float>(i,j);
 
-        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));
-        rx -= 0.1;
-        printf("\n%f %f %f\n", rx,ry,rz);
-        if (rx <= -6) rx = 6;
+        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(m.Rvec.at<float>(0), -m.Rvec.at<float>(2), m.Rvec.at<float>(1)));
+        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(rx<0?pi-abs(rx):rx, ry<0?pi-abs(ry):ry, rz<0?pi-abs(rz):rz));
+
+
+        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(250.0f), glm::vec3(1.0, 0.0, 0.0));
+        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-5.0f), glm::vec3(0.0, 1.0, 0.0));
+        
+        
+        /*pikachu_mod = glm::rotate(pikachu_mod, m.Rvec.at<float>(0), glm::vec3(1.0, 0.0, 0.0));
+        pikachu_mod = glm::rotate(pikachu_mod, m.Rvec.at<float>(1), glm::vec3(0.0, 1.0, 0.0));
+        pikachu_mod = glm::rotate(pikachu_mod, -m.Rvec.at<float>(2), glm::vec3(0.0, 0.0, 1.0));
+        */
+
         /*for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 4; ++j) pikachu_mod[i][j] = trans.at<float>(j,i);
         */
@@ -158,23 +209,25 @@ int main(int argc, char *argv[]) {
         pikachu_mod[3][3] = 1;
         */
 
-        //pikachu_mod = glm::translate(pikachu_mod, glm::vec3(m.Tvec.at<float>(0), m.Tvec.at<float>(1),m.Tvec.at<float>(2))); // В ручную забили
+        pikachu_mod = glm::translate(pikachu_mod, glm::vec3(m.Tvec.at<float>(0), m.Tvec.at<float>(1),-m.Tvec.at<float>(2))); // В ручную забили
         //pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.02, 0.02, 0.02));
         //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(m.Rvec.at<float>(0), m.Rvec.at<float>(1),m.Rvec.at<float>(2)));      
     
 
         printf("\n%f %f %f\n%f %f %f\n%f %f %f\n", m.Tvec.at<float>(0), m.Tvec.at<float>(1),m.Tvec.at<float>(2),0.01,0.01,0.01, m.Rvec.at<float>(0), m.Rvec.at<float>(1),m.Rvec.at<float>(2));
         //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // Вращение координат
-        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // Вращение координат
+        /*pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-140.0f), glm::vec3(0.0f, 0.0f, 1.0f)); // Вращение координат
+        pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-30.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // Вращение координат
+        */
 
-        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Вращение координат
+        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians((grad++)), glm::vec3(0.0f, 1.0f, 0.0f)); // Вращение координат
         //pikachu_mod = inverse(pikachu_mod);
         for (int i = 0; i < 4; ++i) {
             for (int j = 0; j < 4; ++j) cout << pikachu_mod[j][i] << ' ';
             cout << endl;
         }
         shader.set_mat4_uniform("model", pikachu_mod); // Передали матрицу модели
-        
+        printf("\nGrad: %f Rad: %f\n", grad, glm::radians(grad++));
         pikachu_model.render(shader);
 
           // Или цикл должен закрываться ниже???
@@ -194,6 +247,7 @@ int main(int argc, char *argv[]) {
     glfwTerminate();
     return 0;
 }
+
 
 /* Что нужно получить с ArUco ? 
 
