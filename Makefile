@@ -27,7 +27,7 @@ MODULES = \
 SRCS = \
     ./project/src/GameWindow.cpp \
     ./project/src/ShaderProgram.cpp \
-    ./project/src/model_main_anim.cpp \
+    ./project/src/main_best.cpp \
     ./project/src/ogldev/ogldev_skinned_mesh.cpp \
     ./project/src/ogldev/math_3d.cpp \
     ./project/src/VideoStream_test.cpp

@@ -1,21 +1,3 @@
-/*
-
-	Copyright 2011 Etay Meiri
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #ifndef OGLDEV_SKINNED_MESH_H
 #define	OGLDEV_SKINNED_MESH_H
 
@@ -50,17 +32,22 @@ public:
 
     bool LoadMesh(const string& Filename);
 
-    void Render(ShaderProgram shader);
-	
+    void Render();
+
+    void update(float running_time, glm::mat4 projection, glm::mat4 view, glm::mat4 model);
+
     uint NumBones() const
     {
         return m_NumBones;
     }
     
-    void BoneTransform(float TimeInSeconds, vector<Matrix4f>& Transforms);
+    void BoneTransform(float TimeInSeconds);
     
 private:
     #define NUM_BONES_PER_VEREX 4
+
+
+    ShaderProgram shader;
 
     std::string directory;
     std::vector<Texture> textures_loaded;
@@ -149,21 +136,17 @@ enum VB_TYPES {
     };
     
     vector<MeshEntry> m_Entries;
-
-    //vector<Texture*> m_Textures;
-
-    //std::vector<Texture> textures;
-
      
     map<string,uint> m_BoneMapping; // maps a bone name to its index
     uint m_NumBones;
     vector<BoneInfo> m_BoneInfo;
     Matrix4f m_GlobalInverseTransform;
-    
+
+    vector<Matrix4f> transforms;
+
     const aiScene* m_pScene;
     Assimp::Importer m_Importer;
 };
 
 
 #endif	/* OGLDEV_SKINNED_MESH_H */
-

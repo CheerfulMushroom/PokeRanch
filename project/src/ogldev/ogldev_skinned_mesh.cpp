@@ -1,23 +1,3 @@
-/*
-
-	Copyright 2011 Etay Meiri
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-
-
 #include <ogldev_skinned_mesh.h>
 #include <opencv2/opencv.hpp>
 
@@ -40,7 +20,6 @@ void SkinnedMesh::VertexBoneData::AddBoneData(uint BoneID, float Weight)
         }        
     }
     
-    // should never get here - more bones than we have space for
     assert(0);
 }
 
@@ -51,7 +30,7 @@ SkinnedMesh::SkinnedMesh(std::string const &path)
     m_NumBones = 0;
     m_pScene = NULL;
 
-
+    shader = ShaderProgram("project/src/v_model_anim_shader.txt", "project/src/f_model_anim_shader.txt");
     directory = path.substr(0, path.find_last_of('/'));
 
     LoadMesh(path);
@@ -67,9 +46,6 @@ SkinnedMesh::~SkinnedMesh()
 
 void SkinnedMesh::Clear()
 {
-   // for (uint i = 0 ; i < m_Textures.size() ; i++) {
-        //SAFE_DELETE(m_Textures[i]);
-    //}
 
     if (m_Buffers[0] != 0) {
         glDeleteBuffers(ARRAY_SIZE_IN_ELEMENTS(m_Buffers), m_Buffers);
@@ -84,7 +60,6 @@ void SkinnedMesh::Clear()
 
 bool SkinnedMesh::LoadMesh(const string& Filename)
 {
-    // Release the previously loaded mesh (if it exists)
     Clear();
  
     // Create the VAO
@@ -117,7 +92,6 @@ bool SkinnedMesh::LoadMesh(const string& Filename)
 bool SkinnedMesh::InitFromScene(const aiScene* pScene, const string& Filename)
 {  
     m_Entries.resize(pScene->mNumMeshes);
-    //m_Textures.resize(pScene->mNumMaterials);
 
     vector<Vector3f> Positions;
     vector<Vector3f> Normals;
@@ -151,10 +125,6 @@ bool SkinnedMesh::InitFromScene(const aiScene* pScene, const string& Filename)
         const aiMesh* paiMesh = pScene->mMeshes[i];
         InitMesh(i, pScene, paiMesh, Positions, Normals, TexCoords, Bones, Indices);
     }
-
-    //if (!InitMaterials(pScene, Filename)) {
-        //return false;
-    //}
 
     // Generate and populate the buffers with vertex attributes and the indices
   	glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[POS_VB]);
@@ -219,21 +189,8 @@ void SkinnedMesh::InitMesh(uint MeshIndex,
         Indices.push_back(Face.mIndices[2]);
     }
 
-
     aiMaterial *material = pScene->mMaterials[paiMesh->mMaterialIndex];
-
-    std::vector<Texture> diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-    textures_loaded.insert(textures_loaded.end(), diffuse_maps.begin(), diffuse_maps.end());
-
-    std::vector<Texture> specularMaps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
-    textures_loaded.insert(textures_loaded.end(), specularMaps.begin(), specularMaps.end());
-        // 3. normal maps
-    std::vector<Texture> normalMaps = load_material_textures(material, aiTextureType_HEIGHT, "texture_normal");
-    textures_loaded.insert(textures_loaded.end(), normalMaps.begin(), normalMaps.end());
-        // 4. height maps
-    std::vector<Texture> heightMaps = load_material_textures(material, aiTextureType_AMBIENT, "texture_height");
-    textures_loaded.insert(textures_loaded.end(), heightMaps.begin(), heightMaps.end());
-
+    load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 }
 
 
@@ -266,53 +223,15 @@ void SkinnedMesh::LoadBones(uint MeshIndex, const aiMesh* pMesh, vector<VertexBo
     }    
 }
 
-void SkinnedMesh::Render(ShaderProgram shader)
+void SkinnedMesh::Render()
 {
     glBindVertexArray(m_VAO);
-   
-    unsigned int diffuseNr  = 1;
-    unsigned int specularNr = 1;
-    unsigned int normalNr   = 1;
-    unsigned int heightNr   = 1;
-
-
-    //std::cout << textures_loaded.size() << std::endl;
-
-   /* for (unsigned int i = 0; i < textures_loaded.size(); i++) {
-        glActiveTexture(GL_TEXTURE0); // active proper texture unit before binding
-              // retrieve texture number (the N in diffuse_textureN)
-        std::string number;
-        std::string name = textures_loaded[i].type;
-        if(name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
-        else if(name == "texture_specular")
-            number = std::to_string(specularNr++); // transfer unsigned int to stream
-        else if(name == "texture_normal")
-            number = std::to_string(normalNr++); // transfer unsigned int to stream
-        else if(name == "texture_height")
-            number = std::to_string(heightNr++); // transfer unsigned int to stream
-  
-                                                       // now set the sampler to the correct texture unit
-        glUniform1i(glGetUniformLocation(shader.program, (name + number).c_str()), i);
-              // and finally bind the texture
-        glBindTexture(GL_TEXTURE_2D, textures_loaded[i].id);
-    } */
-
- 
-    //std::cout << m_Entries.size() << std::endl;
 
     for (uint i = 0 ; i < m_Entries.size() ; i++) {
         const uint MaterialIndex = m_Entries[i].MaterialIndex;
 
-        //assert(MaterialIndex < m_Textures.size());
-        
-        //if (textures[MaterialIndex]) {
-            //textures[MaterialIndex]->Bind(GL_TEXTURE0);
-        //}
-
         glUniform1i(glGetUniformLocation(shader.program, "texture_diffuse1"), 0);
-               // and finally bind the texture
-        glBindTexture(GL_TEXTURE_2D, textures_loaded[MaterialIndex + i].id);
+        glBindTexture(GL_TEXTURE_2D, textures_loaded[i].id);
     
 
 		glDrawElementsBaseVertex(GL_TRIANGLES, 
@@ -320,11 +239,34 @@ void SkinnedMesh::Render(ShaderProgram shader)
                                  GL_UNSIGNED_INT, 
                                  (void*)(sizeof(uint) * m_Entries[i].BaseIndex), 
                                  m_Entries[i].BaseVertex);
+
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    // Make sure the VAO is not changed from the outside    
     glBindVertexArray(0);
 }
+
+
+void SkinnedMesh::update(float running_time, glm::mat4 projection, glm::mat4 view, glm::mat4 model ) {
+
+    shader.use();
+
+    BoneTransform(running_time);
+
+    for (unsigned int i = 0; i < transforms.size(); ++i) {
+        const std::string name = "gBones[" + std::to_string(i) + "]";
+        GLuint boneTransform = glGetUniformLocation(shader.program, name.c_str());
+        glUniformMatrix4fv(boneTransform, 1, GL_TRUE, (const GLfloat*) transforms[i]);
+    }
+
+    shader.set_mat4_uniform("projection", projection);
+    shader.set_mat4_uniform("view", view);
+    shader.set_mat4_uniform("model", model);
+}
+
+
+
 
 
 uint SkinnedMesh::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim)
@@ -445,7 +387,6 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, co
     const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
     
     if (pNodeAnim) {
-        // Interpolate scaling and generate scaling transformation matrix
         aiVector3D Scaling;
         CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
         Matrix4f ScalingM;
@@ -479,7 +420,7 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, co
 }
 
 
-void SkinnedMesh::BoneTransform(float TimeInSeconds, vector<Matrix4f>& Transforms)
+void SkinnedMesh::BoneTransform(float TimeInSeconds)
 {
     Matrix4f Identity;
     Identity.InitIdentity();
@@ -490,14 +431,13 @@ void SkinnedMesh::BoneTransform(float TimeInSeconds, vector<Matrix4f>& Transform
 
     ReadNodeHeirarchy(AnimationTime, m_pScene->mRootNode, Identity);
 
-    Transforms.resize(m_NumBones);
+    transforms.resize(m_NumBones);
 
     for (uint i = 0 ; i < m_NumBones ; i++) {
-        Transforms[i] = m_BoneInfo[i].FinalTransformation;
+        transforms[i] = m_BoneInfo[i].FinalTransformation;
     }
 }
 
-//good
 const aiNodeAnim* SkinnedMesh::FindNodeAnim(const aiAnimation* pAnimation, const string NodeName)
 {
     for (uint i = 0 ; i < pAnimation->mNumChannels ; i++) {
@@ -520,24 +460,13 @@ std::vector<Texture> SkinnedMesh::load_material_textures(aiMaterial *mat, aiText
         aiString str;
         mat->GetTexture(type, i, &str);
 
-        bool skip = false;
-        for (unsigned int j = 0; j < textures_loaded.size(); j++) {
-            if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0) {
-                textures.push_back(textures_loaded[j]);
-                skip = true;
-                break;
-            }
-        }
+        Texture texture;
+        texture.id = texture_from_file(str.C_Str(), this->directory);
+        texture.type = type_name;
+        texture.path = str.C_Str();
 
-        if (!skip) {
-            Texture texture;
-            texture.id = texture_from_file(str.C_Str(), this->directory);
-            texture.type = type_name;
-            texture.path = str.C_Str();
-            textures.push_back(texture);
-            textures_loaded.push_back(texture);
-        }
-
+        textures.push_back(texture);
+        textures_loaded.push_back(texture);
     }
 
     return textures;
