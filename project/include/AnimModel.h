@@ -23,16 +23,16 @@ struct Texture {
 };
 
 
-class SkinnedMesh
+class AnimModel
 {
 public:
-    SkinnedMesh(const std::string &path);
+    AnimModel(const std::string &path);
 
-    ~SkinnedMesh();
+    ~AnimModel();
 
-    bool LoadMesh(const string& Filename);
+    bool load_mesh(const string& Filename);
 
-    void Render();
+    void render();
 
     void update(float running_time, glm::mat4 projection, glm::mat4 view, glm::mat4 model);
 

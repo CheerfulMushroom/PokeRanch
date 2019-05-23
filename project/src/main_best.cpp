@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <opencv2/highgui.hpp>
 #include <GameWindow.h>
-#include <ogldev_skinned_mesh.h>
+#include <AnimModel.h>
 #include <Camera.h>
 #include <VideoStream.h>
 #include </usr/local/include/aruco/aruco.h>
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
     stream.configure_VAO();
     
-    SkinnedMesh rockruff("models/rockruff.dae");
+    AnimModel rockruff("models/rockruff.dae");
 
     cv::Mat aruco_frame;
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 
         rockruff.update(RunningTime, projection, view, pikachu_mod);
 
-        rockruff.Render();
+        rockruff.render();
 
         glDisable(GL_DEPTH_TEST);
 

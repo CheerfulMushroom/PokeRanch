@@ -28,8 +28,8 @@ SRCS = \
     ./project/src/GameWindow.cpp \
     ./project/src/ShaderProgram.cpp \
     ./project/src/main_best.cpp \
-    ./project/src/ogldev/ogldev_skinned_mesh.cpp \
-    ./project/src/ogldev/math_3d.cpp \
+    ./project/src/AnimModel.cpp \
+    ./project/src/math_3d.cpp \
     ./project/src/VideoStream_test.cpp
 
 all: $(SRCS)
