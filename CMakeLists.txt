@@ -24,7 +24,9 @@ add_executable(main.out
         ${PROJECT_SOURCE_DIR}/MovingPicture.cpp
         ${PROJECT_SOURCE_DIR}/Utils.cpp
         ${PROJECT_SOURCE_DIR}/Model.cpp
-        ${PROJECT_SOURCE_DIR}/Mesh.cpp)
+        ${PROJECT_SOURCE_DIR}/Mesh.cpp
+        ${PROJECT_SOURCE_DIR}/AnimModel.cpp
+        ${PROJECT_SOURCE_DIR}/math_3d.cpp)
 
 target_link_libraries(main.out
         GLEW

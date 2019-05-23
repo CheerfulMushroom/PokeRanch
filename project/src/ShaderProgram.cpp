@@ -26,12 +26,12 @@ ShaderProgram::ShaderProgram(const char *v_shader_path, const char *f_shader_pat
     GLuint fragment_shader = 0;
 
     vertices_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertices_shader, 1, &v_shader_source, NULL);
+    glShaderSource(vertices_shader, 1, &v_shader_source, nullptr);
     glCompileShader(vertices_shader);
 
 
     fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &f_shader_source, NULL);
+    glShaderSource(fragment_shader, 1, &f_shader_source, nullptr);
     glCompileShader(fragment_shader);
 
 
