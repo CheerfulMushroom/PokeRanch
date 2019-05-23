@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
     stream.configure_VAO();
     
-    AnimModel rockruff("models/rockruff.dae");
+    AnimModel rockruff("models/pikachu_sleep.dae");
 
     cv::Mat aruco_frame;
 
