@@ -86,6 +86,8 @@ public:
     void load_scene() override;
     void render_game() override;
     void update_game() override;
+
+    Camera camera;
 };
 
 

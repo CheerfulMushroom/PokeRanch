@@ -36,7 +36,8 @@ AnimModel::AnimModel(const std::string &path,
     model = glm::mat4(1.0f);
     model = glm::translate(model, translate);
     model = glm::scale(model, scale);
-    model = glm::rotate(model, glm::degrees(angle), rotate);
+    model = glm::rotate(model, glm::radians(angle), rotate);
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f);
     view = camera->GetViewMatrix();
 
@@ -232,6 +233,7 @@ void AnimModel::LoadBones(uint MeshIndex, const aiMesh *pMesh, vector<VertexBone
 void AnimModel::render() {
     glEnable(GL_DEPTH_TEST);
 
+    shader.use();
     glBindVertexArray(m_VAO);
 
     for (uint i = 0; i < m_Entries.size(); i++) {
@@ -258,7 +260,6 @@ void AnimModel::render() {
 
 
 void AnimModel::update() {
-
     shader.use();
 
     BoneTransform((float) glfwGetTime());
@@ -440,6 +441,14 @@ void AnimModel::BoneTransform(float TimeInSeconds) {
         transforms[i] = m_BoneInfo[i].FinalTransformation;
     }
 }
+
+
+void AnimModel::change_animation(std::string path) {
+    Clear();
+    load_mesh(path);
+}
+
+
 
 const aiNodeAnim *AnimModel::FindNodeAnim(const aiAnimation *pAnimation, const string NodeName) {
     for (uint i = 0; i < pAnimation->mNumChannels; i++) {

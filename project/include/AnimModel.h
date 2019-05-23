@@ -52,6 +52,8 @@ public:
 
     void BoneTransform(float TimeInSeconds);
 
+    void change_animation(std::string path);
+
 private:
 #define NUM_BONES_PER_VEREX 4
 
