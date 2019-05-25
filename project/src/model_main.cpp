@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 
     glEnable(GL_DEPTH_TEST);
 
-    Camera GL_camera(glm::vec3(0.0f, 0.0f, 5.0f));  // Создает камеру
+    //Camera GL_camera(glm::vec3(0.0f, 0.0f, 5.0f));  // Создает камеру
 
     VideoStream stream;
 
@@ -131,8 +131,8 @@ int main(int argc, char *argv[]) {
         //glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f); // Создается projection matrix
         //cv::Point3f camera_loc = camera.getCameraLocation(m.Rvec, m.Tvec); 
         //glm::mat4 view = glm::lookAt(glm::vec3(camera_loc.x,camera_loc.z,camera_loc.y),glm::vec3(0.,0.,0.),glm::vec3(0.,0.,1.));
-        glm::mat4 view_test = GL_camera.GetViewMatrix();  // Получает view matrix
-        shader.set_mat4_uniform("view", view_test); 
+        //glm::mat4 view_test = GL_camera.GetViewMatrix();  // Получает view matrix
+        //shader.set_mat4_uniform("view", view_test); 
 
 
         
@@ -166,9 +166,15 @@ int main(int argc, char *argv[]) {
 		
         }
         
+        
         viewMatrix.at<float>(0, 3) = (float)m.Tvec.at<float>(0) * 0.1f;
         viewMatrix.at<float>(1, 3) = -(float)m.Tvec.at<float>(2) * 0.1f;
         viewMatrix.at<float>(2, 3) = 0.1f * (float)m.Tvec.at<float>(1);
+    
+
+        //viewMatrix.at<float>(0, 3) = 0.;
+        //viewMatrix.at<float>(1, 3) = 0.;
+        //viewMatrix.at<float>(2, 3) = 0.;
 
         viewMatrix.at<float>(3, 3) = 1.0f;
 
@@ -223,7 +229,9 @@ int main(int argc, char *argv[]) {
         //cv::Mat rodrig = eulerAnglesToRotationMatrix(rvec);
         //Rodrigues(m.Rvec, rodrig);
         glm::mat4 pikachu_mod = glm::mat4(1.0f);  // model matrix (translate, scale, rotate) 3v1
-        //pikachu_mod = glm::translate(pikachu_mod, glm::vec3(m.Tvec.at<float>(0), -m.Tvec.at<float>(2), m.Tvec.at<float>(1))); // В ручную забили
+        //pikachu_mod = glm::translate(pikachu_mod, glm::vec3(0.1*m.Tvec.at<float>(0), -0.1*m.Tvec.at<float>(2), 0.1*m.Tvec.at<float>(1))); // В ручную забили
+        //pikachu_mod = glm::translate(pikachu_mod, glm::vec3(1.0, 1.0, -1.0));
+        
         pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.02, 0.02, 0.02));
         
         //aruco::MarkerPoseTracker mpt;
