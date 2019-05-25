@@ -113,11 +113,12 @@ int main(int argc, char *argv[]) {
         
         auto markers = MDetector.detect(aruco_frame, camera, marker_size);
         
+        stream.render();
+        for (auto m:markers) aruco::CvDrawingUtils::draw3dAxis(aruco_frame, m, camera);
 
         for (auto m:markers) {
-            aruco::CvDrawingUtils::draw3dAxis(aruco_frame, m, camera);
+            //aruco::CvDrawingUtils::draw3dAxis(aruco_frame, m, camera);
        
-        stream.render(); 
         glEnable(GL_DEPTH_TEST);
  
 
@@ -126,8 +127,8 @@ int main(int argc, char *argv[]) {
         //glm::mat4 projection = glm::transpose(projection_T);
         //glm::mat4 projection = glm::transpose(projection_T);
         //glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f); // Создается projection matrix
-        cv::Point3f camera_loc = camera.getCameraLocation(m.Rvec, m.Tvec); 
-        glm::mat4 view = glm::lookAt(glm::vec3(camera_loc.x,camera_loc.z,camera_loc.y),glm::vec3(0.,0.,0.),glm::vec3(0.,0.,1.));
+        //cv::Point3f camera_loc = camera.getCameraLocation(m.Rvec, m.Tvec); 
+        //glm::mat4 view = glm::lookAt(glm::vec3(camera_loc.x,camera_loc.z,camera_loc.y),glm::vec3(0.,0.,0.),glm::vec3(0.,0.,1.));
         //glm::mat4 view = GL_camera.GetViewMatrix();  // Получает view matrix
         
         /*cv::Point3f cam_pose = camera.getCameraLocation(m.Rvec,m.Tvec);
@@ -139,11 +140,53 @@ int main(int argc, char *argv[]) {
         );
         */
 
+        cv::Mat viewMatrix = cv::Mat::zeros(4, 4, CV_32F);
+        
+        viewMatrix.at<float>(0, 3) = 0;
+	    viewMatrix.at<float>(1, 3) = 0;
+	    viewMatrix.at<float>(2, 3) = 0;
+        viewMatrix.at<float>(3, 3) = 1;
+
+        cv::Mat rot_mat;
+        cv::Rodrigues(m.Rvec, rot_mat);
+
+        for (unsigned int row = 0; row < 3; ++row) {
+			
+            for (unsigned int col = 0; col < 3; ++col) {
+				viewMatrix.at<float>(row, col) = (float)rot_mat.at<float>(row, col);
+			}
+		
+        }
+        
+        //viewMatrix.at<float>(0, 3) = (float)m.Tvec.at<float>(0) * 0.1f;
+        //viewMatrix.at<float>(1, 3) = -(float)m.Tvec.at<float>(2) * 0.1f;
+        //viewMatrix.at<float>(2, 3) = 0.1f * (float)m.Tvec.at<float>(1);
+
+        viewMatrix.at<float>(3, 3) = 1.0f;
+
+        cv::Mat cvToGl = cv::Mat::zeros(4, 4, CV_32F);
+		
+        cvToGl.at<float>(0, 0) = 1.0f;
+		cvToGl.at<float>(1, 1) = -1.0f; // Invert the y axis
+		cvToGl.at<float>(2, 2) = -1.0f; // invert the z axis
+		cvToGl.at<float>(3, 3) = 1.0f;
+		
+        viewMatrix = cvToGl * viewMatrix;
+        
+        cv::transpose(viewMatrix, viewMatrix);
+
+        glm::mat4 view;        
+        
+        for (unsigned int i = 0; i < 4; ++i)
+            for (unsigned int j = 0; j < 4; ++j) {
+                view[i][j] = viewMatrix.at<float>(i,j);
+            }
+
         shader.set_mat4_uniform("projection", projection); // Передали в шейдер матрицу проекции
         
         shader.set_mat4_uniform("view", view);  // -//- матрицу вида
 
-        cv::Mat trans = m.getTransformMatrix();
+        //cv::Mat trans = m.getTransformMatrix();
 
         /*for (int i = 0; i < 4; ++i) {
             for (int j = 0; j < 4; ++j) cout << trans.at<float>(i,j) << ' ';
@@ -157,24 +200,24 @@ int main(int argc, char *argv[]) {
         glm::mat4 pikachu_mod_inv;
         glm::invert(pikachu_mod_inv, pikachu_mod);
         */
-        rx = m.Rvec.at<float>(0);
-        ry = -m.Rvec.at<float>(2);
-        rz = m.Rvec.at<float>(1);
-        cv::Vec3f rvec = m.Rvec;
-        cv::Mat rodrig = eulerAnglesToRotationMatrix(rvec);
+        //rx = m.Rvec.at<float>(0);
+        //ry = -m.Rvec.at<float>(2);
+        //rz = m.Rvec.at<float>(1);
+        //cv::Vec3f rvec = m.Rvec;
+        //cv::Mat rodrig = eulerAnglesToRotationMatrix(rvec);
         //Rodrigues(m.Rvec, rodrig);
         glm::mat4 pikachu_mod = glm::mat4(1.0f);  // model matrix (translate, scale, rotate) 3v1
-        //pikachu_mod = glm::translate(pikachu_mod, glm::vec3(m.Tvec.at<float>(0), m.Tvec.at<float>(2), m.Tvec.at<float>(1))); // В ручную забили
+        pikachu_mod = glm::translate(pikachu_mod, glm::vec3(m.Tvec.at<float>(0), -m.Tvec.at<float>(2), m.Tvec.at<float>(1))); // В ручную забили
         pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.02, 0.02, 0.02));
         
         //aruco::MarkerPoseTracker mpt;
         //mpt.estimatePose(m, camera, marker_size);
         //transf = mpt.getRTMatrix();
         
-        for (int i = 0; i < 3; ++i)
-            for (int j = 0; j < 3; ++j) pikachu_mod[j][i] = rodrig.at<float>(i,j);
+        //for (int i = 0; i < 3; ++i)
+            //for (int j = 0; j < 3; ++j) pikachu_mod[j][i] = rodrig.at<float>(i,j);
 
-        //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(m.Rvec.at<float>(0), -m.Rvec.at<float>(2), m.Rvec.at<float>(1)));
+        pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
         //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(rx<0?pi-abs(rx):rx, ry<0?pi-abs(ry):ry, rz<0?pi-abs(rz):rz));
 
 
@@ -209,7 +252,7 @@ int main(int argc, char *argv[]) {
         pikachu_mod[3][3] = 1;
         */
 
-        pikachu_mod = glm::translate(pikachu_mod, glm::vec3(m.Tvec.at<float>(0), m.Tvec.at<float>(1),-m.Tvec.at<float>(2))); // В ручную забили
+        //pikachu_mod = glm::translate(pikachu_mod, glm::vec3(m.Tvec.at<float>(0), m.Tvec.at<float>(1),-m.Tvec.at<float>(2))); // В ручную забили
         //pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.02, 0.02, 0.02));
         //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(-90.0f), glm::vec3(m.Rvec.at<float>(0), m.Rvec.at<float>(1),m.Rvec.at<float>(2)));      
     
@@ -222,12 +265,14 @@ int main(int argc, char *argv[]) {
 
         //pikachu_mod = glm::rotate(pikachu_mod, glm::radians((grad++)), glm::vec3(0.0f, 1.0f, 0.0f)); // Вращение координат
         //pikachu_mod = inverse(pikachu_mod);
-        for (int i = 0; i < 4; ++i) {
+        /*for (int i = 0; i < 4; ++i) {
             for (int j = 0; j < 4; ++j) cout << pikachu_mod[j][i] << ' ';
             cout << endl;
         }
+        */
+
         shader.set_mat4_uniform("model", pikachu_mod); // Передали матрицу модели
-        printf("\nGrad: %f Rad: %f\n", grad, glm::radians(grad++));
+        //printf("\nGrad: %f Rad: %f\n", grad, glm::radians(grad++));
         pikachu_model.render(shader);
 
           // Или цикл должен закрываться ниже???
