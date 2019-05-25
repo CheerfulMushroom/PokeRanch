@@ -1,26 +1,28 @@
-#include "Model.h"
+#include "Cake.h"
+
+#include "Cake.h"
 #include "Camera.h"
 
-static unsigned int texture_from_file(const char *path, const std::string &directory);
+unsigned int texture_from_file(const char *path, const std::string &directory);
 
-Model::Model(std::string const &path,
+Cake::Cake(std::string const &path,
              Camera *camera,
              glm::vec3 translate,
              glm::vec3 scale,
              glm::vec3 rotate,
-             float angle,
-             std::function<void()> to_exec) {
+             float angle) {
     load_model(path);
     this->translate = translate;
     this->scale = scale;
     this->rotate = rotate;
     this->angle = angle;
     this->camera = camera;
-    this->to_exec = to_exec;
+    y = 2;
+    last_update_time = glfwGetTime();
     shader = ShaderProgram("project/shaders/v_model_shader.txt", "project/shaders/f_model_shader.txt");
 }
 
-void Model::load_model(std::string const &path) {
+void Cake::load_model(std::string const &path) {
     Assimp::Importer import;
 
     const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -37,7 +39,7 @@ void Model::load_model(std::string const &path) {
 }
 
 
-void Model::process_node(aiNode *node, const aiScene *scene) {
+void Cake::process_node(aiNode *node, const aiScene *scene) {
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
         meshes.push_back(process_mesh(mesh, scene));
@@ -49,7 +51,7 @@ void Model::process_node(aiNode *node, const aiScene *scene) {
 }
 
 
-Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
+Mesh Cake::process_mesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
@@ -112,7 +114,7 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
 
 }
 
-std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name) {
+std::vector<Texture> Cake::load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name) {
     std::vector<Texture> textures;
 
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
@@ -144,23 +146,22 @@ std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureTyp
 }
 
 
-void Model::render() {
+void Cake::render() {
 
     glEnable(GL_DEPTH_TEST);
     shader.use();
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f);
 
-    glm::mat4 view = camera->GetViewMatrix();
+    view = camera->GetViewMatrix();
 
     shader.set_mat4_uniform("projection", projection);
     shader.set_mat4_uniform("view", view);
 
-    glm::mat4 pikachu_mod = glm::mat4(1.0f);
-    pikachu_mod = glm::translate(pikachu_mod, translate);
-    pikachu_mod = glm::scale(pikachu_mod, scale);
-    pikachu_mod = glm::rotate(pikachu_mod, glm::radians(angle), rotate);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, translate);
+    model = glm::scale(model, scale);
 
-    shader.set_mat4_uniform("model", pikachu_mod);
+    shader.set_mat4_uniform("model", model);
 
 
     for (auto mesh: meshes) {
@@ -170,25 +171,14 @@ void Model::render() {
 
 }
 
-bool Model::is_pointed_at() {
-    return true;
+void Cake::update() {
+    double velocity = .1;
+    y -= velocity*(glfwGetTime() - last_update_time);
+    model = glm::translate(model, glm::vec3(0.0f, y, 0.0f));
 }
 
 
-double Model::get_distance() {
-    return 1;
-}
-
-void Model::exec() {
-    if (to_exec != nullptr) {
-        to_exec();
-    }
-    std::cout << "Model was pressed" << std::endl;
-}
-
-
-
-static unsigned int texture_from_file(const char *path, const std::string &directory) {
+unsigned int texture_from_file(const char *path, const std::string &directory) {
     std::string filename = std::string(path);
 
     filename = directory + '/' + filename;

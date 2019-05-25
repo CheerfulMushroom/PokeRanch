@@ -1,5 +1,5 @@
-#ifndef OGLDEV_SKINNED_MESH_H
-#define OGLDEV_SKINNED_MESH_H
+#ifndef PREP_POKEMON_RANCH_ANIMMODEL_H
+#define PREP_POKEMON_RANCH_ANIMMODEL_H
 
 #include <map>
 #include <vector>
@@ -53,6 +53,8 @@ public:
     void BoneTransform(float TimeInSeconds);
 
     void change_animation(std::string path);
+
+    void rotate(float delta);
 
 private:
 #define NUM_BONES_PER_VEREX 4
@@ -168,4 +170,4 @@ private:
 };
 
 
-#endif    /* OGLDEV_SKINNED_MESH_H */
+#endif    // PREP_POKEMON_RANCH_ANIMMODEL_H

@@ -32,7 +32,6 @@ AnimModel::AnimModel(const std::string &path,
                      glm::vec3 scale,
                      glm::vec3 rotate,
                      float angle) {
-
     model = glm::mat4(1.0f);
     model = glm::translate(model, translate);
     model = glm::scale(model, scale);
@@ -448,7 +447,9 @@ void AnimModel::change_animation(std::string path) {
     load_mesh(path);
 }
 
-
+void AnimModel::rotate(float delta) {
+    model = glm::rotate(model, glm::radians(delta), glm::vec3(0.0, 0.0, 1.0));
+}
 
 const aiNodeAnim *AnimModel::FindNodeAnim(const aiAnimation *pAnimation, const string NodeName) {
     for (uint i = 0; i < pAnimation->mNumChannels; i++) {

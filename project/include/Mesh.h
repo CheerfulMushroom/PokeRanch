@@ -1,3 +1,7 @@
+#ifndef PREP_POKEMON_RANCH_MESH_H
+#define PREP_POKEMON_RANCH_MESH_H
+
+
 #include <iostream>
 #include <vector>
 #include <GL/glew.h>
@@ -41,3 +45,6 @@ class Mesh {
 
     void setup_mesh();
 };
+
+
+#endif  // PREP_POKEMON_RANCH_MESH_H
