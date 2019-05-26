@@ -11,12 +11,10 @@
 class ShaderProgram {
  public:
     ShaderProgram(const GLchar* vertices_shader_path, const GLchar* fragment_shader_path);
-    ShaderProgram() = default;
-
-
+    ShaderProgram()= default;
     GLuint program;
     void use();
-
+    GLuint get_program();
     void set_bool_uniform(const std::string &name, bool value) const;
 
     void set_int_uniform(const std::string &name, int value) const;
@@ -34,8 +32,6 @@ class ShaderProgram {
     void set_mat3_uniform(const std::string &name, const glm::mat3 &value) const;
 
     void set_mat4_uniform(const std::string &name, const glm::mat4 &value) const;
-
-    void set_bone_transform(const int index, const glm::mat4 &value) const;
 
 };
 

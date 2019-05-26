@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
     glEnable(GL_DEPTH_TEST);
 
-    Camera GL_camera(glm::vec3(0.5f, 0.0f, 4.0f));  // Создает камеру
+    Camera GL_camera(glm::vec3(0.0f, 0.0f, 1.0f));  // Создает камеру
 
     VideoStream stream;
 
