@@ -36,7 +36,7 @@ public:
               float angle);
 
     AnimModel(const std::string &path,
-              MarkerDetector *matgen);
+              MarkerDetector *marker_detector);
 
     ~AnimModel() override;
 
@@ -61,7 +61,7 @@ private:
 
 
     ShaderProgram shader;
-    MatrixGenerator *matgen;
+    MarkerDetector *marker_detector;
     glm::mat4 projection;
     glm::mat4 view;
     glm::mat4 model;

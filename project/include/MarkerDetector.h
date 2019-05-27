@@ -10,17 +10,19 @@ class VideoStream;
 
 class MarkerDetector: public Updatable {
 public:
+    MarkerDetector() = default;
     MarkerDetector(VideoStream* stream, std::string path_to_calibraion_info);
     void update() override;
 
 
     glm::mat4 get_model_view(int id);
+    glm::mat4 projection;
+
 
 private:
     VideoStream* stream;
     aruco::MarkerDetector marker_detector;
     aruco::CameraParameters params;
-    glm::mat4 projection;
     std::map<int, glm::mat4> model_view_map;
 };
 

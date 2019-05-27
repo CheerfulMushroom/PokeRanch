@@ -1,6 +1,8 @@
 #include <opencv2/opencv.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/ext.hpp>
+#include <MarkerDetector.h>
 
 #include "AnimModel.h"
 #include "Camera.h"
@@ -32,6 +34,9 @@ AnimModel::AnimModel(const std::string &path,
                      glm::vec3 scale,
                      glm::vec3 rotate,
                      float angle) {
+    marker_detector = nullptr;
+
+
     model = glm::mat4(1.0f);
     model = glm::translate(model, translate);
     model = glm::scale(model, scale);
@@ -46,11 +51,30 @@ AnimModel::AnimModel(const std::string &path,
     m_NumBones = 0;
     m_pScene = nullptr;
 
-    shader = ShaderProgram("project/shaders/v_model_anim_shader.txt", "project/shaders/f_model_anim_shader.txt");
+    shader = ShaderProgram("project/shaders/v_model_anim_pokedex_shader.txt", "project/shaders/f_model_anim_shader.txt");
     directory = path.substr(0, path.find_last_of('/'));
 
     load_mesh(path);
 
+}
+
+AnimModel::AnimModel(const std::string &path, MarkerDetector *marker_detector) {
+    this->marker_detector = marker_detector;
+
+
+
+    projection = marker_detector->projection;
+    view = glm::mat4(1.0f);
+
+    m_VAO = 0;
+    ZERO_MEM(m_Buffers);
+    m_NumBones = 0;
+    m_pScene = nullptr;
+
+    shader = ShaderProgram("project/shaders/v_model_anim_shader.txt", "project/shaders/f_model_anim_shader.txt");
+    directory = path.substr(0, path.find_last_of('/'));
+
+    load_mesh(path);
 }
 
 
@@ -267,6 +291,12 @@ void AnimModel::update() {
         const std::string name = "gBones[" + std::to_string(i) + "]";
         auto boneTransform = (GLuint) glGetUniformLocation(shader.program, name.c_str());
         glUniformMatrix4fv(boneTransform, 1, GL_TRUE, (const GLfloat *) transforms[i]);
+    }
+
+    if (marker_detector!= nullptr){
+        model = marker_detector->get_model_view(3);
+        model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
+        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     }
 
     shader.set_mat4_uniform("projection", projection);

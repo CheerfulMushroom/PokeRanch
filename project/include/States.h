@@ -19,6 +19,7 @@
 
 #include "VideoStream.h"
 #include "Camera.h"
+#include "MarkerDetector.h"
 
 class Game;
 class GameElement;
@@ -76,7 +77,6 @@ public:
     void render_game() override;
     void update_game() override;
 
-    Camera camera;
 };
 
 

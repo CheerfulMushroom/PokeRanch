@@ -27,6 +27,6 @@ void main() {
 
     vec4 PosL = BoneTransform * vec4(position, 1.0);
 
-    gl_Position = projection * model * PosL;
+    gl_Position = projection * view * model * PosL;
 
 }

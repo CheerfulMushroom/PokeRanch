@@ -43,5 +43,6 @@ target_link_libraries(main.out
         opencv_highgui
         opencv_imgcodecs
         opencv_videoio
+        opencv_calib3d
         aruco
         assimp)
