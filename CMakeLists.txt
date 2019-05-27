@@ -27,7 +27,8 @@ add_executable(main.out
         ${PROJECT_SOURCE_DIR}/Mesh.cpp
         ${PROJECT_SOURCE_DIR}/AnimModel.cpp
         ${PROJECT_SOURCE_DIR}/math_3d.cpp
-        ${PROJECT_SOURCE_DIR}/Cake.cpp)
+        ${PROJECT_SOURCE_DIR}/Cake.cpp
+        ${PROJECT_SOURCE_DIR}/MarkerDetector.cpp)
 
 target_link_libraries(main.out
         GLEW

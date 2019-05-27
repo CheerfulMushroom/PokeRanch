@@ -23,7 +23,7 @@ struct AnimTexture {
     std::string path;
 };
 
-class MatrixGenerator;
+class MarkerDetector;
 class Camera;
 
 class AnimModel : public Renderable, public Updatable {
@@ -36,7 +36,7 @@ public:
               float angle);
 
     AnimModel(const std::string &path,
-              MatrixGenerator *matgen);
+              MarkerDetector *matgen);
 
     ~AnimModel() override;
 

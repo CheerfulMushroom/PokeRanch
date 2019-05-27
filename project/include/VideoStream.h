@@ -12,13 +12,14 @@
 #include "ShaderProgram.h"
 #include "Interfaces.h"
 
-class VideoStream: public Renderable {
+class VideoStream: public Renderable, public Updatable {
  public:
     explicit VideoStream(int cam_index);
     VideoStream() = default;
     ~VideoStream() override;
 
     void render() override;
+    void update() override;
 
     //bool context_init();
 
@@ -31,13 +32,16 @@ class VideoStream: public Renderable {
     //double frame_start_time;
     //double frame_end_time;
 
+    cv::Mat get_frame();
+    cv::Mat frame;
 
 
 
- private:
+
+
+private:
     ShaderProgram shader;
     cv::VideoCapture cam;
-    cv::Mat frame;
     GLuint VAO;
     GLuint VBO;
     GLuint EBO;

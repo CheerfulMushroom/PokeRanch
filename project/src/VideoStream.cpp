@@ -67,7 +67,6 @@ VideoStream::~VideoStream() {
 
 
 void VideoStream::render() {
-    cam.read(frame);
     mat_to_texture(texture, frame, false);
     shader.use();
 
@@ -79,4 +78,14 @@ void VideoStream::render() {
     glBindVertexArray(0);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+
+void VideoStream::update() {
+    cam.read(frame);
+}
+
+
+cv::Mat VideoStream::get_frame() {
+    return frame;
 }
