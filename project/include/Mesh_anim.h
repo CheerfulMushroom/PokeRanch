@@ -22,8 +22,23 @@ struct Bone {
 };
 
 struct VertexBoneData {
-    unsigned int bone_id[NUM_BONES_PER_VERTEX];
+    unsigned int bone_IDs[NUM_BONES_PER_VERTEX];
     float weights[NUM_BONES_PER_VERTEX];
+
+
+    void VerteBoneData() {
+        Reset();
+    }
+
+    void Reset() {
+        for (unsigned int i = 0; i < NUM_BONES_PER_VERTEX; i++) {
+            bone_IDs[i] = 0;
+            weights[i] = 0;
+        }
+    }
+
+    void add_bone_data(unsigned int bone_id, float weight);
+
 };
 
 
@@ -45,16 +60,18 @@ class Mesh {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
-    //std::vector<VertexBoneData> bones;
+    std::vector<VertexBoneData> bones;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+    Mesh(unsigned int mesh_index, unsigned int base_vertex_int, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, std::vector<VertexBoneData> bones);
     //Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, std::vector<VertexBoneData> bones);
-
 
     void draw_mesh(ShaderProgram shader);
 
  private:
-    unsigned int VAO, VBO, EBO;
+    unsigned int VAO, VBO, EBO, BONE_VB;
+
+    unsigned int mesh_id;
+    unsigned int first_vertex_id;
 
     void setup_mesh();
 };

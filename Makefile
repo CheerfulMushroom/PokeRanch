@@ -21,16 +21,18 @@ MODULES = \
     -lopencv_highgui \
     -lopencv_imgcodecs \
     -lopencv_videoio \
+    -lopencv_calib3d \
     -laruco \
     -lassimp
 
 SRCS = \
     ./project/src/GameWindow.cpp \
     ./project/src/ShaderProgram.cpp \
-    ./project/src/model_main.cpp \
-    ./project/src/Mesh.cpp \
-    ./project/src/Model.cpp \
-    ./project/src/VideoStream_test.cpp
+    ./project/src/main_best.cpp \
+    ./project/src/AnimModel.cpp \
+    ./project/src/math_3d.cpp \
+    ./project/src/VideoStream.cpp \
+    ./project/src/Utils.cpp
 
 all: $(SRCS)
 	$(CXX) -std=c++17 -I $(HDRS_CV) -I $(HDRS) -I $(HDRS_GL) -o $(TARGET) -L $(LIBS) $(SRCS) $(MODULES) -pthread -ldl -Wl,-rpath,/usr/local/lib/

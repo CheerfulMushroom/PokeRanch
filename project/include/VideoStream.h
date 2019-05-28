@@ -1,34 +1,51 @@
 #ifndef PROJECT_INCLUDE_VIDEOSTREAM_H_
 #define PROJECT_INCLUDE_VIDEOSTREAM_H_
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <opencv2/opencv.hpp>
+#include <iostream>
 #include <unistd.h>
 #include <opencv2/opencv.hpp>
 
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 #include "ShaderProgram.h"
-#include "VideoStream.h"
+#include "Utils.h"
+
+
 class VideoStream {
  public:
     VideoStream();
+    //VideoStream() = default;
     ~VideoStream();
 
     void render();
-    
+
+    //bool context_init();
+
     bool configure_VAO();
+
+    //void lock_frame_rate(double frame_rate);
+
+    //GLFWwindow *window;
+
+    //double frame_start_time;
+    //double frame_end_time;
+
 
     cv::Mat frame;
 
-
  private:
-    void mat_to_texture();
-
     ShaderProgram shader;
-    GLuint texture;
-    GLuint VBO;
+    cv::VideoCapture cam;
+    //cv::Mat frame;
     GLuint VAO;
+    GLuint VBO;
     GLuint EBO;
+    GLuint texture;
+    //int window_width;
+    //int window_height;
+
 };
 
-#endif // PROJECT_INCLUDE_VIDEOSTREAM_H_
+#endif
