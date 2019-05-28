@@ -11,12 +11,10 @@
 class ShaderProgram {
  public:
     ShaderProgram(const GLchar* vertices_shader_path, const GLchar* fragment_shader_path);
-    ShaderProgram() = default;
-
-
+    ShaderProgram()= default;
     GLuint program;
     void use();
-
+    GLuint get_program();
     void set_bool_uniform(const std::string &name, bool value) const;
 
     void set_int_uniform(const std::string &name, int value) const;
