@@ -2,10 +2,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/ext.hpp>
-#include <MarkerDetector.h>
 
+#include "MarkerDetector.h"
 #include "AnimModel.h"
 #include "Camera.h"
+
 
 #define POSITION_LOCATION    0
 #define TEX_COORD_LOCATION   2

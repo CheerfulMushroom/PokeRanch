@@ -85,9 +85,9 @@ void RanchState::load_scene() {
     add_element(std::move(model));
 
     add_element(std::move(marker_detector));
-//
-//
-//
+
+
+
     add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<PauseState>,
                                          "project/icons/menu_pink.png"));
     add_element(std::make_unique<Button>(this, 0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<PokedexState>,
@@ -143,8 +143,6 @@ void PokedexState::load_scene() {
                                        glm::vec3(1.0f, 0.0f, 0.0f),
                                        0));
 
-    add_element(std::make_unique<Button>(this, -0.5f, -0.925f, 0.2f, 0.2f * 16 / 9,
-                                         std::bind(&AnimModel::rotate, model.get(), 15)));
 
 
     add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<RanchState>,
