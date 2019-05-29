@@ -54,6 +54,12 @@ void MarkerDetector::update() {
 }
 
 
-glm::mat4 MarkerDetector::get_model_view(int id) {
-    return model_view_map[id];
+bool MarkerDetector::get_model_view(int id, glm::mat4 *model) {
+    auto searched = model_view_map.find(id);
+    if(searched != model_view_map.end())
+    {
+        *model = model_view_map[id];
+        return true;
+    }
+    return false;
 }

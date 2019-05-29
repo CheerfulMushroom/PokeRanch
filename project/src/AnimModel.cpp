@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/ext.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "MarkerDetector.h"
 #include "AnimModel.h"
@@ -17,20 +18,9 @@
 
 static unsigned int texture_from_file(const char *path, const std::string &directory);
 
-void AnimModel::VertexBoneData::AddBoneData(uint BoneID, float Weight) {
-    for (uint i = 0; i < ARRAY_SIZE_IN_ELEMENTS(IDs); i++) {
-        if (Weights[i] == 0.0) {
-            IDs[i] = BoneID;
-            Weights[i] = Weight;
-            return;
-        }
-    }
-
-    assert(0);
-}
 
 AnimModel::AnimModel(const std::string &path,
-                     Camera* camera,
+                     Camera *camera,
                      glm::vec3 translate,
                      glm::vec3 scale,
                      glm::vec3 rotate,
@@ -52,7 +42,8 @@ AnimModel::AnimModel(const std::string &path,
     m_NumBones = 0;
     m_pScene = nullptr;
 
-    shader = ShaderProgram("project/shaders/v_model_anim_pokedex_shader.txt", "project/shaders/f_model_anim_shader.txt");
+    shader = ShaderProgram("project/shaders/v_model_anim_pokedex_shader.txt",
+                           "project/shaders/f_model_anim_shader.txt");
     directory = path.substr(0, path.find_last_of('/'));
 
     load_mesh(path);
@@ -63,9 +54,9 @@ AnimModel::AnimModel(const std::string &path, MarkerDetector *marker_detector) {
     this->marker_detector = marker_detector;
 
 
-
     projection = marker_detector->projection;
     view = glm::mat4(1.0f);
+    model = glm::mat4(0.0f);
 
     m_VAO = 0;
     ZERO_MEM(m_Buffers);
@@ -124,6 +115,80 @@ bool AnimModel::load_mesh(const string &Filename) {
 
     return Ret;
 }
+
+void AnimModel::render() {
+    glEnable(GL_DEPTH_TEST);
+
+    shader.use();
+    glBindVertexArray(m_VAO);
+
+    for (uint i = 0; i < m_Entries.size(); i++) {
+        const uint MaterialIndex = m_Entries[i].MaterialIndex;
+
+        glUniform1i(glGetUniformLocation(shader.program, "texture_diffuse1"), 0);
+        glBindTexture(GL_TEXTURE_2D, textures_loaded[i].id);
+
+
+        glDrawElementsBaseVertex(GL_TRIANGLES,
+                                 m_Entries[i].NumIndices,
+                                 GL_UNSIGNED_INT,
+                                 (void *) (sizeof(uint) * m_Entries[i].BaseIndex),
+                                 m_Entries[i].BaseVertex);
+
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    glBindVertexArray(0);
+
+    glDisable(GL_DEPTH_TEST);
+}
+
+
+void AnimModel::update() {
+    shader.use();
+
+    BoneTransform((float) glfwGetTime());
+
+    for (unsigned int i = 0; i < transforms.size(); ++i) {
+        const std::string name = "gBones[" + std::to_string(i) + "]";
+        auto boneTransform = (GLuint) glGetUniformLocation(shader.program, name.c_str());
+        glUniformMatrix4fv(boneTransform, 1, GL_TRUE, (const GLfloat *) transforms[i]);
+    }
+
+    if (marker_detector != nullptr) {
+        if (marker_detector->get_model_view(3, &model)) {
+
+
+            model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
+            model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+            last_update_time = glfwGetTime();
+
+        } else {
+            if (glfwGetTime() - last_update_time > 0.5) {
+                model = glm::mat4(0.0f);
+            }
+        }
+    }
+
+    shader.set_mat4_uniform("projection", projection);
+    shader.set_mat4_uniform("view", view);
+    shader.set_mat4_uniform("model", model);
+}
+
+
+bool AnimModel::is_pointed_at() {
+    return true;
+}
+
+double AnimModel::get_distance() {
+    auto tvec = model[3];
+    distance = glm::length(tvec);
+    return distance;
+}
+
+void AnimModel::exec() {}
 
 
 bool AnimModel::InitFromScene(const aiScene *pScene, const string &Filename) {
@@ -252,57 +317,6 @@ void AnimModel::LoadBones(uint MeshIndex, const aiMesh *pMesh, vector<VertexBone
             Bones[VertexID].AddBoneData(BoneIndex, Weight);
         }
     }
-}
-
-void AnimModel::render() {
-    glEnable(GL_DEPTH_TEST);
-
-    shader.use();
-    glBindVertexArray(m_VAO);
-
-    for (uint i = 0; i < m_Entries.size(); i++) {
-        const uint MaterialIndex = m_Entries[i].MaterialIndex;
-
-        glUniform1i(glGetUniformLocation(shader.program, "texture_diffuse1"), 0);
-        glBindTexture(GL_TEXTURE_2D, textures_loaded[i].id);
-
-
-        glDrawElementsBaseVertex(GL_TRIANGLES,
-                                 m_Entries[i].NumIndices,
-                                 GL_UNSIGNED_INT,
-                                 (void *) (sizeof(uint) * m_Entries[i].BaseIndex),
-                                 m_Entries[i].BaseVertex);
-
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    glBindVertexArray(0);
-
-    glDisable(GL_DEPTH_TEST);
-}
-
-
-void AnimModel::update() {
-    shader.use();
-
-    BoneTransform((float) glfwGetTime());
-
-    for (unsigned int i = 0; i < transforms.size(); ++i) {
-        const std::string name = "gBones[" + std::to_string(i) + "]";
-        auto boneTransform = (GLuint) glGetUniformLocation(shader.program, name.c_str());
-        glUniformMatrix4fv(boneTransform, 1, GL_TRUE, (const GLfloat *) transforms[i]);
-    }
-
-    if (marker_detector!= nullptr){
-        model = marker_detector->get_model_view(3);
-        model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
-        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    }
-
-    shader.set_mat4_uniform("projection", projection);
-    shader.set_mat4_uniform("view", view);
-    shader.set_mat4_uniform("model", model);
 }
 
 
@@ -540,4 +554,17 @@ static unsigned int texture_from_file(const char *path, const std::string &direc
     glBindTexture(GL_TEXTURE_2D, 0);
 
     return texture_id;
+}
+
+
+void AnimModel::VertexBoneData::AddBoneData(uint BoneID, float Weight) {
+    for (uint i = 0; i < ARRAY_SIZE_IN_ELEMENTS(IDs); i++) {
+        if (Weights[i] == 0.0) {
+            IDs[i] = BoneID;
+            Weights[i] = Weight;
+            return;
+        }
+    }
+
+    assert(0);
 }

@@ -5,7 +5,7 @@
 Game* game_object;
 
 int main() {
-    Game game(1280, 720, 25);
+    Game game(400, 300, 25);
     game.start();
     return 0;
 }

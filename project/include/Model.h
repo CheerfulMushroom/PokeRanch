@@ -12,7 +12,7 @@
 
 class Camera;
 
-class Model : public Renderable, public Interactable {
+class Model : public Renderable{
 public:
     Model(std::string const &path,
           Camera *camera,
@@ -24,9 +24,6 @@ public:
     ~Model() override = default;
 
     void render() override;
-    bool is_pointed_at() override;
-    double get_distance() override;
-    void exec() override;
 
 private:
     std::vector<Mesh> meshes;

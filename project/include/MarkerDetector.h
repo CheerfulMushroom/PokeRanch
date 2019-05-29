@@ -15,7 +15,7 @@ public:
     void update() override;
 
 
-    glm::mat4 get_model_view(int id);
+    bool get_model_view(int id, glm::mat4* model);
     glm::mat4 projection;
 
 

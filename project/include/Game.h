@@ -33,6 +33,11 @@ public:
     GameState *get_state();
 
 private:
+    double last_loop_time = 0;
+    int width;
+    int height;
+    double rate;
+
     GameWindow screen;
     std::unique_ptr<GameState> state;
 };

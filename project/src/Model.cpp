@@ -170,23 +170,6 @@ void Model::render() {
 
 }
 
-bool Model::is_pointed_at() {
-    return true;
-}
-
-
-double Model::get_distance() {
-    return 1;
-}
-
-void Model::exec() {
-    if (to_exec != nullptr) {
-        to_exec();
-    }
-    std::cout << "Model was pressed" << std::endl;
-}
-
-
 
 static unsigned int texture_from_file(const char *path, const std::string &directory) {
     std::string filename = std::string(path);

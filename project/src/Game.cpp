@@ -6,6 +6,11 @@ static void mouse_button_callback(GLFWwindow *window, int mouse_button, int acti
 
 
 Game::Game(int width, int height, double rate) {
+    this->width = width;
+    this->height = height;
+    this->rate = rate;
+
+
     // Запись объекта игры в глобальную переменную
     game_object = this;
 
@@ -43,9 +48,12 @@ void Game::start() {
     GLFWwindow *window = get_window();
 
     while (!glfwWindowShouldClose(window)) {
-        glfwWaitEventsTimeout(0.04);
-        update_game();
-        render_game();
+        if (glfwGetTime()- last_loop_time > 1/rate) {
+            last_loop_time = glfwGetTime();
+            glfwPollEvents();
+            update_game();
+            render_game();
+        }
     }
 }
 

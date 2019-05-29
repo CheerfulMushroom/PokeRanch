@@ -26,7 +26,7 @@ struct AnimTexture {
 class MarkerDetector;
 class Camera;
 
-class AnimModel : public Renderable, public Updatable {
+class AnimModel : public Renderable, public Updatable, public Interactable {
 public:
     AnimModel(const std::string &path,
               Camera* camera,
@@ -43,8 +43,10 @@ public:
     bool load_mesh(const string &Filename);
 
     void render() override;
-
     void update() override;
+    bool is_pointed_at() override;
+    double get_distance() override;
+    void exec() override;
 
     uint NumBones() const {
         return m_NumBones;
@@ -65,6 +67,8 @@ private:
     glm::mat4 projection;
     glm::mat4 view;
     glm::mat4 model;
+    double last_update_time = 0;
+    double distance;
 
     std::string directory;
     std::vector<AnimTexture> textures_loaded;
