@@ -127,9 +127,11 @@ void PokedexState::load_scene() {
                                              .0f);
 
     add_element(std::make_unique<Button>(this, -0.5f, -0.925f, 0.2f, 0.2f * 16 / 9,
-                                         std::bind(&AnimModel::rotate, model.get(), 15)));
+                                         std::bind(&AnimModel::rotate, model.get(), 15),
+                                         "project/icons/nonclockwise.png"));
     add_element(std::make_unique<Button>(this, 0.5f, -0.925f, 0.2f, 0.2f * 16 / 9,
-                                         std::bind(&AnimModel::rotate, model.get(), -15)));
+                                         std::bind(&AnimModel::rotate, model.get(), -15),
+                                         "project/icons/clockwise.png"));
     add_element(std::make_unique<Button>(this, 0.5f, -.3, 0.2f, 0.2f * 16 / 9,
                                          std::bind(&AnimModel::change_animation, model.get(),
                                                    "project/models/Pikachu/pikachu_run.dae")));
