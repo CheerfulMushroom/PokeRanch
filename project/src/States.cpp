@@ -134,7 +134,7 @@ void PokedexState::load_scene() {
                                              glm::vec3(.0f, -0.5f, .0f),
                                              glm::vec3(0.02, 0.02, 0.02),
                                              glm::vec3(0.0f, 1.0f, 0.0f),
-                                             .0f,
+                                             180.0f,
                                              width,
                                              height);
 

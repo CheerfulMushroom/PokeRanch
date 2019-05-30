@@ -36,7 +36,7 @@ AnimModel::AnimModel(int id,
     model = glm::translate(model, translate);
     model = glm::scale(model, scale);
     model = glm::rotate(model, glm::radians(angle), rotate);
-    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     projection = glm::perspective(glm::radians(45.0f), (float) width / (float) height, 0.1f, 100.0f);
     view = camera->GetViewMatrix();
 
@@ -52,7 +52,7 @@ AnimModel::AnimModel(int id,
     std::string path;
     bool has_path = get_path_by_id(id, path);
     if (!has_path){
-        path = "project/models/Pikachu/pikachu_happy.dae"; //TODO: easter egg
+        path = "project/models/Pikachu/emotion.dae"; //TODO: easter egg
     }
     directory = path.substr(0, path.find_last_of('/'));
 
@@ -84,7 +84,7 @@ AnimModel::AnimModel(int id,
     std::string path;
     bool has_path = get_path_by_id(id, path);
     if (!has_path){
-        path = "project/models/Pikachu/pikachu_happy.dae"; //TODO: easter egg
+        path = "project/models/Pikachu/emotion.dae"; //TODO: easter egg
     }
     directory = path.substr(0, path.find_last_of('/'));
 
@@ -203,12 +203,11 @@ void AnimModel::update() {
             //////
 
             model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
-            model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
             last_update_time = glfwGetTime();
 
         } else {
-            if (glfwGetTime() - last_update_time > 0.5) {
+            if (glfwGetTime() - last_update_time > 0.2) {
                 is_deleted = true;
                 model = glm::mat4(-1000.0f);
             }
