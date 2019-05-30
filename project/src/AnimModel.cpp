@@ -7,6 +7,7 @@
 #include "MarkerDetector.h"
 #include "AnimModel.h"
 #include "Camera.h"
+#include "Utils.h"
 
 
 #define POSITION_LOCATION    0
@@ -19,7 +20,7 @@
 static unsigned int texture_from_file(const char *path, const std::string &directory);
 
 
-AnimModel::AnimModel(const std::string &path,
+AnimModel::AnimModel(int id,
                      Camera *camera,
                      glm::vec3 translate,
                      glm::vec3 scale,
@@ -27,6 +28,7 @@ AnimModel::AnimModel(const std::string &path,
                      float angle,
                      int width,
                      int height) {
+    this->id = id;
     marker_detector = nullptr;
     this->state = nullptr;
 
@@ -46,16 +48,20 @@ AnimModel::AnimModel(const std::string &path,
 
     shader = ShaderProgram("project/shaders/v_model_anim_pokedex_shader.txt",
                            "project/shaders/f_model_anim_shader.txt");
+
+    std::string path;
+    bool has_path = get_path_by_id(id, path);
     directory = path.substr(0, path.find_last_of('/'));
 
     load_mesh(path);
 
 }
 
-AnimModel::AnimModel(const std::string &path,
+AnimModel::AnimModel(int id,
                      GameState *state,
                      MarkerDetector *marker_detector,
                      std::function<void()> to_exec) {
+    this->id = id;
     this->state = state;
     this->marker_detector = marker_detector;
     this->to_exec = std::move(to_exec);
@@ -71,6 +77,9 @@ AnimModel::AnimModel(const std::string &path,
     m_pScene = nullptr;
 
     shader = ShaderProgram("project/shaders/v_model_anim_shader.txt", "project/shaders/f_model_anim_shader.txt");
+
+    std::string path;
+    bool has_path = get_path_by_id(id, path);
     directory = path.substr(0, path.find_last_of('/'));
 
     load_mesh(path);
@@ -164,7 +173,7 @@ void AnimModel::update() {
     }
 
     if (marker_detector != nullptr) {
-        if (marker_detector->get_marker(3, &marker)) {
+        if (marker_detector->get_marker(id, &marker)) {
             is_deleted = false;
             //////
 
@@ -236,7 +245,7 @@ bool AnimModel::is_pointed_at() {
     double left = marker_x - hit_width / 2;
     double right = marker_x + hit_width / 2;
     double up = marker_y + hit_height;
-    double down = marker_y;
+    double down = marker_y - hit_height * 0.1;
 
     return (left < cursor_x) && (cursor_x < right) && (down < cursor_y) && (cursor_y < up);
 }

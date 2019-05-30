@@ -30,7 +30,7 @@ class Camera;
 
 class AnimModel : public Renderable, public Updatable, public Interactable {
 public:
-    AnimModel(const std::string &path,
+    AnimModel(int id,
               Camera *camera,
               glm::vec3 translate,
               glm::vec3 scale,
@@ -39,7 +39,7 @@ public:
               int width,
               int height);
 
-    AnimModel(const std::string &path,
+    AnimModel(int id,
               GameState *state,
               MarkerDetector *marker_detector,
               std::function<void()> to_exec = nullptr);
@@ -71,6 +71,7 @@ public:
 private:
 #define NUM_BONES_PER_VEREX 4
 
+    int id;
     bool is_deleted = true;
     GameState* state = nullptr;
     std::function<void()> to_exec = nullptr;

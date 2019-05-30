@@ -1,6 +1,28 @@
 #include "Utils.h"
 #include "ShaderProgram.h"
 
+
+bool get_path_by_id(int pok_id, std::string &model_path) {
+    FILE *pokemon_model_ptr = fopen("project/pokemon_model_path.dat", "r");
+    if (pokemon_model_ptr == nullptr) {
+        puts("No such file");
+    } else {
+        int input_id;
+        char* input_path = new char[40];
+        while (fscanf(pokemon_model_ptr, "%d%s", &input_id, input_path) == 2) {
+            if (input_id == pok_id) {
+                fclose(pokemon_model_ptr);
+                model_path = std::string(input_path);
+                return true;
+            }
+        }
+        fclose(pokemon_model_ptr);
+    }
+    return false;
+}
+
+
+
 // Перевод изображения в текстуру
 void mat_to_texture(GLuint texture, cv::Mat pic, bool with_alpha) {
     glBindTexture(GL_TEXTURE_2D, texture);

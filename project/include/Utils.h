@@ -8,6 +8,7 @@
 
 #include "ShaderProgram.h"
 
+bool get_path_by_id(int pok_id, std::string &model_path);
 
 void mat_to_texture(GLuint texture, cv::Mat pic, bool with_alpha);
 

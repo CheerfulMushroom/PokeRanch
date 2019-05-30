@@ -88,11 +88,8 @@ void RanchState::load_scene() {
                                                             height);
     add_element(std::move(stream));
 
-    add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, .2f, "project/pictures/scale_x.jpg"));
-    add_element(std::make_unique<Picture>(-1.0f, -1.0f, .2f, 2.0f, "project/pictures/scale_y.jpg"));
 
-
-    auto model = std::make_unique<AnimModel>("project/models/Pikachu/pikachu_sleep.dae", this, marker_detector.get(),
+    auto model = std::make_unique<AnimModel>(3, this, marker_detector.get(),
                                              bf_change_game_state<PokedexState>);
     add_element(std::move(model));
 
@@ -133,7 +130,7 @@ void PokedexState::load_scene() {
     add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/pokedex_background.jpg"));
 
 
-    auto model = std::make_unique<AnimModel>("project/models/Pikachu/pikachu_rest.dae",
+    auto model = std::make_unique<AnimModel>(3,
                                              &camera,
                                              glm::vec3(.0f, -0.5f, .0f),
                                              glm::vec3(0.02, 0.02, 0.02),
