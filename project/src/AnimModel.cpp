@@ -52,7 +52,7 @@ AnimModel::AnimModel(int id,
     std::string path;
     bool has_path = get_path_by_id(id, path);
     if (!has_path){
-        path = ""; //TODO
+        path = "project/models/Pikachu/pikachu_happy.dae"; //TODO: easter egg
     }
     directory = path.substr(0, path.find_last_of('/'));
 
@@ -83,6 +83,9 @@ AnimModel::AnimModel(int id,
 
     std::string path;
     bool has_path = get_path_by_id(id, path);
+    if (!has_path){
+        path = "project/models/Pikachu/pikachu_happy.dae"; //TODO: easter egg
+    }
     directory = path.substr(0, path.find_last_of('/'));
 
     load_mesh(path);

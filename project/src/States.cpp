@@ -85,16 +85,10 @@ void RanchState::load_scene() {
     auto stream = std::make_unique<VideoStream>(1);
     auto marker_detector = std::make_unique<MarkerDetector>(stream.get(),
                                                             "project/microsoft_webcam_calibration.yml",
-                                                            width,
-                                                            height);
-    add_element(std::move(stream));
-
-
-    auto model = std::make_unique<AnimModel>(3, this, marker_detector.get(),
-                                             std::bind(change_to_pokedex, 3));
-    add_element(std::move(model));
-
+                                                            width, height,
+                                                            this);
     add_element(std::move(marker_detector));
+    add_element(std::move(stream));
 
 
     add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, change_to_pause,
@@ -114,7 +108,9 @@ void RanchState::render_game() {
 }
 
 void RanchState::update_game() {
-    for (auto &update_obj: to_update) {
+    // TODO(leb): ПОКАЗАТЬ ПРЕПОДАМ
+    for (size_t i = 0; i < to_update.size(); i++) {
+        auto update_obj = to_update[i];
         update_obj->update();
     }
 }
