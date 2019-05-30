@@ -11,6 +11,7 @@
 
 #include "ogldev_util.h"
 #include "ogldev_math_3d.h"
+#include "States.h"
 #include "ShaderProgram.h"
 #include "Interfaces.h"
 
@@ -24,12 +25,13 @@ struct AnimTexture {
 };
 
 class MarkerDetector;
+
 class Camera;
 
 class AnimModel : public Renderable, public Updatable, public Interactable {
 public:
     AnimModel(const std::string &path,
-              Camera* camera,
+              Camera *camera,
               glm::vec3 translate,
               glm::vec3 scale,
               glm::vec3 rotate,
@@ -38,6 +40,7 @@ public:
               int height);
 
     AnimModel(const std::string &path,
+              GameState *state,
               MarkerDetector *marker_detector);
 
     ~AnimModel() override;
@@ -45,9 +48,13 @@ public:
     bool load_mesh(const string &Filename);
 
     void render() override;
+
     void update() override;
+
     bool is_pointed_at() override;
+
     double get_distance() override;
+
     void exec() override;
 
     uint NumBones() const {
@@ -63,15 +70,15 @@ public:
 private:
 #define NUM_BONES_PER_VEREX 4
 
-
+    bool is_deleted = true;
+    GameState* state = nullptr;
     ShaderProgram shader;
-    MarkerDetector *marker_detector;
-    aruco::Marker* marker;
+    MarkerDetector *marker_detector = nullptr;
+    aruco::Marker marker;
     glm::mat4 projection;
     glm::mat4 view;
     glm::mat4 model;
     double last_update_time = 0;
-
 
 
     std::string directory;

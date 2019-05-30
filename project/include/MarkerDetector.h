@@ -16,7 +16,7 @@ public:
     void update() override;
 
 
-    bool get_marker(int id, aruco::Marker** marker);
+    bool get_marker(int id, aruco::Marker* marker);
     glm::mat4 projection;
 
 

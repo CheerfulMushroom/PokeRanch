@@ -88,10 +88,15 @@ void RanchState::load_scene() {
                                                             height);
     add_element(std::move(stream));
 
-    auto model = std::make_unique<AnimModel>("project/models/Pikachu/pikachu_sleep.dae", marker_detector.get());
+    add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, .2f, "project/pictures/scale_x.jpg"));
+    add_element(std::make_unique<Picture>(-1.0f, -1.0f, .2f, 2.0f, "project/pictures/scale_y.jpg"));
+
+
+    auto model = std::make_unique<AnimModel>("project/models/Pikachu/pikachu_sleep.dae", this, marker_detector.get());
     add_element(std::move(model));
 
     add_element(std::move(marker_detector));
+
 
 
     add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<PauseState>,

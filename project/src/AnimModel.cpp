@@ -28,7 +28,7 @@ AnimModel::AnimModel(const std::string &path,
                      int width,
                      int height) {
     marker_detector = nullptr;
-
+    this->state = nullptr;
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, translate);
@@ -52,7 +52,10 @@ AnimModel::AnimModel(const std::string &path,
 
 }
 
-AnimModel::AnimModel(const std::string &path, MarkerDetector *marker_detector) {
+AnimModel::AnimModel(const std::string &path,
+                     GameState *state,
+                     MarkerDetector *marker_detector) {
+    this->state = state;
     this->marker_detector = marker_detector;
 
 
@@ -160,18 +163,12 @@ void AnimModel::update() {
 
     if (marker_detector != nullptr) {
         if (marker_detector->get_marker(3, &marker)) {
-
+            is_deleted = false;
             //////
 
             cv::Mat rodrig;
 
-//            auto center = marker->getCenter();
-//            // Перевод в нормированные координаты
-//            double x = 2 * ((center.x) / 640 - .5);
-//            double y = -2 * ((center.y) / 480 - .5);
-            std::cout <<x<<"\t"<<y<<std::endl;
-
-            auto good_rvec = marker->Rvec;
+            auto good_rvec = marker.Rvec;
             good_rvec.at<float>(0, 2) *= -1.0;
 
 
@@ -181,8 +178,8 @@ void AnimModel::update() {
             GLfloat RTMat[16] = {rodrig.at<float>(0, 0), rodrig.at<float>(0, 1), rodrig.at<float>(0, 2), 0,
                                  rodrig.at<float>(1, 0), rodrig.at<float>(1, 1), rodrig.at<float>(1, 2), 0,
                                  rodrig.at<float>(2, 0), rodrig.at<float>(2, 1), rodrig.at<float>(2, 2), 0,
-                                 10 * marker->Tvec.at<float>(0), 10 * marker->Tvec.at<float>(1),
-                                 10 * -marker->Tvec.at<float>(2), 1};
+                                 10 * marker.Tvec.at<float>(0), 10 * marker.Tvec.at<float>(1),
+                                 10 * -marker.Tvec.at<float>(2), 1};
 
             model = glm::make_mat4(RTMat);
 
@@ -195,6 +192,7 @@ void AnimModel::update() {
 
         } else {
             if (glfwGetTime() - last_update_time > 0.5) {
+                is_deleted = true;
                 model = glm::mat4(-1000.0f);
             }
         }
@@ -207,7 +205,43 @@ void AnimModel::update() {
 
 
 bool AnimModel::is_pointed_at() {
-    return true;
+    if (is_deleted) {
+        return false;
+    }
+
+    GLFWwindow *window = state->get_game()->get_window();
+
+    /////////// Hitbox
+    double hit_height = 1 / get_distance() * 4.5;
+    double hit_width = hit_height / 2.25;
+
+    auto center = marker.getCenter();
+    // Перевод в нормированные координаты
+    double marker_x = 2 * ((center.x) / 640 - .5);
+    double marker_y = -2 * ((center.y) / 480 - .5);
+
+    /////////// Cursor
+    double cursor_x, cursor_y;
+    glfwGetCursorPos(window, &cursor_x, &cursor_y);
+
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+
+    // Перевод из координат GLFW ([0;-1]) в координаты openGL ([-1;1])
+    cursor_x = 2 * ((cursor_x) / width - .5);
+    cursor_y = -2 * ((cursor_y) / height - .5);
+
+    double left = marker_x - hit_width / 2;
+    double right = marker_x + hit_width / 2;
+    double up = marker_y + hit_height;
+    double down = marker_y;
+
+    bool is_pressed = (left < cursor_x) && (cursor_x < right) && (down < cursor_y) && (cursor_y < up);
+    if (is_pressed) {
+        std::cout << "PRESSED" << std::endl;
+    }
+
+    return false;
 }
 
 double AnimModel::get_distance() {
