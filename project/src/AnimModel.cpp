@@ -159,7 +159,35 @@ void AnimModel::update() {
     }
 
     if (marker_detector != nullptr) {
-        if (marker_detector->get_model_view(3, &model)) {
+        if (marker_detector->get_marker(3, &marker)) {
+
+            //////
+
+            cv::Mat rodrig;
+
+//            auto center = marker->getCenter();
+//            // Перевод в нормированные координаты
+//            double x = 2 * ((center.x) / 640 - .5);
+//            double y = -2 * ((center.y) / 480 - .5);
+            std::cout <<x<<"\t"<<y<<std::endl;
+
+            auto good_rvec = marker->Rvec;
+            good_rvec.at<float>(0, 2) *= -1.0;
+
+
+            Rodrigues(good_rvec, rodrig);
+
+
+            GLfloat RTMat[16] = {rodrig.at<float>(0, 0), rodrig.at<float>(0, 1), rodrig.at<float>(0, 2), 0,
+                                 rodrig.at<float>(1, 0), rodrig.at<float>(1, 1), rodrig.at<float>(1, 2), 0,
+                                 rodrig.at<float>(2, 0), rodrig.at<float>(2, 1), rodrig.at<float>(2, 2), 0,
+                                 10 * marker->Tvec.at<float>(0), 10 * marker->Tvec.at<float>(1),
+                                 10 * -marker->Tvec.at<float>(2), 1};
+
+            model = glm::make_mat4(RTMat);
+
+            //////
+
             model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
             model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -184,7 +212,7 @@ bool AnimModel::is_pointed_at() {
 
 double AnimModel::get_distance() {
     auto tvec = model[3];
-    distance = glm::length(tvec);
+    auto distance = glm::length(tvec);
     return distance;
 }
 
@@ -472,8 +500,8 @@ void AnimModel::BoneTransform(float TimeInSeconds) {
     Matrix4f Identity;
     Identity.InitIdentity();
 
-    float TicksPerSecond = (float) (m_pScene->mAnimations[0]->mTicksPerSecond != 0
-                                    ? m_pScene->mAnimations[0]->mTicksPerSecond : 25.0f);
+    auto TicksPerSecond = (float) (m_pScene->mAnimations[0]->mTicksPerSecond != 0
+                                   ? m_pScene->mAnimations[0]->mTicksPerSecond : 25.0f);
     float TimeInTicks = TimeInSeconds * TicksPerSecond;
     float AnimationTime = fmod(TimeInTicks, (float) m_pScene->mAnimations[0]->mDuration);
 

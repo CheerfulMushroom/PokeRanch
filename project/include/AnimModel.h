@@ -66,11 +66,13 @@ private:
 
     ShaderProgram shader;
     MarkerDetector *marker_detector;
+    aruco::Marker* marker;
     glm::mat4 projection;
     glm::mat4 view;
     glm::mat4 model;
     double last_update_time = 0;
-    double distance;
+
+
 
     std::string directory;
     std::vector<AnimTexture> textures_loaded;

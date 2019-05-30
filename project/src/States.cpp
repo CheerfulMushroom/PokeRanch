@@ -88,7 +88,7 @@ void RanchState::load_scene() {
                                                             height);
     add_element(std::move(stream));
 
-    auto model = std::make_unique<AnimModel>("project/models/Pikachu/pikachu_run.dae", marker_detector.get());
+    auto model = std::make_unique<AnimModel>("project/models/Pikachu/pikachu_sleep.dae", marker_detector.get());
     add_element(std::move(model));
 
     add_element(std::move(marker_detector));

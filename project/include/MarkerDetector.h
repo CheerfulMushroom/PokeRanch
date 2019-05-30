@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <aruco/aruco.h>
+#include <tuple>
 
 #include "Interfaces.h"
 
@@ -15,7 +16,7 @@ public:
     void update() override;
 
 
-    bool get_model_view(int id, glm::mat4* model);
+    bool get_marker(int id, aruco::Marker** marker);
     glm::mat4 projection;
 
 
@@ -23,7 +24,8 @@ private:
     VideoStream* stream;
     aruco::MarkerDetector marker_detector;
     aruco::CameraParameters params;
-    std::map<int, glm::mat4> model_view_map;
+    std::map<int, aruco::Marker> marker_map;
+
 };
 
 
