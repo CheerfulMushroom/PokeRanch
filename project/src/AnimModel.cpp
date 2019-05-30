@@ -54,9 +54,11 @@ AnimModel::AnimModel(const std::string &path,
 
 AnimModel::AnimModel(const std::string &path,
                      GameState *state,
-                     MarkerDetector *marker_detector) {
+                     MarkerDetector *marker_detector,
+                     std::function<void()> to_exec) {
     this->state = state;
     this->marker_detector = marker_detector;
+    this->to_exec = std::move(to_exec);
 
 
     projection = marker_detector->projection;
@@ -236,12 +238,7 @@ bool AnimModel::is_pointed_at() {
     double up = marker_y + hit_height;
     double down = marker_y;
 
-    bool is_pressed = (left < cursor_x) && (cursor_x < right) && (down < cursor_y) && (cursor_y < up);
-    if (is_pressed) {
-        std::cout << "PRESSED" << std::endl;
-    }
-
-    return false;
+    return (left < cursor_x) && (cursor_x < right) && (down < cursor_y) && (cursor_y < up);
 }
 
 double AnimModel::get_distance() {
@@ -250,7 +247,11 @@ double AnimModel::get_distance() {
     return distance;
 }
 
-void AnimModel::exec() {}
+void AnimModel::exec() {
+    if (to_exec != nullptr) {
+        to_exec();
+    }
+}
 
 
 bool AnimModel::InitFromScene(const aiScene *pScene, const string &Filename) {

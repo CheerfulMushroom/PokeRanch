@@ -41,7 +41,8 @@ public:
 
     AnimModel(const std::string &path,
               GameState *state,
-              MarkerDetector *marker_detector);
+              MarkerDetector *marker_detector,
+              std::function<void()> to_exec = nullptr);
 
     ~AnimModel() override;
 
@@ -72,6 +73,7 @@ private:
 
     bool is_deleted = true;
     GameState* state = nullptr;
+    std::function<void()> to_exec = nullptr;
     ShaderProgram shader;
     MarkerDetector *marker_detector = nullptr;
     aruco::Marker marker;
