@@ -1,6 +1,6 @@
 #include <Mesh.h>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Mesh_Texture> textures) {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
@@ -12,7 +12,7 @@ void Mesh::setup_mesh() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-
+https://www.models-resource.com/3ds/pokemonsunmoon/model/18538/
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);

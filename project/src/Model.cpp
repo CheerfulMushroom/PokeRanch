@@ -35,7 +35,7 @@ void Model::process_node(aiNode *node, const aiScene *scene) {
 Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
+    std::vector<Mesh_Texture> textures;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
@@ -79,16 +79,16 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
     
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
-    std::vector<Texture> diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    std::vector<Mesh_Texture> diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
 
-    std::vector<Texture> specularMaps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
+    std::vector<Mesh_Texture> specularMaps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         // 3. normal maps
-    std::vector<Texture> normalMaps = load_material_textures(material, aiTextureType_HEIGHT, "texture_normal");
+    std::vector<Mesh_Texture> normalMaps = load_material_textures(material, aiTextureType_HEIGHT, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         // 4. height maps
-    std::vector<Texture> heightMaps = load_material_textures(material, aiTextureType_AMBIENT, "texture_height");
+    std::vector<Mesh_Texture> heightMaps = load_material_textures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 
@@ -97,8 +97,8 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
 
 }
 
-std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name) {
-    std::vector<Texture> textures;
+std::vector<Mesh_Texture> Model::load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name) {
+    std::vector<Mesh_Texture> textures;
 
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
     
@@ -115,7 +115,7 @@ std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureTyp
         }
 
         if (!skip) {
-            Texture texture;
+            Mesh_Texture texture;
             texture.id = texture_from_file(str.C_Str(), this->directory);
             texture.type = type_name;
             texture.path = str.C_Str();

@@ -33,7 +33,7 @@ struct Vertex {
     glm::vec2 tex_coords;
 };
 
-struct Texture {
+struct Mesh_Texture {
     unsigned int id;
     std::string type;
     std::string path;
@@ -44,10 +44,10 @@ class Mesh {
  public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
+    std::vector<Mesh_Texture> textures;
     //std::vector<VertexBoneData> bones;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Mesh_Texture> textures);
     //Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, std::vector<VertexBoneData> bones);
 
 
