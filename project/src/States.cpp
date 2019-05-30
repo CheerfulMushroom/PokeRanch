@@ -92,17 +92,16 @@ void RanchState::load_scene() {
     add_element(std::make_unique<Picture>(-1.0f, -1.0f, .2f, 2.0f, "project/pictures/scale_y.jpg"));
 
 
-    auto model = std::make_unique<AnimModel>("project/models/Pikachu/pikachu_sleep.dae", this, marker_detector.get());
+    auto model = std::make_unique<AnimModel>("project/models/Pikachu/pikachu_sleep.dae", this, marker_detector.get(),
+                                             bf_change_game_state<PokedexState>);
     add_element(std::move(model));
 
     add_element(std::move(marker_detector));
 
 
-
     add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<PauseState>,
                                          "project/icons/menu_pink.png"));
-    add_element(std::make_unique<Button>(this, 0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<PokedexState>,
-                                         "project/icons/pikachu.png"));
+
 }
 
 void RanchState::render_game() {
