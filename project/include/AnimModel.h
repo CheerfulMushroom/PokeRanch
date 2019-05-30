@@ -68,6 +68,7 @@ public:
 
     void rotate(float delta);
 
+
 private:
 #define NUM_BONES_PER_VEREX 4
 
