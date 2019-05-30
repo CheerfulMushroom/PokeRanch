@@ -24,7 +24,9 @@ AnimModel::AnimModel(const std::string &path,
                      glm::vec3 translate,
                      glm::vec3 scale,
                      glm::vec3 rotate,
-                     float angle) {
+                     float angle,
+                     int width,
+                     int height) {
     marker_detector = nullptr;
 
 
@@ -33,7 +35,7 @@ AnimModel::AnimModel(const std::string &path,
     model = glm::scale(model, scale);
     model = glm::rotate(model, glm::radians(angle), rotate);
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float) width / (float) height, 0.1f, 100.0f);
     view = camera->GetViewMatrix();
 
 
@@ -158,8 +160,6 @@ void AnimModel::update() {
 
     if (marker_detector != nullptr) {
         if (marker_detector->get_model_view(3, &model)) {
-
-
             model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
             model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -167,7 +167,7 @@ void AnimModel::update() {
 
         } else {
             if (glfwGetTime() - last_update_time > 0.5) {
-                model = glm::mat4(0.0f);
+                model = glm::mat4(-1000.0f);
             }
         }
     }

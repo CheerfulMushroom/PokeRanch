@@ -6,7 +6,7 @@
 
 #include "MarkerDetector.h"
 
-MarkerDetector::MarkerDetector(VideoStream *stream, std::string path_to_calibraion_info) {
+MarkerDetector::MarkerDetector(VideoStream *stream, std::string path_to_calibraion_info, int width, int height) {
     this->stream = stream;
 
     // Setting up aruco detector
@@ -16,7 +16,7 @@ MarkerDetector::MarkerDetector(VideoStream *stream, std::string path_to_calibrai
 
     params.readFromXMLFile(path_to_calibraion_info);
 
-    cv::Size img_size(800, 600);
+    cv::Size img_size(width, height);
 
     double proj_mat[16];
     params.glGetProjectionMatrix(params.CamSize, img_size, proj_mat, 0.01, 100);
@@ -31,10 +31,11 @@ void MarkerDetector::update() {
     cv::Mat frame = stream->frame;
     auto markers = marker_detector.detect(frame, params, marker_size);
 
-
     for (auto mrkr:markers) {
         cv::Mat rodrig;
 
+        auto center = mrkr.getCenter();
+        std::cout << center.x << "  " << center.y << std::endl;
         auto good_rvec = mrkr.Rvec;
         good_rvec.at<float>(0, 2) *= -1.0;
 
@@ -56,8 +57,7 @@ void MarkerDetector::update() {
 
 bool MarkerDetector::get_model_view(int id, glm::mat4 *model) {
     auto searched = model_view_map.find(id);
-    if(searched != model_view_map.end())
-    {
+    if (searched != model_view_map.end()) {
         *model = model_view_map[id];
         return true;
     }

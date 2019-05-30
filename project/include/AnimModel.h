@@ -33,7 +33,9 @@ public:
               glm::vec3 translate,
               glm::vec3 scale,
               glm::vec3 rotate,
-              float angle);
+              float angle,
+              int width,
+              int height);
 
     AnimModel(const std::string &path,
               MarkerDetector *marker_detector);

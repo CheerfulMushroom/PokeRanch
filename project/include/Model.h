@@ -20,7 +20,8 @@ public:
           glm::vec3 scale,
           glm::vec3 rotate,
           float angle,
-          std::function<void()> to_exec = nullptr);
+          int width,
+          int heigth);
     ~Model() override = default;
 
     void render() override;
@@ -35,7 +36,8 @@ private:
     glm::vec3 scale;
     glm::vec3 rotate;
     float angle;
-    std::function<void()> to_exec;
+    int width;
+    int height;
 
     void load_model(std::string const &path);
     void process_node(aiNode *node, const aiScene *scene);

@@ -77,15 +77,21 @@ void PauseState::update_game() {
 RanchState::RanchState(Game *game_object) : GameState(game_object) {};
 
 void RanchState::load_scene() {
+    int width = game_object->get_width();
+    int height = game_object->get_height();
+
+
     auto stream = std::make_unique<VideoStream>(1);
-    auto marker_detector = std::make_unique<MarkerDetector>(stream.get(), "project/microsoft_webcam_calibration.yml");
+    auto marker_detector = std::make_unique<MarkerDetector>(stream.get(),
+                                                            "project/microsoft_webcam_calibration.yml",
+                                                            width,
+                                                            height);
     add_element(std::move(stream));
 
     auto model = std::make_unique<AnimModel>("project/models/Pikachu/pikachu_run.dae", marker_detector.get());
     add_element(std::move(model));
 
     add_element(std::move(marker_detector));
-
 
 
     add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<PauseState>,
@@ -116,6 +122,10 @@ PokedexState::PokedexState(Game *game_object) : GameState(game_object), camera(g
 }
 
 void PokedexState::load_scene() {
+    int width = game_object->get_width();
+    int height = game_object->get_height();
+
+
     add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/pokedex_background.jpg"));
 
 
@@ -124,7 +134,9 @@ void PokedexState::load_scene() {
                                              glm::vec3(.0f, -0.5f, .0f),
                                              glm::vec3(0.02, 0.02, 0.02),
                                              glm::vec3(0.0f, 1.0f, 0.0f),
-                                             .0f);
+                                             .0f,
+                                             width,
+                                             height);
 
     add_element(std::make_unique<Button>(this, -0.5f, -0.925f, 0.2f, 0.2f * 16 / 9,
                                          std::bind(&AnimModel::rotate, model.get(), 15),
@@ -144,7 +156,6 @@ void PokedexState::load_scene() {
                                        glm::vec3(0.04, 0.04, 0.04),
                                        glm::vec3(1.0f, 0.0f, 0.0f),
                                        0));
-
 
 
     add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, bf_change_game_state<RanchState>,

@@ -11,7 +11,7 @@ class VideoStream;
 class MarkerDetector: public Updatable {
 public:
     MarkerDetector() = default;
-    MarkerDetector(VideoStream* stream, std::string path_to_calibraion_info);
+    MarkerDetector(VideoStream* stream, std::string path_to_calibraion_info, int width, int height);
     void update() override;
 
 

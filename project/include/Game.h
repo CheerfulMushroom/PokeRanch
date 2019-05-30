@@ -31,6 +31,8 @@ public:
     // Геттеры
     GLFWwindow *get_window();
     GameState *get_state();
+    int get_width();
+    int get_height();
 
 private:
     double last_loop_time = 0;

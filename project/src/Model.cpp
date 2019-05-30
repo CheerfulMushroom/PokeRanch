@@ -9,14 +9,16 @@ Model::Model(std::string const &path,
              glm::vec3 scale,
              glm::vec3 rotate,
              float angle,
-             std::function<void()> to_exec) {
+             int width,
+             int height ) {
     load_model(path);
     this->translate = translate;
     this->scale = scale;
     this->rotate = rotate;
     this->angle = angle;
     this->camera = camera;
-    this->to_exec = to_exec;
+    this->width = width;
+    this->height = height;
     shader = ShaderProgram("project/shaders/v_model_shader.txt", "project/shaders/f_model_shader.txt");
 }
 
@@ -148,7 +150,7 @@ void Model::render() {
 
     glEnable(GL_DEPTH_TEST);
     shader.use();
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) 800 / (float) 600, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) width / (float) height, 0.1f, 100.0f);
 
     glm::mat4 view = camera->GetViewMatrix();
 
