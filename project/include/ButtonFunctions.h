@@ -8,11 +8,14 @@
 #include <GL/glew.h>
 
 #include "Game.h"
+#include "States.h"
 
-template<class State>
-void bf_change_game_state() {
-    game_object->change_state(std::make_unique<State>(game_object));
-}
+
+void change_to_ranch();
+
+void change_to_pokedex(int pokemon_id);
+
+void change_to_pause();
 
 double test_movement(double t);
 

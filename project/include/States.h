@@ -77,16 +77,20 @@ public:
     void render_game() override;
     void update_game() override;
 
+
 };
 
 
 class PokedexState : public GameState {
 public:
-    explicit PokedexState(Game *game_object);
+    explicit PokedexState(Game *game_object, int pokemon_id);
     void load_scene() override;
     void render_game() override;
     void update_game() override;
 
+
+private:
+    int pokemon_id;
     Camera camera;
 };
 

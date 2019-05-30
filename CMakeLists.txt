@@ -17,7 +17,7 @@ add_executable(main.out
         ${PROJECT_SOURCE_DIR}/ShaderProgram.cpp
         ${PROJECT_SOURCE_DIR}/States.cpp
         ${PROJECT_SOURCE_DIR}/Button.cpp
-        ${PROJECT_SOURCE_DIR}/AdditionalFunctions.cpp
+        ${PROJECT_SOURCE_DIR}/ButtonFunctions.cpp
         ${PROJECT_SOURCE_DIR}/VideoStream.cpp
         ${PROJECT_SOURCE_DIR}/Interfaces.cpp
         ${PROJECT_SOURCE_DIR}/Picture.cpp
