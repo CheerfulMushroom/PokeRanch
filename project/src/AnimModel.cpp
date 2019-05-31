@@ -103,6 +103,7 @@ AnimModel::AnimModel(int id,
 
 
 AnimModel::~AnimModel() {
+    write_pokemon_info(id, scale, anim_id);
     Clear();
 }
 

@@ -48,11 +48,12 @@ bool get_pokemon_info(int pok_id, glm::vec3 *scale_to_load, int *anim_id_to_load
 
         std::string line;
         while (std::getline(file, line)) {
-            std::istringstream iss(line);
 
             int id;
             float sc_x, sc_y, sc_z;
             int anim_id;
+            std::istringstream iss(line);
+
             iss >> id >> sc_x >> sc_y >> sc_z >> anim_id;
 
             if (id == pok_id) {
@@ -69,16 +70,36 @@ bool get_pokemon_info(int pok_id, glm::vec3 *scale_to_load, int *anim_id_to_load
 
 void write_pokemon_info(int pok_id, glm::vec3 scale_to_save, int anim_id_to_save) {
 
-//    std::ifstream file("project/pokemon_info.dat");
-//
-//    int id;
-//    float sc_x, sc_y, sc_z;
-//    int anim_id;
-//    while (file >> id >> scale[1] >> scale[2] >> scale[3] >> anim_id) {
-//        if (id == pok_id) {
-//            model_path = path;
-//        }
-//    }
+    std::ifstream file("project/pokemon_info.dat");
+
+    std::string line;
+    std::vector<std::string> file_lines;
+    while (std::getline(file, line)) {
+        int id;
+        float sc_x, sc_y, sc_z;
+        int anim_id;
+        std::istringstream iss(line);
+
+        iss >> id >> sc_x >> sc_y >> sc_z >> anim_id;
+        if (id == pok_id) {
+            sc_x = scale_to_save.x;
+            sc_y = scale_to_save.y;
+            sc_z = scale_to_save.z;
+            anim_id = anim_id_to_save;
+
+            std::ostringstream new_info;
+            new_info << id << ' ' << sc_x << ' ' << sc_y << ' ' << sc_z << ' ' << anim_id;
+            line = new_info.str();
+        }
+
+        file_lines.emplace_back(line);
+    }
+
+
+    std::ofstream new_file("project/pokemon_info.dat");
+    for (auto &to_write: file_lines) {
+        new_file << to_write << std::endl;
+    }
 
 }
 
