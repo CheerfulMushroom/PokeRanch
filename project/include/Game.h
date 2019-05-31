@@ -34,6 +34,8 @@ public:
     int get_width();
     int get_height();
 
+    int cam_id = 0;
+
 private:
     double last_loop_time = 0;
     int width;
