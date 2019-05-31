@@ -9,7 +9,9 @@
 
 #include "ShaderProgram.h"
 
-bool get_path_by_id(int pok_id, std::string &model_path);
+bool get_dir_by_id(int pok_id, std::string &model_path);
+
+std::vector<std::string> get_anims(std::string dir);
 
 glm::vec3 get_pokemon_scale(int pok_id);
 

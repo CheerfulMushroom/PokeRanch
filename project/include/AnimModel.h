@@ -63,7 +63,11 @@ public:
 
     void BoneTransform(float TimeInSeconds);
 
-    void change_animation(std::string path);
+
+
+    void swap_animation();
+
+    void change_animation(std::string animation_name);
 
     void rotate(float delta);
 
@@ -78,8 +82,13 @@ private:
     bool is_deleted = true;
     GameState *state = nullptr;
     std::function<void()> to_exec = nullptr;
-    ShaderProgram shader;
     MarkerDetector *marker_detector = nullptr;
+
+    std::string directory;
+    std::vector<std::string> anim_names;
+    int anim_id = 0;
+
+    ShaderProgram shader;
     aruco::Marker marker;
     glm::vec3 scale;
     glm::mat4 projection;
@@ -88,7 +97,6 @@ private:
     double last_update_time = 0;
 
 
-    std::string directory;
     std::vector<AnimTexture> textures_loaded;
 
     struct BoneInfo {

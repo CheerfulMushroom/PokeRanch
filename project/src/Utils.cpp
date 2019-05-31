@@ -1,11 +1,12 @@
 //#include <sqlite3.h>
 #include <fstream>
+#include <dirent.h>
 
 #include "Utils.h"
 #include "ShaderProgram.h"
 
 
-bool get_path_by_id(int pok_id, std::string &model_path) {
+bool get_dir_by_id(int pok_id, std::string &model_path) {
     std::ifstream path_file("project/pokemon_model_path.dat");
 
     int id;
@@ -18,6 +19,27 @@ bool get_path_by_id(int pok_id, std::string &model_path) {
     }
 
     return false;
+}
+
+std::vector<std::string> get_anims(std::string dir) {
+    std::vector<std::string> anim_names;
+    auto ending = std::string(".dae");
+
+    auto dpdf = opendir(dir.c_str());
+    if (dpdf != nullptr) {
+        while (auto epdf = readdir(dpdf)) {
+            std::string filename = std::string(epdf->d_name);
+
+            // Проверяем, что файл заканчивается на .dae
+            if (filename.length() >= ending.length()) {
+                if (filename.compare(filename.length() - ending.length(), ending.length(), ending) == 0){
+                    anim_names.emplace_back(std::string(epdf->d_name));
+                }
+            }
+        }
+    }
+
+    return anim_names;
 }
 
 glm::vec3 get_pokemon_scale(int pok_id) {

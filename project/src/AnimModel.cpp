@@ -49,14 +49,14 @@ AnimModel::AnimModel(int id,
     shader = ShaderProgram("project/shaders/v_model_anim_pokedex_shader.txt",
                            "project/shaders/f_model_anim_shader.txt");
 
-    std::string path;
-    bool has_path = get_path_by_id(id, path);
+    bool has_path = get_dir_by_id(id, directory);
     if (!has_path) {
-        path = "project/models/Pikachu/emotion.dae"; //TODO: easter egg
+        directory = "project/models/Pikachu/";
     }
-    directory = path.substr(0, path.find_last_of('/'));
 
-    load_mesh(path);
+    anim_names = get_anims(directory);
+
+    load_mesh(directory + anim_names[anim_id]);
 
 }
 
@@ -64,13 +64,13 @@ AnimModel::AnimModel(int id,
                      GameState *state,
                      MarkerDetector *marker_detector,
                      std::function<void()> to_exec) {
+
     this->id = id;
     this->state = state;
     this->marker_detector = marker_detector;
     this->to_exec = std::move(to_exec);
 
     this->scale = get_pokemon_scale(id);
-
 
 
     projection = marker_detector->projection;
@@ -82,16 +82,18 @@ AnimModel::AnimModel(int id,
     m_NumBones = 0;
     m_pScene = nullptr;
 
-    shader = ShaderProgram("project/shaders/v_model_anim_shader.txt", "project/shaders/f_model_anim_shader.txt");
+    shader = ShaderProgram("project/shaders/v_model_anim_shader.txt",
+                           "project/shaders/f_model_anim_shader.txt");
 
-    std::string path;
-    bool has_path = get_path_by_id(id, path);
+    bool has_path = get_dir_by_id(id, directory);
     if (!has_path) {
-        path = "project/models/Pikachu/emotion.dae"; //TODO: easter egg
+        directory = "project/models/Pikachu/";
     }
-    directory = path.substr(0, path.find_last_of('/'));
 
-    load_mesh(path);
+    anim_names = get_anims(directory);
+
+
+    load_mesh(directory + anim_names[anim_id]);
 }
 
 
@@ -567,6 +569,11 @@ void AnimModel::BoneTransform(float TimeInSeconds) {
 }
 
 
+void AnimModel::swap_animation() {
+    anim_id = ++anim_id % anim_names.size();
+    change_animation(directory + anim_names[anim_id]);
+}
+
 void AnimModel::change_animation(std::string path) {
     Clear();
     load_mesh(path);
@@ -577,7 +584,7 @@ void AnimModel::rotate(float delta) {
 }
 
 void AnimModel::feed(float k) {
-    scale*=k;
+    scale *= k;
     model = glm::scale(model, glm::vec3(k));
 }
 
