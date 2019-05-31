@@ -25,6 +25,7 @@ void MenuState::load_scene() {
     add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/main_screen.png"));
     add_element(std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9, "project/pictures/pokemon_logo.png"));
     add_element(std::make_unique<Picture>(-0.25f, 0.25f, 0.5f, 0.5f * 16 / 9 * 56 / 288, "project/pictures/ranch.png"));
+
     add_element(
             std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, change_to_ranch,
                                      "project/icons/play_pink.png"));
@@ -97,6 +98,10 @@ void RanchState::load_scene() {
     add_element(std::make_unique<Button>(this, 0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, swap_cam,
                                          "project/icons/swap_camera_new.png"));
 
+    add_element(
+            std::make_unique<Button>(this, 0.0f, -0.9f, 0.2f, 0.2f * 16 / 9, std::bind(take_screenshot, width, height),
+                                     "project/icons/screenshot.png"));
+
 }
 
 void RanchState::render_game() {
@@ -116,7 +121,6 @@ void RanchState::update_game() {
         update_obj->update();
     }
 }
-
 
 
 PokedexState::PokedexState(Game *game_object, int pokemon_id) : GameState(game_object),
