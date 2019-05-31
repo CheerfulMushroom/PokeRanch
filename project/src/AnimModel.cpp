@@ -32,7 +32,7 @@ AnimModel::AnimModel(int id,
     this->state = nullptr;
 
     if (!get_pokemon_info(id, &scale, &anim_id)){
-        std::cout << "ERROR WHILE LOADING INFO" <<std::endl;
+        std::cout << "NEW_MARKER_FOUND" <<std::endl;
     }
 
     model = glm::mat4(1.0f);
@@ -74,7 +74,7 @@ AnimModel::AnimModel(int id,
     this->to_exec = std::move(to_exec);
 
     if (!get_pokemon_info(id, &scale, &anim_id)){
-        std::cout << "ERROR WHILE LOADING INFO" <<std::endl;
+        std::cout << "NEW_MARKER_FOUND" <<std::endl;
     }
 
 

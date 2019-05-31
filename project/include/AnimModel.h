@@ -64,7 +64,6 @@ public:
     void BoneTransform(float TimeInSeconds);
 
 
-
     void swap_animation();
 
     void change_animation(std::string animation_name);
@@ -87,10 +86,11 @@ private:
     std::string directory;
     std::vector<std::string> anim_names;
     int anim_id = 0;
+    glm::vec3 scale = {0.02, 0.02, 0.02};
+
 
     ShaderProgram shader;
     aruco::Marker marker;
-    glm::vec3 scale;
     glm::mat4 projection;
     glm::mat4 view;
     glm::mat4 model;
