@@ -43,3 +43,7 @@ void take_screenshot(int width, int height) {
 
     cv::imwrite(file_name, img);
 }
+
+void close_window(){
+    glfwWindowShouldClose(game_object->get_window());
+}

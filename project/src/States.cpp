@@ -22,13 +22,17 @@ Game *GameState::get_game() {
 MenuState::MenuState(Game *game_object) : GameState(game_object) {}
 
 void MenuState::load_scene() {
-    add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/main_screen.png"));
-    add_element(std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9, "project/pictures/pokemon_logo.png"));
-    add_element(std::make_unique<Picture>(-0.25f, 0.25f, 0.5f, 0.5f * 16 / 9 * 56 / 288, "project/pictures/ranch.png"));
+    add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f,
+                                          "project/pictures/main_screen.png"));
+    add_element(std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9,
+                                          "project/pictures/pokemon_logo.png"));
+    add_element(std::make_unique<Picture>(-0.25f, 0.25f, 0.5f, 0.5f * 16 / 9 * 56 / 288,
+                                          "project/pictures/ranch.png"));
 
-    add_element(
-            std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, change_to_ranch,
-                                     "project/icons/play_pink.png"));
+    add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9,
+                                         change_to_ranch,
+                                         "project/icons/play_blue.png"));
+
 }
 
 void MenuState::render_game() {
@@ -51,11 +55,15 @@ void MenuState::update_game() {
 PauseState::PauseState(Game *game_object) : GameState(game_object) {}
 
 void PauseState::load_scene() {
-    add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/pause_background.png"));
-    add_element(
-            std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9 * 127 / 330, "project/pictures/pause_logo.png"));
-    add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, change_to_ranch,
+    add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f,
+                                          "project/pictures/pause_background.png"));
+    add_element(std::make_unique<Picture>(-0.4f, 0.0f, 0.8f, 0.8f * 16 / 9 * 127 / 330,
+                                          "project/pictures/pause_logo.png"));
+
+    add_element(std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9,
+                                         change_to_ranch,
                                          "project/icons/play_pink.png"));
+
 }
 
 void PauseState::render_game() {
@@ -92,14 +100,17 @@ void RanchState::load_scene() {
     add_element(std::move(stream));
 
 
-    add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, change_to_pause,
-                                         "project/icons/menu_pink.png"));
+    add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f * 16 / 9,
+                                         change_to_pause,
+                                         "project/icons/menu_blue.png"));
 
-    add_element(std::make_unique<Button>(this, 0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, swap_cam,
-                                         "project/icons/swap_camera_new.png"));
+    add_element(std::make_unique<Button>(this, 0.7f, -0.9f, 0.2f, 0.2f * 16 / 9,
+                                         swap_cam,
+                                         "project/icons/swap_camera.png"));
 
     add_element(
-            std::make_unique<Button>(this, 0.0f, -0.9f, 0.2f, 0.2f * 16 / 9, std::bind(take_screenshot, width, height),
+            std::make_unique<Button>(this, 0.0f, -0.9f, 0.2f, 0.2f * 16 / 9,
+                                     std::bind(take_screenshot, width, height),
                                      "project/icons/screenshot.png"));
 
 }
@@ -133,7 +144,8 @@ void PokedexState::load_scene() {
     int height = game_object->get_height();
 
 
-    add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f, "project/pictures/pokedex_background.jpg"));
+    add_element(std::make_unique<Picture>(-1.0f, -1.0f, 2.0f, 2.0f,
+                                          "project/pictures/pokedex_background.png"));
 
 
     auto model = std::make_unique<AnimModel>(pokemon_id,
@@ -144,22 +156,27 @@ void PokedexState::load_scene() {
                                              width,
                                              height);
 
-    add_element(std::make_unique<Button>(this, -0.5f, -0.925f, 0.2f, 0.2f * 16 / 9,
+    add_element(std::make_unique<Button>(this, -0.5f, -0.8f, 0.2f, 0.2f * 16 / 9,
                                          std::bind(&AnimModel::rotate, model.get(), 15),
                                          "project/icons/nonclockwise.png"));
-    add_element(std::make_unique<Button>(this, 0.5f, -0.925f, 0.2f, 0.2f * 16 / 9,
+    add_element(std::make_unique<Button>(this, 0.4f, -0.8f, 0.2f, 0.2f * 16 / 9,
                                          std::bind(&AnimModel::rotate, model.get(), -15),
                                          "project/icons/clockwise.png"));
+
     add_element(std::make_unique<Button>(this, 0.5f, -.3, 0.2f, 0.2f * 16 / 9,
                                          std::bind(&AnimModel::swap_animation, model.get())));
-    add_element(std::make_unique<Button>(this, 0.5f, -.0f, 0.2f, 0.2f * 16 / 9,
+
+    add_element(std::make_unique<Button>(this, 0.5f, .2f, 0.2f, 0.2f * 16 / 9,
+                                         std::bind(&AnimModel::feed, model.get(), 1.05f)));
+
+    add_element(std::make_unique<Button>(this, 0.5f, .7f, 0.2f, 0.2f * 16 / 9,
                                          std::bind(&AnimModel::feed, model.get(), 1.05f)));
 
     add_element(std::move(model));
 
     add_element(
             std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, change_to_ranch,
-                                     "project/icons/play_pink.png"));
+                                     "project/icons/play_blue.png"));
 
 }
 

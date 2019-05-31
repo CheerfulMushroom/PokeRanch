@@ -19,4 +19,5 @@ void swap_cam();
 
 void take_screenshot(int width, int height);
 
+void close_window();
 #endif //PREP_POKEMON_RANCH_BUTTONFUNCTIONS_H
