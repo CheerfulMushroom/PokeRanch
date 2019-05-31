@@ -164,13 +164,16 @@ void PokedexState::load_scene() {
                                          "project/icons/clockwise.png"));
 
     add_element(std::make_unique<Button>(this, 0.5f, -.3, 0.2f, 0.2f * 16 / 9,
-                                         std::bind(&AnimModel::swap_animation, model.get())));
+                                         std::bind(&AnimModel::swap_animation, model.get()),
+                                         "project/icons/swap.png"));
 
     add_element(std::make_unique<Button>(this, 0.5f, .2f, 0.2f, 0.2f * 16 / 9,
-                                         std::bind(&AnimModel::feed, model.get(), 1.05f)));
+                                         std::bind(&AnimModel::feed, model.get(), 1.05f),
+                                         "project/icons/zoom-in.png"));
 
     add_element(std::make_unique<Button>(this, 0.5f, .7f, 0.2f, 0.2f * 16 / 9,
-                                         std::bind(&AnimModel::feed, model.get(), 1.05f)));
+                                         std::bind(&AnimModel::feed, model.get(), 0.95f),
+                                         "project/icons/zoom-out.png"));
 
     add_element(std::move(model));
 
