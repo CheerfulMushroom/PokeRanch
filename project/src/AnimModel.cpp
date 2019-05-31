@@ -28,9 +28,12 @@ AnimModel::AnimModel(int id,
                      int width,
                      int height) {
     this->id = id;
-    this->scale = get_pokemon_scale(id);
     marker_detector = nullptr;
     this->state = nullptr;
+
+    if (!get_pokemon_info(id, &scale, &anim_id)){
+        std::cout << "ERROR WHILE LOADING INFO" <<std::endl;
+    }
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, translate);
@@ -70,7 +73,9 @@ AnimModel::AnimModel(int id,
     this->marker_detector = marker_detector;
     this->to_exec = std::move(to_exec);
 
-    this->scale = get_pokemon_scale(id);
+    if (!get_pokemon_info(id, &scale, &anim_id)){
+        std::cout << "ERROR WHILE LOADING INFO" <<std::endl;
+    }
 
 
     projection = marker_detector->projection;

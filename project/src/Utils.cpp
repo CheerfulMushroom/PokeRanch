@@ -32,7 +32,7 @@ std::vector<std::string> get_anims(std::string dir) {
 
             // Проверяем, что файл заканчивается на .dae
             if (filename.length() >= ending.length()) {
-                if (filename.compare(filename.length() - ending.length(), ending.length(), ending) == 0){
+                if (filename.compare(filename.length() - ending.length(), ending.length(), ending) == 0) {
                     anim_names.emplace_back(std::string(epdf->d_name));
                 }
             }
@@ -42,45 +42,45 @@ std::vector<std::string> get_anims(std::string dir) {
     return anim_names;
 }
 
-glm::vec3 get_pokemon_scale(int pok_id) {
-    std::ifstream path_file("project/pokemon_info.dat");
-    if (path_file.is_open()) {
+bool get_pokemon_info(int pok_id, glm::vec3 *scale_to_load, int *anim_id_to_load) {
+    std::ifstream file("project/pokemon_info.dat");
+    if (file.is_open()) {
 
         std::string line;
-        while (std::getline(path_file, line)) {
+        while (std::getline(file, line)) {
             std::istringstream iss(line);
-            int id;
-            float a, b, c;
 
-            if (!(iss >> id >> a >> b >> c)) { break; }
+            int id;
+            float sc_x, sc_y, sc_z;
+            int anim_id;
+            iss >> id >> sc_x >> sc_y >> sc_z >> anim_id;
 
             if (id == pok_id) {
-                return glm::vec3(a, b, c);
+                *scale_to_load = glm::vec3(sc_x, sc_y, sc_z);
+                *anim_id_to_load = anim_id;
+                return true;
             }
+
         }
-    } else {
-        std::cout << "FILE NOT FOUND" << std::endl;
     }
 
-    return glm::vec3(0.02, 0.02, 0.02);
+    return false;
 }
 
-//void write_pokemon_info(int pok_id, glm::vec3){
+void write_pokemon_info(int pok_id, glm::vec3 scale_to_save, int anim_id_to_save) {
+
+//    std::ifstream file("project/pokemon_info.dat");
 //
-//    if (pokemon_model_ptr == nullptr) {
-//        puts("No such file");
-//    } else {
-//        int input_id;
-//        float a, b, c;
-//        while (fscanf(pokemon_model_ptr, "%d%f%f%f", &input_id, &a, &b, &c) == 2) {
-//            if (input_id == pok_id) {
-//                return glm::vec3(a, b, c);
-//            }
+//    int id;
+//    float sc_x, sc_y, sc_z;
+//    int anim_id;
+//    while (file >> id >> scale[1] >> scale[2] >> scale[3] >> anim_id) {
+//        if (id == pok_id) {
+//            model_path = path;
 //        }
-//        fclose(pokemon_model_ptr);
 //    }
-//    return glm::vec3(0.2, 0.2, 0.2);
-//}
+
+}
 
 
 // Перевод изображения в текстуру
