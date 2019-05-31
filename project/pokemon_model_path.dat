@@ -1,7 +1,24 @@
-1 project/models/Bellossom/
+1 project/models/Pikachu/
 2 project/models/Decidueye/
+<<<<<<< HEAD
 3 project/models/Litten/
 4 project/models/Machamp/
 5 project/models/Pikachu/
 6 project/models/Slowpoke/
 7 project/models/Sudowoodo/
+=======
+3 project/models/Slowpoke/
+4 project/models/Litten/
+5 project/models/Machamp/
+6 project/models/Sudowoodo/
+7 project/models/Bellossom/
+8 project/models/Incineroar/
+9 project/models/Meowth/
+10 project/models/Miltank/
+11 project/models/Mudsdale/
+12 project/models/Popplio/
+13 project/models/Probopass/
+14 project/models/Rockruff/
+15 project/models/Tauros/
+
+>>>>>>> 259677f764e23398497398fbf254fff7d1148a66
