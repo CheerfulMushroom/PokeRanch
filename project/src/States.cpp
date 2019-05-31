@@ -82,7 +82,7 @@ void RanchState::load_scene() {
     int height = game_object->get_height();
 
 
-    auto stream = std::make_unique<VideoStream>(1);
+    auto stream = std::make_unique<VideoStream>(game->cam_id);
     auto marker_detector = std::make_unique<MarkerDetector>(stream.get(),
                                                             "project/microsoft_webcam_calibration.yml",
                                                             width, height,
@@ -93,6 +93,9 @@ void RanchState::load_scene() {
 
     add_element(std::make_unique<Button>(this, -0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, change_to_pause,
                                          "project/icons/menu_pink.png"));
+
+    add_element(std::make_unique<Button>(this, 0.7f, -0.9f, 0.2f, 0.2f * 16 / 9, swap_cam,
+                                         "project/icons/swap_camera_new.png"));
 
 }
 
@@ -108,12 +111,12 @@ void RanchState::render_game() {
 }
 
 void RanchState::update_game() {
-    // TODO(leb): ПОКАЗАТЬ ПРЕПОДАМ
     for (size_t i = 0; i < to_update.size(); i++) {
         auto update_obj = to_update[i];
         update_obj->update();
     }
 }
+
 
 
 PokedexState::PokedexState(Game *game_object, int pokemon_id) : GameState(game_object),
@@ -132,7 +135,6 @@ void PokedexState::load_scene() {
     auto model = std::make_unique<AnimModel>(pokemon_id,
                                              &camera,
                                              glm::vec3(.0f, -0.5f, .0f),
-                                             glm::vec3(0.02, 0.02, 0.02),
                                              glm::vec3(0.0f, 1.0f, 0.0f),
                                              180.0f,
                                              width,
@@ -145,18 +147,11 @@ void PokedexState::load_scene() {
                                          std::bind(&AnimModel::rotate, model.get(), -15),
                                          "project/icons/clockwise.png"));
     add_element(std::make_unique<Button>(this, 0.5f, -.3, 0.2f, 0.2f * 16 / 9,
-                                         std::bind(&AnimModel::change_animation, model.get(),
-                                                   "project/models/Pikachu/pikachu_run.dae")));
+                                         std::bind(&AnimModel::swap_animation, model.get())));
+    add_element(std::make_unique<Button>(this, 0.5f, -.0f, 0.2f, 0.2f * 16 / 9,
+                                         std::bind(&AnimModel::feed, model.get(), 1.05f)));
 
     add_element(std::move(model));
-
-    add_element(std::make_unique<Cake>("project/models/Autumn/okashi_special_04_02.dae",
-                                       &camera,
-                                       glm::vec3(1.2f, -0.4f, 0.0f),
-                                       glm::vec3(0.04, 0.04, 0.04),
-                                       glm::vec3(1.0f, 0.0f, 0.0f),
-                                       0));
-
 
     add_element(
             std::make_unique<Button>(this, -0.1f, -0.925f, 0.2f, 0.2f * 16 / 9, change_to_ranch,

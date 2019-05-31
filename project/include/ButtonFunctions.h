@@ -17,7 +17,6 @@ void change_to_pokedex(int pokemon_id);
 
 void change_to_pause();
 
-double test_movement(double t);
-
+void swap_cam();
 
 #endif //PREP_POKEMON_RANCH_BUTTONFUNCTIONS_H

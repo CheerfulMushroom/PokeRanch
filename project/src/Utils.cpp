@@ -1,26 +1,118 @@
+//#include <sqlite3.h>
+#include <fstream>
+#include <dirent.h>
+
 #include "Utils.h"
 #include "ShaderProgram.h"
 
 
-bool get_path_by_id(int pok_id, std::string &model_path) {
-    FILE *pokemon_model_ptr = fopen("project/pokemon_model_path.dat", "r");
-    if (pokemon_model_ptr == nullptr) {
-        puts("No such file");
-    } else {
-        int input_id;
-        char* input_path = new char[40];
-        while (fscanf(pokemon_model_ptr, "%d%s", &input_id, input_path) == 2) {
-            if (input_id == pok_id) {
-                fclose(pokemon_model_ptr);
-                model_path = std::string(input_path);
-                return true;
-            }
+bool get_dir_by_id(int pok_id, std::string &model_path) {
+    std::ifstream path_file("project/pokemon_model_path.dat");
+
+    int id;
+    std::string path;
+    while (path_file >> id >> path) {
+        if (id == pok_id) {
+            model_path = path;
+            return true;
         }
-        fclose(pokemon_model_ptr);
     }
+
     return false;
 }
 
+std::vector<std::string> get_anims(std::string dir) {
+    std::vector<std::string> anim_names;
+    auto ending = std::string(".dae");
+
+    auto dpdf = opendir(dir.c_str());
+    if (dpdf != nullptr) {
+        while (auto epdf = readdir(dpdf)) {
+            std::string filename = std::string(epdf->d_name);
+
+            // Проверяем, что файл заканчивается на .dae
+            if (filename.length() >= ending.length()) {
+                if (filename.compare(filename.length() - ending.length(), ending.length(), ending) == 0) {
+                    anim_names.emplace_back(std::string(epdf->d_name));
+                }
+            }
+        }
+    }
+
+    return anim_names;
+}
+
+bool get_pokemon_info(int pok_id, glm::vec3 *scale_to_load, int *anim_id_to_load) {
+    std::ifstream file("project/pokemon_info.save");
+    if (file.is_open()) {
+
+        std::string line;
+        while (std::getline(file, line)) {
+
+            int id;
+            float sc_x, sc_y, sc_z;
+            int anim_id;
+            std::istringstream iss(line);
+
+            iss >> id >> sc_x >> sc_y >> sc_z >> anim_id;
+
+            if (id == pok_id) {
+                *scale_to_load = glm::vec3(sc_x, sc_y, sc_z);
+                *anim_id_to_load = anim_id;
+                return true;
+            }
+
+        }
+    }
+
+    return false;
+}
+
+void write_pokemon_info(int pok_id, glm::vec3 scale_to_save, int anim_id_to_save) {
+
+    std::ifstream file("project/pokemon_info.save");
+
+    std::string line;
+    std::vector<std::string> file_lines;
+    bool id_was_found = false;
+    while (std::getline(file, line)) {
+        int id;
+        float sc_x, sc_y, sc_z;
+        int anim_id;
+        std::istringstream iss(line);
+
+        iss >> id >> sc_x >> sc_y >> sc_z >> anim_id;
+        if (id == pok_id) {
+            id_was_found = true;
+
+            sc_x = scale_to_save.x;
+            sc_y = scale_to_save.y;
+            sc_z = scale_to_save.z;
+            anim_id = anim_id_to_save;
+
+            std::ostringstream new_info;
+            new_info << id << ' ' << sc_x << ' ' << sc_y << ' ' << sc_z << ' ' << anim_id;
+            line = new_info.str();
+        }
+
+        file_lines.emplace_back(line);
+    }
+
+
+    std::ofstream new_file("project/pokemon_info.save");
+    for (auto &to_write: file_lines) {
+        new_file << to_write << std::endl;
+    }
+
+    if (!id_was_found) {
+        float sc_x = scale_to_save.x;
+        float sc_y = scale_to_save.y;
+        float sc_z = scale_to_save.z;
+        float anim_id = anim_id_to_save;
+        new_file << pok_id << ' ' << sc_x << ' ' << sc_y << ' ' << sc_z << ' ' << anim_id << std::endl;
+    }
+
+}
 
 
 // Перевод изображения в текстуру

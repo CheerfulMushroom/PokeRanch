@@ -1,7 +1,5 @@
 #include "ButtonFunctions.h"
 
-double test_movement(double t) { return 1 - (.1 * t); };
-
 void change_to_ranch() {
     game_object->change_state(std::make_unique<RanchState>(game_object));
 }
@@ -14,3 +12,7 @@ void change_to_pause() {
     game_object->change_state(std::make_unique<PauseState>(game_object));
 }
 
+void swap_cam(){
+    game_object->cam_id = (game_object->cam_id + 1) % 3;
+    game_object->change_state(std::make_unique<RanchState>(game_object));
+}

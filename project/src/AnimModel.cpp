@@ -23,7 +23,6 @@ static unsigned int texture_from_file(const char *path, const std::string &direc
 AnimModel::AnimModel(int id,
                      Camera *camera,
                      glm::vec3 translate,
-                     glm::vec3 scale,
                      glm::vec3 rotate,
                      float angle,
                      int width,
@@ -31,6 +30,10 @@ AnimModel::AnimModel(int id,
     this->id = id;
     marker_detector = nullptr;
     this->state = nullptr;
+
+    if (!get_pokemon_info(id, &scale, &anim_id)){
+        std::cout << "NEW_MARKER_FOUND" <<std::endl;
+    }
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, translate);
@@ -49,14 +52,14 @@ AnimModel::AnimModel(int id,
     shader = ShaderProgram("project/shaders/v_model_anim_pokedex_shader.txt",
                            "project/shaders/f_model_anim_shader.txt");
 
-    std::string path;
-    bool has_path = get_path_by_id(id, path);
-    if (!has_path){
-        path = "project/models/Pikachu/emotion.dae"; //TODO: easter egg
+    bool has_path = get_dir_by_id(id, directory);
+    if (!has_path) {
+        directory = "project/models/Pikachu/";
     }
-    directory = path.substr(0, path.find_last_of('/'));
 
-    load_mesh(path);
+    anim_names = get_anims(directory);
+
+    load_mesh(directory + anim_names[anim_id]);
 
 }
 
@@ -64,10 +67,15 @@ AnimModel::AnimModel(int id,
                      GameState *state,
                      MarkerDetector *marker_detector,
                      std::function<void()> to_exec) {
+
     this->id = id;
     this->state = state;
     this->marker_detector = marker_detector;
     this->to_exec = std::move(to_exec);
+
+    if (!get_pokemon_info(id, &scale, &anim_id)){
+        std::cout << "NEW_MARKER_FOUND" <<std::endl;
+    }
 
 
     projection = marker_detector->projection;
@@ -79,20 +87,23 @@ AnimModel::AnimModel(int id,
     m_NumBones = 0;
     m_pScene = nullptr;
 
-    shader = ShaderProgram("project/shaders/v_model_anim_shader.txt", "project/shaders/f_model_anim_shader.txt");
+    shader = ShaderProgram("project/shaders/v_model_anim_shader.txt",
+                           "project/shaders/f_model_anim_shader.txt");
 
-    std::string path;
-    bool has_path = get_path_by_id(id, path);
-    if (!has_path){
-        path = "project/models/Pikachu/emotion.dae"; //TODO: easter egg
+    bool has_path = get_dir_by_id(id, directory);
+    if (!has_path) {
+        directory = "project/models/Pikachu/";
     }
-    directory = path.substr(0, path.find_last_of('/'));
 
-    load_mesh(path);
+    anim_names = get_anims(directory);
+
+
+    load_mesh(directory + anim_names[anim_id]);
 }
 
 
 AnimModel::~AnimModel() {
+    write_pokemon_info(id, scale, anim_id);
     Clear();
 }
 
@@ -202,7 +213,7 @@ void AnimModel::update() {
 
             //////
 
-            model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
+            model = glm::scale(model, scale);
 
             last_update_time = glfwGetTime();
 
@@ -564,6 +575,11 @@ void AnimModel::BoneTransform(float TimeInSeconds) {
 }
 
 
+void AnimModel::swap_animation() {
+    anim_id = ++anim_id % anim_names.size();
+    change_animation(directory + anim_names[anim_id]);
+}
+
 void AnimModel::change_animation(std::string path) {
     Clear();
     load_mesh(path);
@@ -571,6 +587,15 @@ void AnimModel::change_animation(std::string path) {
 
 void AnimModel::rotate(float delta) {
     model = glm::rotate(model, glm::radians(delta), glm::vec3(0.0, 0.0, 1.0));
+}
+
+void AnimModel::feed(float k) {
+    scale *= k;
+    model = glm::scale(model, glm::vec3(k));
+}
+
+void AnimModel::run() {
+
 }
 
 const aiNodeAnim *AnimModel::FindNodeAnim(const aiAnimation *pAnimation, const string NodeName) {
