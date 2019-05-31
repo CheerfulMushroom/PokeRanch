@@ -576,9 +576,9 @@ void AnimModel::rotate(float delta) {
     model = glm::rotate(model, glm::radians(delta), glm::vec3(0.0, 0.0, 1.0));
 }
 
-void AnimModel::feed() {
-    scale*=1.01;
-    model = glm::scale(model, scale);
+void AnimModel::feed(float k) {
+    scale*=k;
+    model = glm::scale(model, glm::vec3(k));
 }
 
 void AnimModel::run() {

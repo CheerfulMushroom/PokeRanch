@@ -147,7 +147,7 @@ void PokedexState::load_scene() {
                                          std::bind(&AnimModel::change_animation, model.get(),
                                                    "project/models/Pikachu/pikachu_run.dae")));
     add_element(std::make_unique<Button>(this, 0.5f, -.0f, 0.2f, 0.2f * 16 / 9,
-                                         std::bind(&AnimModel::feed, model.get())));
+                                         std::bind(&AnimModel::feed, model.get(), 1.01f)));
 
     add_element(std::move(model));
 

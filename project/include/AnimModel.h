@@ -67,7 +67,7 @@ public:
 
     void rotate(float delta);
 
-    void feed();
+    void feed(float k);
 
     void run();
 
