@@ -5,10 +5,13 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 #include "ShaderProgram.h"
 
 bool get_path_by_id(int pok_id, std::string &model_path);
+
+glm::vec3 get_pokemon_scale(int pok_id);
 
 void mat_to_texture(GLuint texture, cv::Mat pic, bool with_alpha);
 

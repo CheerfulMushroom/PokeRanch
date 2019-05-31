@@ -33,7 +33,6 @@ public:
     AnimModel(int id,
               Camera *camera,
               glm::vec3 translate,
-              glm::vec3 scale,
               glm::vec3 rotate,
               float angle,
               int width,
@@ -68,17 +67,21 @@ public:
 
     void rotate(float delta);
 
+    void feed();
+
+    void run();
 
 private:
 #define NUM_BONES_PER_VEREX 4
 
     int id;
     bool is_deleted = true;
-    GameState* state = nullptr;
+    GameState *state = nullptr;
     std::function<void()> to_exec = nullptr;
     ShaderProgram shader;
     MarkerDetector *marker_detector = nullptr;
     aruco::Marker marker;
+    glm::vec3 scale;
     glm::mat4 projection;
     glm::mat4 view;
     glm::mat4 model;

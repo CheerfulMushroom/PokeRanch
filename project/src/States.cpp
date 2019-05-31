@@ -132,7 +132,6 @@ void PokedexState::load_scene() {
     auto model = std::make_unique<AnimModel>(pokemon_id,
                                              &camera,
                                              glm::vec3(.0f, -0.5f, .0f),
-                                             glm::vec3(0.02, 0.02, 0.02),
                                              glm::vec3(0.0f, 1.0f, 0.0f),
                                              180.0f,
                                              width,
@@ -147,6 +146,8 @@ void PokedexState::load_scene() {
     add_element(std::make_unique<Button>(this, 0.5f, -.3, 0.2f, 0.2f * 16 / 9,
                                          std::bind(&AnimModel::change_animation, model.get(),
                                                    "project/models/Pikachu/pikachu_run.dae")));
+    add_element(std::make_unique<Button>(this, 0.5f, -.0f, 0.2f, 0.2f * 16 / 9,
+                                         std::bind(&AnimModel::feed, model.get())));
 
     add_element(std::move(model));
 

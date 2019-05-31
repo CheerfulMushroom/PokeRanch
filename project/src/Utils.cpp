@@ -1,26 +1,64 @@
+//#include <sqlite3.h>
+#include <fstream>
+
 #include "Utils.h"
 #include "ShaderProgram.h"
 
 
 bool get_path_by_id(int pok_id, std::string &model_path) {
-    FILE *pokemon_model_ptr = fopen("project/pokemon_model_path.dat", "r");
-    if (pokemon_model_ptr == nullptr) {
-        puts("No such file");
-    } else {
-        int input_id;
-        char* input_path = new char[40];
-        while (fscanf(pokemon_model_ptr, "%d%s", &input_id, input_path) == 2) {
-            if (input_id == pok_id) {
-                fclose(pokemon_model_ptr);
-                model_path = std::string(input_path);
-                return true;
-            }
+    std::ifstream path_file("project/pokemon_model_path.dat");
+
+    int id;
+    std::string path;
+    while (path_file >> id >> path) {
+        if (id == pok_id) {
+            model_path = path;
+            return true;
         }
-        fclose(pokemon_model_ptr);
     }
+
     return false;
 }
 
+glm::vec3 get_pokemon_scale(int pok_id) {
+    std::ifstream path_file("project/pokemon_info.dat");
+    if (path_file.is_open()) {
+
+        std::string line;
+        while (std::getline(path_file, line)) {
+            std::istringstream iss(line);
+            int id;
+            float a, b, c;
+
+            if (!(iss >> id >> a >> b >> c)) { break; }
+
+            if (id == pok_id) {
+                return glm::vec3(a, b, c);
+            }
+        }
+    } else {
+        std::cout << "FILE NOT FOUND" << std::endl;
+    }
+
+    return glm::vec3(0.02, 0.02, 0.02);
+}
+
+//void write_pokemon_info(int pok_id, glm::vec3){
+//
+//    if (pokemon_model_ptr == nullptr) {
+//        puts("No such file");
+//    } else {
+//        int input_id;
+//        float a, b, c;
+//        while (fscanf(pokemon_model_ptr, "%d%f%f%f", &input_id, &a, &b, &c) == 2) {
+//            if (input_id == pok_id) {
+//                return glm::vec3(a, b, c);
+//            }
+//        }
+//        fclose(pokemon_model_ptr);
+//    }
+//    return glm::vec3(0.2, 0.2, 0.2);
+//}
 
 
 // Перевод изображения в текстуру

@@ -23,12 +23,12 @@ static unsigned int texture_from_file(const char *path, const std::string &direc
 AnimModel::AnimModel(int id,
                      Camera *camera,
                      glm::vec3 translate,
-                     glm::vec3 scale,
                      glm::vec3 rotate,
                      float angle,
                      int width,
                      int height) {
     this->id = id;
+    this->scale = get_pokemon_scale(id);
     marker_detector = nullptr;
     this->state = nullptr;
 
@@ -51,7 +51,7 @@ AnimModel::AnimModel(int id,
 
     std::string path;
     bool has_path = get_path_by_id(id, path);
-    if (!has_path){
+    if (!has_path) {
         path = "project/models/Pikachu/emotion.dae"; //TODO: easter egg
     }
     directory = path.substr(0, path.find_last_of('/'));
@@ -69,6 +69,9 @@ AnimModel::AnimModel(int id,
     this->marker_detector = marker_detector;
     this->to_exec = std::move(to_exec);
 
+    this->scale = get_pokemon_scale(id);
+
+
 
     projection = marker_detector->projection;
     view = glm::mat4(1.0f);
@@ -83,7 +86,7 @@ AnimModel::AnimModel(int id,
 
     std::string path;
     bool has_path = get_path_by_id(id, path);
-    if (!has_path){
+    if (!has_path) {
         path = "project/models/Pikachu/emotion.dae"; //TODO: easter egg
     }
     directory = path.substr(0, path.find_last_of('/'));
@@ -202,7 +205,7 @@ void AnimModel::update() {
 
             //////
 
-            model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
+            model = glm::scale(model, scale);
 
             last_update_time = glfwGetTime();
 
@@ -571,6 +574,15 @@ void AnimModel::change_animation(std::string path) {
 
 void AnimModel::rotate(float delta) {
     model = glm::rotate(model, glm::radians(delta), glm::vec3(0.0, 0.0, 1.0));
+}
+
+void AnimModel::feed() {
+    scale*=1.01;
+    model = glm::scale(model, scale);
+}
+
+void AnimModel::run() {
+
 }
 
 const aiNodeAnim *AnimModel::FindNodeAnim(const aiAnimation *pAnimation, const string NodeName) {
