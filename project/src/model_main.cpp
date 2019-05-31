@@ -22,7 +22,7 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#define marker_size 0.071
+#define marker_size 0.073
 
 #define FPS 60
 
@@ -84,6 +84,9 @@ int main(int argc, char *argv[]) {
 
     cv::Mat aruco_frame;
 
+    float coord = -2;
+
+    
     while (!glfwWindowShouldClose(screen.window))
     {
         screen.frame_start_time = glfwGetTime();
@@ -109,11 +112,12 @@ int main(int argc, char *argv[]) {
        
         float RunningTime = glfwGetTime();
         
+        
         for (auto m:markers) aruco::CvDrawingUtils::draw3dAxis(aruco_frame, m, camera);
 
         for (auto m:markers) {
        
-        char* path = pokemon_model_path(m.id, "emotion");
+        char* path = pokemon_model_path(m.id, "stay");
         AnimModel current_model(path);
         delete(path);
 
@@ -131,11 +135,14 @@ int main(int argc, char *argv[]) {
          GLfloat RTMat[16] = {rodrig.at<float>(0, 0), rodrig.at<float>(0, 1), rodrig.at<float>(0, 2), 0,
                              rodrig.at<float>(1, 0), rodrig.at<float>(1, 1), rodrig.at<float>(1, 2), 0,
                              rodrig.at<float>(2, 0), rodrig.at<float>(2, 1), rodrig.at<float>(2, 2), 0,
-                             10 * m.Tvec.at<float>(0), 10 * m.Tvec.at<float>(1), 10 * -m.Tvec.at<float>(2), 1};
+                             10 * m.Tvec.at<float>(0), 10 * m.Tvec.at<float>(1) + coord, 10 * -m.Tvec.at<float>(2), 1};
 
+        coord += 0.1;
+        
         glm::mat4 pikachu_mod = glm::make_mat4(RTMat);
 
-        pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.02, 0.02, 0.02));
+
+        pikachu_mod = glm::scale(pikachu_mod, glm::vec3(0.06, 0.06, 0.06));
 
         //pikachu_mod = glm::rotate(pikachu_mod, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
