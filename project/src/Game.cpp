@@ -47,13 +47,19 @@ void Game::change_state(std::unique_ptr<GameState> new_state) {
 void Game::start() {
     GLFWwindow *window = get_window();
 
+    double wait_for = 0;
+    double last_loop_started_at = 0;
+
+
     while (!glfwWindowShouldClose(window)) {
-        if (glfwGetTime()- last_loop_time > 1/rate) {
-            last_loop_time = glfwGetTime();
-            glfwPollEvents();
-            update_game();
-            render_game();
-        }
+        wait_for = glfwGetTime() - last_loop_started_at;
+        glfwWaitEventsTimeout(wait_for);
+
+        last_loop_started_at = glfwGetTime();
+        update_game();
+        render_game();
+
+
     }
 }
 

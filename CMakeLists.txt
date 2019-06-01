@@ -7,6 +7,15 @@ set(Tutorial_VERSION_MINOR 0)
 set(PROJECT_SOURCE_DIR project/src)
 set(PROJECT_HEADER_DIR project/include)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
+
 include_directories("${PROJECT_HEADER_DIR}")
 find_package(OpenCV REQUIRED )
 
