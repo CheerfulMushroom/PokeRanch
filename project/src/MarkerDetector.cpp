@@ -1,4 +1,4 @@
-#define marker_size 0.020
+#define marker_size 0.073
 
 #include <glm/ext.hpp>
 #include <opencv2/calib3d.hpp>
