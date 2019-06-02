@@ -6,7 +6,6 @@
 
 #include "MarkerDetector.h"
 #include "AnimModel.h"
-#include "Camera.h"
 #include "Utils.h"
 
 
@@ -31,8 +30,8 @@ AnimModel::AnimModel(int id,
     marker_detector = nullptr;
     this->state = nullptr;
 
-    if (!get_pokemon_info(id, &scale, &anim_id)){
-        std::cout << "NEW_MARKER_FOUND" <<std::endl;
+    if (!get_pokemon_info(id, &scale, &anim_id)) {
+        std::cout << "NEW_MARKER_FOUND" << std::endl;
     }
 
     model = glm::mat4(1.0f);
@@ -73,8 +72,8 @@ AnimModel::AnimModel(int id,
     this->marker_detector = marker_detector;
     this->to_exec = std::move(to_exec);
 
-    if (!get_pokemon_info(id, &scale, &anim_id)){
-        std::cout << "NEW_MARKER_FOUND" <<std::endl;
+    if (!get_pokemon_info(id, &scale, &anim_id)) {
+        std::cout << "NEW_MARKER_FOUND" << std::endl;
     }
 
 
@@ -576,7 +575,7 @@ void AnimModel::BoneTransform(float TimeInSeconds) {
 
 
 void AnimModel::swap_animation() {
-    anim_id = ++anim_id % anim_names.size();
+    anim_id = (anim_id + 1) % anim_names.size();
     change_animation(directory + anim_names[anim_id]);
 }
 

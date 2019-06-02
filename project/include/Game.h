@@ -37,7 +37,6 @@ public:
     int cam_id = 0;
 
 private:
-    double last_loop_time = 0;
     int width;
     int height;
     double rate;
